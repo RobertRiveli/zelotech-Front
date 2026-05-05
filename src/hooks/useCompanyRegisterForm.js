@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerCompany } from "../services/companyService";
 
 const initialForm = {
@@ -249,6 +250,7 @@ function getGlobalError(error) {
 }
 
 export function useCompanyRegisterForm() {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function handleChange(event) {
@@ -271,7 +273,7 @@ export function useCompanyRegisterForm() {
     try {
       const company = await registerCompany(state.form);
       dispatch({ type: "submitSuccess", payload: company });
-      window.location.assign("/login");
+      navigate("/login");
     } catch (error) {
       const apiFieldErrors = mapApiErrors(error.errors);
       const hasFieldErrors = Object.keys(apiFieldErrors).length > 0;

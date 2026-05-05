@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AudienceCards from "../components/landing/AudienceCards";
 import Benefits from "../components/landing/Benefits";
 import Faq from "../components/landing/Faq";
@@ -13,10 +14,29 @@ import {
   partners,
 } from "../data/landing";
 import useActiveSection from "../hooks/useActiveSection";
+import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "../utils/accessMessages";
+import { hasAdminSession, hasCaregiverSession } from "../utils/storage";
 
 function HomePage() {
+  const navigate = useNavigate();
   const activeSection = useActiveSection(navLinks);
   const [activeStep, setActiveStep] = useState(0);
+
+  function handleLoginClick(event) {
+    event.preventDefault();
+
+    if (hasAdminSession()) {
+      navigate("/dashboard");
+      return;
+    }
+
+    if (hasCaregiverSession()) {
+      window.alert(CAREGIVER_FEATURE_PENDING_MESSAGE);
+      return;
+    }
+
+    navigate("/login");
+  }
 
   return (
     <>
@@ -39,12 +59,16 @@ function HomePage() {
           ))}
         </ul>
         <div className="nav-ctas">
-          <a href="/login" className="btn btn-outline-navy btn-sm">
+          <Link
+            to="/login"
+            className="btn btn-outline-navy btn-sm"
+            onClick={handleLoginClick}
+          >
             Fazer login
-          </a>
-          <a href="/cadastro-instituicao" className="btn btn-navy btn-sm">
+          </Link>
+          <Link to="/cadastro-instituicao" className="btn btn-navy btn-sm">
             Cadastrar grátis <span className="arrow">›</span>
-          </a>
+          </Link>
         </div>
       </nav>
 
@@ -69,12 +93,12 @@ function HomePage() {
               integrada e relatórios inteligentes.
             </p>
             <div className="hero-ctas anim-4">
-              <a href="/cadastro-instituicao" className="btn btn-navy btn-lg">
+              <Link to="/cadastro-instituicao" className="btn btn-navy btn-lg">
                 Sou uma Instituição <span className="arrow">›</span>
-              </a>
-              <a href="/cadastro-familia" className="btn btn-teal btn-lg">
+              </Link>
+              <Link to="/cadastro-familia" className="btn btn-teal btn-lg">
                 Sou uma Família <span className="arrow">›</span>
-              </a>
+              </Link>
             </div>
             <div className="hero-trust anim-4">
               <div className="trust-item">

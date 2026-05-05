@@ -1,0 +1,15 @@
+.button {
+  justify-content: center;
+  min-height: 48px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.loading {
+  cursor: wait;
+  opacity: 0.74;
+  transform: none;
+  box-shadow: none;
+}

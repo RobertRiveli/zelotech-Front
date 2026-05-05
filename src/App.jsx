@@ -1,17 +1,12 @@
-import HomePage from "./pages/HomePage";
-import CompanyRegisterPage from "./pages/CompanyRegisterPage";
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  const currentPath = window.location.pathname;
-
-  if (
-    currentPath === "/cadastro-instituicao" ||
-    currentPath === "/cadastro-empresa"
-  ) {
-    return <CompanyRegisterPage />;
-  }
-
-  return <HomePage />;
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
 }
 
 export default App;

@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { api } from "./api";
 
 function onlyNumbers(value) {
   return value.replace(/\D/g, "");
@@ -21,50 +21,8 @@ function normalizeCompanyPayload(form) {
   };
 }
 
-async function readResponseBody(response) {
-  const contentType = response.headers.get("content-type") ?? "";
-
-  if (!contentType.includes("application/json")) {
-    return {};
-  }
-
-  try {
-    return await response.json();
-  } catch {
-    return {};
-  }
-}
-
-function getCompaniesEndpoint() {
-  return `${API_BASE_URL.replace(/\/$/, "")}/companies`;
-}
-
 export async function registerCompany(form) {
-  if (!API_BASE_URL) {
-    throw {
-      errorType: "CONFIGURATION_ERROR",
-      message: "A variável VITE_API_URL não foi configurada.",
-    };
-  }
-
-  const response = await fetch(getCompaniesEndpoint(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(normalizeCompanyPayload(form)),
-  });
-
-  const data = await readResponseBody(response);
-
-  if (!response.ok) {
-    throw {
-      errorType: data.errorType ?? "REQUEST_ERROR",
-      message: data.message ?? "Não foi possível cadastrar a empresa.",
-      errors: data.errors ?? {},
-      status: response.status,
-    };
-  }
+  const data = await api.post("/companies", normalizeCompanyPayload(form));
 
   return data.company;
 }

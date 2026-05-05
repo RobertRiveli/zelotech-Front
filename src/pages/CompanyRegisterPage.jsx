@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import FormSection from "../components/FormSection";
 import InputField from "../components/InputField";
 import {
@@ -22,18 +23,18 @@ function CompanyRegisterPage() {
   return (
     <>
       <nav className="nav register-nav" aria-label="Navegação principal">
-        <a className="nav-logo" href="/" aria-label="ZeloTech">
+        <Link className="nav-logo" to="/" aria-label="ZeloTech">
           Zelo<span>Tech</span>
-        </a>
+        </Link>
         <div className="nav-ctas">
           {companyRegisterNavActions.map((action) => (
-            <a
+            <Link
               className={action.className}
-              href={action.href}
               key={action.href}
+              to={action.href}
             >
               {action.label}
-            </a>
+            </Link>
           ))}
         </div>
       </nav>
