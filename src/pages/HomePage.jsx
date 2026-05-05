@@ -42,7 +42,7 @@ function HomePage() {
           <a href="/login" className="btn btn-outline-navy btn-sm">
             Fazer login
           </a>
-          <a href="#para-quem" className="btn btn-navy btn-sm">
+          <a href="/cadastro-instituicao" className="btn btn-navy btn-sm">
             Cadastrar grátis <span className="arrow">›</span>
           </a>
         </div>
