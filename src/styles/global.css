@@ -1,0 +1,59 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy: #162040;
+  --navy-mid: #1a2d5a;
+  --navy-light: #2d4a8a;
+  --navy-tint: #eceffe;
+  --teal: #1abcaf;
+  --teal-dark: #0d9488;
+  --teal-light: #5dddd4;
+  --teal-tint: #e0f9f7;
+  --bg: #f5f7fc;
+  --bg2: #eef1f8;
+  --white: #ffffff;
+  --text: #162040;
+  --body: #5a6478;
+  --muted: #9aa3b2;
+  --border: #e2e8f0;
+  --success: #22c55e;
+  --r4: 4px;
+  --r8: 8px;
+  --r12: 12px;
+  --r16: 16px;
+  --r24: 24px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  font-family: "Plus Jakarta Sans", Arial, sans-serif;
+  background: var(--white);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  border: 0;
+}
