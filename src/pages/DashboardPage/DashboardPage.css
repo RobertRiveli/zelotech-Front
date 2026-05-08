@@ -121,28 +121,6 @@
   stroke-linejoin: round;
 }
 
-.dashboard-sidebar-footer {
-  min-height: 44px;
-  margin-top: auto;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-radius: var(--r8);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.dashboard-status-dot {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
-  border-radius: 50%;
-  background: var(--teal-light);
-}
-
 .dashboard-menu-backdrop {
   display: none;
 }

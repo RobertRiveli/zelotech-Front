@@ -78,10 +78,6 @@ function DashboardPage() {
           })}
         </nav>
 
-        <div className="dashboard-sidebar-footer">
-          <span className="dashboard-status-dot" aria-hidden="true" />
-          <span>em breve</span>
-        </div>
       </aside>
 
       <div className="dashboard-main-shell">
