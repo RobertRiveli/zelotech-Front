@@ -5,3 +5,9 @@ export async function listResidents() {
 
   return data.residents ?? [];
 }
+
+export async function getResidentOverview(residentId) {
+  const data = await api.get(`/residents/${residentId}/overview`);
+
+  return data.residentOverview;
+}
