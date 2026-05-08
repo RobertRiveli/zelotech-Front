@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import FormSection from "../components/FormSection";
-import InputField from "../components/InputField";
+import FormSection from "../../components/forms/FormSection";
+import InputField from "../../components/ui/InputField";
 import {
   companyRegisterFormAction,
   companyRegisterHero,
   companyRegisterNavActions,
   companyRegisterPanel,
   companyRegisterSections,
-} from "../data/companyRegister";
-import { useCompanyRegisterForm } from "../hooks/useCompanyRegisterForm";
+} from "../../data/companyRegister";
+import { useCompanyRegisterForm } from "../../hooks/useCompanyRegisterForm";
+import "./CompanyRegisterPage.css";
 
 function CompanyRegisterPage() {
   const {

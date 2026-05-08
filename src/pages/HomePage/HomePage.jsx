@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AudienceCards from "../components/landing/AudienceCards";
-import Benefits from "../components/landing/Benefits";
-import Faq from "../components/landing/Faq";
+import AudienceCards from "../../components/landing/AudienceCards";
+import Benefits from "../../components/landing/Benefits";
+import Faq from "../../components/landing/Faq";
 import {
   audiences,
   benefits,
@@ -12,10 +12,11 @@ import {
   navLinks,
   numbers,
   partners,
-} from "../data/landing";
-import useActiveSection from "../hooks/useActiveSection";
-import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "../utils/accessMessages";
-import { hasAdminSession, hasCaregiverSession } from "../utils/storage";
+} from "../../data/landing";
+import useActiveSection from "../../hooks/useActiveSection";
+import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "../../utils/accessMessages";
+import { hasAdminSession, hasCaregiverSession } from "../../utils/storage";
+import "./HomePage.css";
 
 function HomePage() {
   const navigate = useNavigate();

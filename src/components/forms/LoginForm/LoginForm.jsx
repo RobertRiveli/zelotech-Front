@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../ui/Button";
-import InputField from "../../InputField";
+import InputField from "../../ui/InputField";
 import PasswordInput from "../../ui/PasswordInput";
 import { login } from "../../../services/authService";
 import { saveSession } from "../../../utils/storage";
