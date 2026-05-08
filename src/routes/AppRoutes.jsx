@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import CompanyRegisterPage from "../pages/CompanyRegisterPage";
-import DashboardPage from "../pages/DashboardPage";
+import DashboardPage from "../pages/Dashboard";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import { hasAdminSession } from "../utils/storage";
