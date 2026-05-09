@@ -1,8 +1,5 @@
 import { api } from "./api";
-
-function onlyNumbers(value) {
-  return value.replace(/\D/g, "");
-}
+import { onlyNumbers } from "../utils/documentFormatter";
 
 function normalizeCompanyPayload(form) {
   return {

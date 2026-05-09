@@ -1,6 +1,15 @@
 import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerCompany } from "../services/companyService";
+import {
+  formatCnpj,
+  formatCpf,
+  formatPhone,
+  isValidCnpj,
+  isValidCpf,
+  onlyNumbers,
+} from "../utils/documentFormatter";
+import { mapApiErrors } from "../utils/formErrors";
 
 const initialForm = {
   legalName: "",
@@ -39,8 +48,8 @@ const apiFieldToFormField = {
 };
 
 const masks = {
-  taxId: (value) => formatDocument(value, [2, 3, 3, 4, 2], [".", ".", "/", "-"]),
-  adminCpf: (value) => formatDocument(value, [3, 3, 3, 2], [".", ".", "-"]),
+  taxId: formatCnpj,
+  adminCpf: formatCpf,
   phone: formatPhone,
   adminPhone: formatPhone,
 };
@@ -93,88 +102,8 @@ function reducer(state, action) {
   }
 }
 
-function onlyNumbers(value) {
-  return value.replace(/\D/g, "");
-}
-
-function formatDocument(value, groups, separators) {
-  const numbers = onlyNumbers(value);
-  let cursor = 0;
-
-  return groups
-    .map((size, index) => {
-      const chunk = numbers.slice(cursor, cursor + size);
-      cursor += size;
-
-      if (!chunk) {
-        return "";
-      }
-
-      const nextHasValue = numbers.length > cursor;
-      return nextHasValue ? `${chunk}${separators[index] ?? ""}` : chunk;
-    })
-    .join("");
-}
-
-function formatPhone(value) {
-  const numbers = onlyNumbers(value).slice(0, 11);
-
-  if (numbers.length <= 2) {
-    return numbers;
-  }
-
-  if (numbers.length <= 6) {
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-  }
-
-  if (numbers.length <= 10) {
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 6)}-${numbers.slice(6)}`;
-  }
-
-  return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
-}
-
 function hasEmailShape(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-}
-
-function isValidCpf(value) {
-  const cpf = onlyNumbers(value);
-
-  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-    return false;
-  }
-
-  const firstDigit = calculateDocumentDigit(cpf, 9, 10);
-  const secondDigit = calculateDocumentDigit(cpf, 10, 11);
-
-  return cpf.endsWith(`${firstDigit}${secondDigit}`);
-}
-
-function isValidCnpj(value) {
-  const cnpj = onlyNumbers(value);
-
-  if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) {
-    return false;
-  }
-
-  const firstDigit = calculateDocumentDigit(cnpj, 12, 5);
-  const secondDigit = calculateDocumentDigit(cnpj, 13, 6);
-
-  return cnpj.endsWith(`${firstDigit}${secondDigit}`);
-}
-
-function calculateDocumentDigit(documentNumber, size, initialWeight) {
-  let sum = 0;
-  let weight = initialWeight;
-
-  for (let index = 0; index < size; index += 1) {
-    sum += Number(documentNumber[index]) * weight;
-    weight = weight === 2 ? 9 : weight - 1;
-  }
-
-  const remainder = sum % 11;
-  return remainder < 2 ? 0 : 11 - remainder;
 }
 
 function validateForm(form) {
@@ -233,14 +162,6 @@ function validateForm(form) {
   return errors;
 }
 
-function mapApiErrors(errors) {
-  return Object.entries(errors ?? {}).reduce((mappedErrors, [field, message]) => {
-    const formField = apiFieldToFormField[field] ?? field;
-    mappedErrors[formField] = message;
-    return mappedErrors;
-  }, {});
-}
-
 function getGlobalError(error) {
   if (error.errorType === "CONFIGURATION_ERROR") {
     return error.message;
@@ -275,7 +196,7 @@ export function useCompanyRegisterForm() {
       dispatch({ type: "submitSuccess", payload: company });
       navigate("/login");
     } catch (error) {
-      const apiFieldErrors = mapApiErrors(error.errors);
+      const apiFieldErrors = mapApiErrors(error.errors, apiFieldToFormField);
       const hasFieldErrors = Object.keys(apiFieldErrors).length > 0;
 
       dispatch({
