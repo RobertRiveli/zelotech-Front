@@ -1,9 +1,4 @@
-import {
-  formatGender,
-  getAgeLabel,
-  getInitials,
-} from "../../utils/dashboardFormatters";
-import { ResidentStatusBadge } from "./ResidentStatusBadge";
+import { ResidentRow } from "./ResidentRow";
 
 export function ResidentDirectoryRow({
   administrationSummary,
@@ -14,34 +9,17 @@ export function ResidentDirectoryRow({
   resident,
 }) {
   return (
-    <button
-      className={`resident-row${isSelected ? " is-selected" : ""}`}
-      type="button"
-      onClick={() => onSelectResident(resident.id)}
-    >
-      <span className="resident-row-avatar" aria-hidden="true">
-        {getInitials(resident.fullName)}
-      </span>
-
-      <span className="resident-row-main">
-        <strong>{resident.fullName}</strong>
-        <span>
-          {getAgeLabel(resident, currentTime)} · {formatGender(resident.gender)}
-        </span>
-      </span>
-
-      <span className="resident-row-meta">
-        <ResidentStatusBadge status={resident.status} />
-        <small>
-          {resident.bloodType ? `Tipo ${resident.bloodType}` : "Sem tipo sanguíneo"}
-        </small>
-      </span>
-
-      <span className="resident-row-stats" aria-label="Resumo operacional">
-        <small>{prescriptionCount} prescrições</small>
-        <small>{administrationSummary.pending} pendentes</small>
-        <small>{administrationSummary.late} atrasadas</small>
-      </span>
-    </button>
+    <ResidentRow
+      currentTime={currentTime}
+      isSelected={isSelected}
+      resident={resident}
+      stats={[
+        `${prescriptionCount} prescrições`,
+        `${administrationSummary.pending} pendentes`,
+        `${administrationSummary.late} atrasadas`,
+      ]}
+      statsAriaLabel="Resumo operacional"
+      onSelectResident={onSelectResident}
+    />
   );
 }

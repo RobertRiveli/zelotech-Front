@@ -7,6 +7,15 @@ import {
   listPrescriptions,
   updatePrescription,
 } from "../../../../services/prescriptionService";
+import {
+  clearFieldError,
+  getRequestErrorMessage,
+} from "../../../../utils/formErrors";
+import {
+  formatDateInput,
+  formatLocalDateInput,
+  formatTimeInput,
+} from "../../utils/dashboardFormatters";
 import { compareByStartDate } from "../../utils/dashboardSorters";
 import {
   buildPrescriptionStats,
@@ -20,6 +29,11 @@ import { PanelHeader } from "../shared/PanelHeader";
 import { PrescriptionDetailPanel } from "./PrescriptionDetailPanel";
 import { PrescriptionForm } from "./PrescriptionForm";
 import { PrescriptionRow } from "./PrescriptionRow";
+
+const fieldErrorAliases = {
+  firstScheduledDate: ["firstScheduledAt"],
+  firstScheduledTime: ["firstScheduledAt"],
+};
 
 export function PrescriptionsView({
   currentTime,
@@ -190,7 +204,9 @@ export function PrescriptionsView({
       ...currentForm,
       [name]: value,
     }));
-    setFormErrors((currentErrors) => clearFieldError(currentErrors, name));
+    setFormErrors((currentErrors) =>
+      clearFieldError(currentErrors, name, fieldErrorAliases),
+    );
   }
 
   async function handleSubmit(event) {
@@ -326,13 +342,13 @@ export function PrescriptionsView({
         />
       </section>
 
-      <section className="prescriptions-layout">
+      <section className="dashboard-two-column-layout">
         <section className="dashboard-panel prescriptions-list-panel">
-          <div className="prescription-toolbar">
-            <div className="prescription-filter-group" aria-label="Filtros">
+          <div className="dashboard-toolbar">
+            <div className="dashboard-filter-group" aria-label="Filtros">
               {prescriptionFilters.map((filter) => (
                 <button
-                  className={`prescription-filter-button${
+                  className={`dashboard-filter-button${
                     activeFilter === filter.id ? " is-active" : ""
                   }`}
                   key={filter.id}
@@ -345,7 +361,7 @@ export function PrescriptionsView({
             </div>
 
             <button
-              className="prescription-button prescription-button-primary"
+              className="dashboard-button dashboard-button-primary"
               type="button"
               onClick={handleStartCreate}
             >
@@ -360,7 +376,10 @@ export function PrescriptionsView({
           />
 
           {feedback ? (
-            <div className="prescription-success-alert" role="status">
+            <div
+              className="dashboard-form-alert dashboard-form-alert-success"
+              role="status"
+            >
               {feedback}
             </div>
           ) : null}
@@ -536,76 +555,4 @@ function validatePrescriptionForm(form) {
   }
 
   return errors;
-}
-
-function clearFieldError(errors, fieldName) {
-  const nextErrors = { ...errors };
-
-  delete nextErrors[fieldName];
-
-  if (fieldName === "firstScheduledDate" || fieldName === "firstScheduledTime") {
-    delete nextErrors.firstScheduledAt;
-  }
-
-  return nextErrors;
-}
-
-function getRequestErrorMessage(error) {
-  const fieldMessages = Object.values(error?.errors ?? {});
-
-  return (
-    fieldMessages.find(Boolean) ??
-    error?.message ??
-    "Não foi possível concluir a solicitação."
-  );
-}
-
-function formatDateInput(value) {
-  if (!value) {
-    return "";
-  }
-
-  if (typeof value === "string" && value.length >= 10) {
-    return value.slice(0, 10);
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  return [
-    date.getFullYear(),
-    padDatePart(date.getMonth() + 1),
-    padDatePart(date.getDate()),
-  ].join("-");
-}
-
-function formatLocalDateInput(value) {
-  const date = value ? new Date(value) : null;
-
-  if (!date || Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  return [
-    date.getFullYear(),
-    padDatePart(date.getMonth() + 1),
-    padDatePart(date.getDate()),
-  ].join("-");
-}
-
-function formatTimeInput(value) {
-  const date = value ? new Date(value) : null;
-
-  if (!date || Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  return `${padDatePart(date.getHours())}:${padDatePart(date.getMinutes())}`;
-}
-
-function padDatePart(value) {
-  return String(value).padStart(2, "0");
 }

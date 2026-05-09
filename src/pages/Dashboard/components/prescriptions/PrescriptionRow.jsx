@@ -1,8 +1,7 @@
 import {
   formatDateRange,
+  formatDateTime,
   formatPrescriptionDosage,
-  formatShortDate,
-  formatTime,
   getMedicationName,
 } from "../../utils/dashboardFormatters";
 import { getPrescriptionStatus } from "../../utils/prescriptionDashboardUtils";
@@ -36,17 +35,9 @@ export function PrescriptionRow({
       </span>
 
       <span className="prescription-row-schedule">
-        <strong>{formatFirstSchedule(prescription.firstScheduledAt)}</strong>
+        <strong>{formatDateTime(prescription.firstScheduledAt)}</strong>
         <span>{formatDateRange(prescription.startDate, prescription.endDate)}</span>
       </span>
     </button>
   );
-}
-
-function formatFirstSchedule(value) {
-  if (!value) {
-    return "Sem horário";
-  }
-
-  return `${formatShortDate(value)} às ${formatTime(value)}`;
 }

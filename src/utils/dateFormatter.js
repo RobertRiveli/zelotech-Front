@@ -78,3 +78,76 @@ export function formatDateRange(startDate, endDate) {
 
   return `${formattedStart} - ${formatShortDate(endDate)}`;
 }
+
+export function formatDateTime(value, fallback = "Sem horário") {
+  const date = toDate(value);
+
+  if (!date) {
+    return fallback;
+  }
+
+  return `${formatShortDate(date)} às ${formatTime(date)}`;
+}
+
+export function formatShortDateTime(value, fallback = "sem data definida") {
+  const date = toDate(value);
+
+  if (!date) {
+    return fallback;
+  }
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
+}
+
+export function formatDateInput(value) {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string" && value.length >= 10) {
+    return value.slice(0, 10);
+  }
+
+  const date = toDate(value);
+
+  if (!date) {
+    return "";
+  }
+
+  return formatDateParts(date);
+}
+
+export function formatLocalDateInput(value) {
+  const date = toDate(value);
+
+  if (!date) {
+    return "";
+  }
+
+  return formatDateParts(date);
+}
+
+export function formatTimeInput(value) {
+  const date = toDate(value);
+
+  if (!date) {
+    return "";
+  }
+
+  return `${padDatePart(date.getHours())}:${padDatePart(date.getMinutes())}`;
+}
+
+function formatDateParts(date) {
+  return [
+    date.getFullYear(),
+    padDatePart(date.getMonth() + 1),
+    padDatePart(date.getDate()),
+  ].join("-");
+}
+
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
+}

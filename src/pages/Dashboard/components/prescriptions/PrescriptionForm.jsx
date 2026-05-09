@@ -1,3 +1,5 @@
+import { DashboardFieldError } from "../shared/DashboardFieldError";
+
 const routeOptions = [
   "oral",
   "sublingual",
@@ -35,15 +37,18 @@ export function PrescriptionForm({
   const isEditing = mode === "edit";
 
   return (
-    <form className="prescription-form" onSubmit={onSubmit}>
+    <form className="dashboard-form" onSubmit={onSubmit}>
       {submitError ? (
-        <div className="prescription-form-alert" role="status">
+        <div
+          className="dashboard-form-alert dashboard-form-alert-danger"
+          role="status"
+        >
           {submitError}
         </div>
       ) : null}
 
-      <div className="prescription-form-grid">
-        <label className="prescription-field">
+      <div className="dashboard-form-grid">
+        <label className="dashboard-field">
           <span>Residente</span>
           <select
             disabled={isSubmitting || isLoadingAuxiliaryData}
@@ -58,10 +63,10 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <FieldError message={errors.residentId || errors.resident} />
+          <DashboardFieldError message={errors.residentId || errors.resident} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Medicamento</span>
           <select
             disabled={isSubmitting || isLoadingAuxiliaryData}
@@ -76,10 +81,12 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <FieldError message={errors.medicationId || errors.medication} />
+          <DashboardFieldError
+            message={errors.medicationId || errors.medication}
+          />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Unidade</span>
           <select
             disabled={isSubmitting || isLoadingAuxiliaryData}
@@ -94,10 +101,12 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <FieldError message={errors.measurementUnitId || errors.measurementUnit} />
+          <DashboardFieldError
+            message={errors.measurementUnitId || errors.measurementUnit}
+          />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Dosagem</span>
           <input
             name="dosage"
@@ -105,10 +114,10 @@ export function PrescriptionForm({
             value={form.dosage}
             onChange={onChange}
           />
-          <FieldError message={errors.dosage} />
+          <DashboardFieldError message={errors.dosage} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Via</span>
           <input
             list="prescription-route-options"
@@ -122,10 +131,10 @@ export function PrescriptionForm({
               <option key={route} value={route} />
             ))}
           </datalist>
-          <FieldError message={errors.route} />
+          <DashboardFieldError message={errors.route} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Frequência</span>
           <input
             list="prescription-frequency-options"
@@ -139,10 +148,10 @@ export function PrescriptionForm({
               <option key={frequency} value={frequency} />
             ))}
           </datalist>
-          <FieldError message={errors.frequency} />
+          <DashboardFieldError message={errors.frequency} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Intervalo em horas</span>
           <input
             min="1"
@@ -151,10 +160,10 @@ export function PrescriptionForm({
             value={form.intervalHours}
             onChange={onChange}
           />
-          <FieldError message={errors.intervalHours} />
+          <DashboardFieldError message={errors.intervalHours} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Primeira data</span>
           <input
             name="firstScheduledDate"
@@ -162,10 +171,10 @@ export function PrescriptionForm({
             value={form.firstScheduledDate}
             onChange={onChange}
           />
-          <FieldError message={errors.firstScheduledAt} />
+          <DashboardFieldError message={errors.firstScheduledAt} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Primeiro horário</span>
           <input
             name="firstScheduledTime"
@@ -175,7 +184,7 @@ export function PrescriptionForm({
           />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Data inicial</span>
           <input
             name="startDate"
@@ -183,10 +192,10 @@ export function PrescriptionForm({
             value={form.startDate}
             onChange={onChange}
           />
-          <FieldError message={errors.startDate} />
+          <DashboardFieldError message={errors.startDate} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Data final</span>
           <input
             name="endDate"
@@ -194,10 +203,10 @@ export function PrescriptionForm({
             value={form.endDate}
             onChange={onChange}
           />
-          <FieldError message={errors.endDate} />
+          <DashboardFieldError message={errors.endDate} />
         </label>
 
-        <label className="prescription-field">
+        <label className="dashboard-field">
           <span>Prescritor</span>
           <input
             name="prescribedBy"
@@ -205,19 +214,19 @@ export function PrescriptionForm({
             value={form.prescribedBy}
             onChange={onChange}
           />
-          <FieldError message={errors.prescribedBy} />
+          <DashboardFieldError message={errors.prescribedBy} />
         </label>
       </div>
 
       {isEditing ? (
-        <div className="prescription-context-note" role="note">
+        <div className="dashboard-context-note" role="note">
           Alterações na prescrição não recalculam administrações já criadas.
         </div>
       ) : null}
 
-      <div className="prescription-form-actions">
+      <div className="dashboard-form-actions">
         <button
-          className="prescription-button prescription-button-muted"
+          className="dashboard-button dashboard-button-muted"
           disabled={isSubmitting}
           type="button"
           onClick={onCancel}
@@ -225,7 +234,7 @@ export function PrescriptionForm({
           Cancelar
         </button>
         <button
-          className="prescription-button prescription-button-primary"
+          className="dashboard-button dashboard-button-primary"
           disabled={isSubmitting}
           type="submit"
         >
@@ -234,14 +243,6 @@ export function PrescriptionForm({
       </div>
     </form>
   );
-}
-
-function FieldError({ message }) {
-  if (!message) {
-    return null;
-  }
-
-  return <small className="prescription-field-error">{message}</small>;
 }
 
 function formatMedicationOption(medication) {

@@ -1094,7 +1094,7 @@
   min-height: 92px;
 }
 
-.prescriptions-layout {
+.dashboard-two-column-layout {
   display: grid;
   grid-template-columns: minmax(420px, 1fr) minmax(380px, 0.82fr);
   gap: 18px;
@@ -1106,7 +1106,7 @@
   min-height: 620px;
 }
 
-.prescription-toolbar {
+.dashboard-toolbar {
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -1114,15 +1114,15 @@
   gap: 12px;
 }
 
-.prescription-filter-group {
+.dashboard-filter-group {
   min-width: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.prescription-filter-button,
-.prescription-button {
+.dashboard-filter-button,
+.dashboard-button {
   min-height: 40px;
   padding: 0 13px;
   display: inline-flex;
@@ -1139,57 +1139,57 @@
     transform 0.15s;
 }
 
-.prescription-filter-button {
+.dashboard-filter-button {
   background: var(--bg);
   color: var(--body);
 }
 
-.prescription-filter-button:hover,
-.prescription-filter-button.is-active {
+.dashboard-filter-button:hover,
+.dashboard-filter-button.is-active {
   border-color: rgba(13, 148, 136, 0.34);
   background: var(--teal-tint);
   color: var(--teal-dark);
 }
 
-.prescription-button:active,
-.prescription-filter-button:active {
+.dashboard-button:active,
+.dashboard-filter-button:active {
   transform: scale(0.97);
 }
 
-.prescription-button-primary {
+.dashboard-button-primary {
   border-color: var(--navy);
   background: var(--navy);
   color: var(--white);
 }
 
-.prescription-button-primary:hover {
+.dashboard-button-primary:hover {
   background: var(--navy-mid);
   box-shadow: 0 8px 22px rgba(22, 32, 64, 0.16);
 }
 
-.prescription-button-muted {
+.dashboard-button-muted {
   background: var(--white);
   color: var(--navy);
 }
 
-.prescription-button-muted:hover {
+.dashboard-button-muted:hover {
   border-color: rgba(13, 148, 136, 0.34);
   background: var(--teal-tint);
 }
 
-.prescription-button-danger {
+.dashboard-button-danger {
   border-color: rgba(220, 38, 38, 0.24);
   background: #fff7f7;
   color: #b91c1c;
 }
 
-.prescription-button-danger:hover {
+.dashboard-button-danger:hover {
   border-color: rgba(220, 38, 38, 0.36);
   box-shadow: 0 8px 22px rgba(220, 38, 38, 0.08);
 }
 
-.prescription-button:disabled,
-.prescription-filter-button:disabled {
+.dashboard-button:disabled,
+.dashboard-filter-button:disabled {
   cursor: not-allowed;
   opacity: 0.62;
   transform: none;
@@ -1286,8 +1286,8 @@
 }
 
 .prescription-detail-summary span:first-child,
-.prescription-detail-item span,
-.prescription-field span {
+.dashboard-detail-item span,
+.dashboard-field span {
   color: var(--body);
   font-size: 11px;
   font-weight: 800;
@@ -1304,15 +1304,15 @@
   white-space: nowrap;
 }
 
-.prescription-detail-grid,
-.prescription-form-grid {
+.dashboard-detail-grid,
+.dashboard-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.prescription-detail-item,
-.prescription-field {
+.dashboard-detail-item,
+.dashboard-field {
   min-width: 0;
   padding: 13px;
   display: grid;
@@ -1322,7 +1322,7 @@
   background: var(--bg);
 }
 
-.prescription-detail-item strong {
+.dashboard-detail-item strong {
   overflow: hidden;
   color: var(--navy);
   font-size: 13px;
@@ -1332,9 +1332,8 @@
   white-space: nowrap;
 }
 
-.prescription-context-note,
-.prescription-form-alert,
-.prescription-success-alert {
+.dashboard-context-note,
+.dashboard-form-alert {
   padding: 12px 14px;
   border-radius: var(--r8);
   font-size: 13px;
@@ -1342,36 +1341,36 @@
   line-height: 1.5;
 }
 
-.prescription-context-note {
+.dashboard-context-note {
   border: 1px solid rgba(217, 119, 6, 0.24);
   background: #fffbeb;
   color: #92400e;
 }
 
-.prescription-form-alert {
+.dashboard-form-alert-danger {
   border: 1px solid rgba(220, 38, 38, 0.24);
   background: #fff7f7;
   color: #b91c1c;
 }
 
-.prescription-success-alert {
+.dashboard-form-alert-success {
   margin-bottom: 12px;
   border: 1px solid rgba(34, 197, 94, 0.24);
   background: #f0fdf4;
   color: #15803d;
 }
 
-.prescription-form {
+.dashboard-form {
   display: grid;
   gap: 14px;
 }
 
-.prescription-field {
+.dashboard-field {
   background: var(--white);
 }
 
-.prescription-field input,
-.prescription-field select {
+.dashboard-field input,
+.dashboard-field select {
   width: 100%;
   min-width: 0;
   height: 40px;
@@ -1386,29 +1385,259 @@
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
-.prescription-field input:focus,
-.prescription-field select:focus {
+.dashboard-field input:focus,
+.dashboard-field select:focus {
   border-color: var(--teal);
   background: var(--white);
   box-shadow: 0 0 0 3px rgba(26, 188, 175, 0.14);
 }
 
-.prescription-field input::placeholder {
+.dashboard-field input::placeholder {
   color: var(--muted);
 }
 
-.prescription-field-error {
+.dashboard-field-error {
   color: #b91c1c;
   font-size: 11px;
   font-weight: 800;
   line-height: 1.35;
 }
 
-.prescription-form-actions {
+.dashboard-form-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.family-access-list-panel,
+.family-access-detail-panel {
+  min-height: 640px;
+}
+
+.family-access-form,
+.family-access-guidance,
+.family-access-relationships,
+.family-access-history {
+  display: grid;
+  gap: 14px;
+}
+
+.family-access-form {
+  margin-bottom: 18px;
+}
+
+.family-access-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 10px;
+}
+
+.family-access-note,
+.family-access-placeholder {
+  padding: 12px 14px;
+  border: 1px solid rgba(13, 148, 136, 0.24);
+  border-radius: var(--r8);
+  background: var(--teal-tint);
+  color: var(--teal-dark);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.family-access-resident-list,
+.family-access-step-list,
+.family-access-history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.family-access-resident-row {
+  min-height: 104px;
+}
+
+.family-access-code-card {
+  min-width: 0;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  border-radius: var(--r8);
+  background: var(--teal-tint);
+}
+
+.family-access-code-card > span {
+  color: var(--teal-dark);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.family-access-code-value {
+  color: var(--navy);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  word-break: break-word;
+}
+
+.family-access-code-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.family-access-code-meta span {
+  min-height: 38px;
+  padding: 9px 10px;
+  display: flex;
+  align-items: center;
+  border-radius: var(--r8);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.family-access-code-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.family-access-placeholder {
+  display: grid;
+  gap: 8px;
+  background: var(--bg);
+  color: var(--body);
+}
+
+.family-access-placeholder strong {
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.family-access-placeholder p {
+  color: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.family-access-section-header {
+  display: grid;
+  gap: 4px;
+}
+
+.family-access-section-header .overline {
+  margin-bottom: 0;
+}
+
+.family-access-section-header h3 {
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.family-access-step {
+  min-width: 0;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+}
+
+.family-access-step > span {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--navy-tint);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.family-access-step p {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.family-access-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.family-access-chip-list span {
+  min-height: 34px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--bg);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.family-access-history-item {
+  min-width: 0;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+}
+
+.family-access-history-item div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.family-access-history-item strong,
+.family-access-history-item span,
+.family-access-history-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.family-access-history-item strong {
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.family-access-history-item span {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.family-access-history-item small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .sr-only {
@@ -1448,7 +1677,7 @@
   }
 
   .residents-layout,
-  .prescriptions-layout {
+  .dashboard-two-column-layout {
     grid-template-columns: 1fr;
   }
 }
@@ -1546,17 +1775,24 @@
   }
 
   .prescriptions-list-panel,
-  .prescriptions-detail-panel {
+  .prescriptions-detail-panel,
+  .family-access-list-panel,
+  .family-access-detail-panel {
     min-height: auto;
   }
 
-  .prescription-toolbar {
+  .dashboard-toolbar {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .prescription-toolbar .prescription-button {
+  .dashboard-toolbar .dashboard-button {
     width: 100%;
+  }
+
+  .family-access-form-grid,
+  .family-access-code-meta {
+    grid-template-columns: 1fr;
   }
 
   .prescription-row {
@@ -1635,7 +1871,10 @@
   .prescription-row-schedule strong,
   .prescription-row-schedule span,
   .prescription-detail-summary strong,
-  .prescription-detail-item strong,
+  .dashboard-detail-item strong,
+  .family-access-history-item strong,
+  .family-access-history-item span,
+  .family-access-history-item small,
   .resident-row-main strong,
   .resident-row-main span,
   .resident-row-meta small,
@@ -1649,7 +1888,7 @@
     white-space: normal;
   }
 
-  .prescription-filter-group {
+  .dashboard-filter-group {
     display: grid;
     grid-template-columns: 1fr;
   }
@@ -1659,14 +1898,25 @@
     flex-direction: column;
   }
 
-  .prescription-detail-grid,
-  .prescription-form-grid {
+  .dashboard-detail-grid,
+  .dashboard-form-grid {
     grid-template-columns: 1fr;
   }
 
-  .prescription-form-actions {
+  .dashboard-form-actions {
     align-items: stretch;
     flex-direction: column-reverse;
+  }
+
+  .family-access-code-actions,
+  .family-access-history-item {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .family-access-code-actions .dashboard-button,
+  .family-access-history-item .dashboard-button {
+    width: 100%;
   }
 
   .resident-profile-grid {

@@ -2,9 +2,14 @@ import { formatCpf } from "../../../utils/cpfFormatter";
 import {
   calculateAge,
   formatDate,
+  formatDateInput,
   formatDateRange,
+  formatDateTime,
+  formatLocalDateInput,
   formatShortDate,
+  formatShortDateTime,
   formatTime,
+  formatTimeInput,
   toDate,
 } from "../../../utils/dateFormatter";
 import { normalizeText } from "../../../utils/textFormatter";
@@ -13,9 +18,14 @@ export {
   calculateAge,
   formatCpf,
   formatDate,
+  formatDateInput,
   formatDateRange,
+  formatDateTime,
+  formatLocalDateInput,
   formatShortDate,
+  formatShortDateTime,
   formatTime,
+  formatTimeInput,
   toDate,
 };
 

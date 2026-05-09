@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardShell } from "./components/layout/DashboardShell";
+import { FamilyAccessView } from "./components/family-access/FamilyAccessView";
 import { DashboardHome } from "./components/home/DashboardHome";
 import { PrescriptionsView } from "./components/prescriptions/PrescriptionsView";
 import { ResidentsView } from "./components/residents/ResidentsView";
@@ -113,6 +114,13 @@ function DashboardPage() {
           residents={dashboardData.residents}
           searchTerm={searchTerm}
           onPrescriptionsChange={handlePrescriptionsChange}
+        />
+      ) : activeItem === "Família / Acessos" ? (
+        <FamilyAccessView
+          currentTime={currentTime}
+          isLoading={isLoading}
+          residents={dashboardData.residents}
+          searchTerm={searchTerm}
         />
       ) : (
         <DashboardHome

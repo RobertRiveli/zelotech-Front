@@ -1,8 +1,8 @@
 import {
   formatDateRange,
+  formatDateTime,
   formatPrescriptionDosage,
   formatShortDate,
-  formatTime,
   getMedicationName,
 } from "../../utils/dashboardFormatters";
 import { getPrescriptionStatus } from "../../utils/prescriptionDashboardUtils";
@@ -52,7 +52,7 @@ export function PrescriptionDetailPanel({
         </span>
       </div>
 
-      <div className="prescription-detail-grid">
+      <div className="dashboard-detail-grid">
         <DetailItem label="Dose" value={formatPrescriptionDosage(prescription)} />
         <DetailItem label="Frequência" value={prescription.frequency} />
         <DetailItem
@@ -79,15 +79,15 @@ export function PrescriptionDetailPanel({
       </div>
 
       {!prescription.endDate ? (
-        <div className="prescription-context-note" role="note">
+        <div className="dashboard-context-note" role="note">
           Sem data final: o backend gera uma janela inicial de 7 dias de
           administrações.
         </div>
       ) : null}
 
-      <div className="prescription-form-actions">
+      <div className="dashboard-form-actions">
         <button
-          className="prescription-button prescription-button-muted"
+          className="dashboard-button dashboard-button-muted"
           disabled={isMutating}
           type="button"
           onClick={onEdit}
@@ -95,7 +95,7 @@ export function PrescriptionDetailPanel({
           Editar
         </button>
         <button
-          className="prescription-button prescription-button-danger"
+          className="dashboard-button dashboard-button-danger"
           disabled={isMutating}
           type="button"
           onClick={onDeactivate}
@@ -109,19 +109,11 @@ export function PrescriptionDetailPanel({
 
 function DetailItem({ label, value }) {
   return (
-    <div className="prescription-detail-item">
+    <div className="dashboard-detail-item">
       <span>{label}</span>
       <strong>{value || "Não informado"}</strong>
     </div>
   );
-}
-
-function formatDateTime(value) {
-  if (!value) {
-    return "Sem horário";
-  }
-
-  return `${formatShortDate(value)} às ${formatTime(value)}`;
 }
 
 function formatInterval(intervalHours) {
