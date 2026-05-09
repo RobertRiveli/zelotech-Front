@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardShell } from "./components/layout/DashboardShell";
 import { DashboardHome } from "./components/home/DashboardHome";
+import { PrescriptionsView } from "./components/prescriptions/PrescriptionsView";
 import { ResidentsView } from "./components/residents/ResidentsView";
 import { useCurrentTime } from "./hooks/useCurrentTime";
 import { useDashboardData } from "./hooks/useDashboardData";
@@ -19,7 +20,8 @@ function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedResidentId, setSelectedResidentId] = useState("");
   const currentTime = useCurrentTime();
-  const { dashboardData, isLoading, loadError } = useDashboardData();
+  const { dashboardData, isLoading, loadError, setDashboardData } =
+    useDashboardData();
   const pageTitle = activeItem === "Início" ? "Dashboard" : activeItem;
 
   const profile = dashboardData.profile;
@@ -58,6 +60,13 @@ function DashboardPage() {
     navigate("/login", { replace: true });
   }
 
+  function handlePrescriptionsChange(prescriptions) {
+    setDashboardData((currentData) => ({
+      ...currentData,
+      prescriptions,
+    }));
+  }
+
   return (
     <DashboardShell
       activeItem={activeItem}
@@ -94,6 +103,16 @@ function DashboardPage() {
           residents={dashboardSummary.filteredResidents}
           selectedResidentId={visibleSelectedResidentId}
           allResidents={dashboardData.residents}
+        />
+      ) : activeItem === "Prescrições" ? (
+        <PrescriptionsView
+          currentTime={currentTime}
+          isLoading={isLoading}
+          medications={dashboardData.medications}
+          prescriptions={dashboardData.prescriptions}
+          residents={dashboardData.residents}
+          searchTerm={searchTerm}
+          onPrescriptionsChange={handlePrescriptionsChange}
         />
       ) : (
         <DashboardHome

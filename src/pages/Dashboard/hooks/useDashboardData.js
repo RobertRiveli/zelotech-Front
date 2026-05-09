@@ -79,5 +79,6 @@ export function useDashboardData() {
     dashboardData,
     isLoading,
     loadError,
+    setDashboardData,
   };
 }

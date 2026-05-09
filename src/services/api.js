@@ -67,4 +67,14 @@ export const api = {
       body: JSON.stringify(body),
     });
   },
+  patch(path, body, options) {
+    return request(path, {
+      ...options,
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+  },
+  delete(path, options) {
+    return request(path, { ...options, method: "DELETE" });
+  },
 };
