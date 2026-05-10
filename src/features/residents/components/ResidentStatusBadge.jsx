@@ -1,7 +1,7 @@
 import {
   getResidentStatusLabel,
   getResidentStatusTone,
-} from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/features/residents/utils/residentFormatters";
 
 export function ResidentStatusBadge({ status }) {
   return (

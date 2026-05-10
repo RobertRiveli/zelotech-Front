@@ -1,8 +1,8 @@
+import { toDate } from "@/shared/utils/dateFormatter";
 import {
   countByStatus,
   isLateAdministration,
-} from "@/features/dashboard/utils/dashboardSummary";
-import { toDate } from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/features/medications/utils/administrationStatus";
 
 export function buildResidentsStats({
   administrations,

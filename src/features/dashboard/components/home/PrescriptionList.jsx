@@ -1,5 +1,6 @@
-import { formatDateRange, getMedicationName } from "@/features/dashboard/utils/dashboardFormatters";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
+import { formatDateRange } from "@/shared/utils/dateFormatter";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function PrescriptionList({ prescriptions }) {
   if (prescriptions.length === 0) {

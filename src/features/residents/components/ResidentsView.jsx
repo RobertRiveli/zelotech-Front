@@ -1,8 +1,9 @@
 import { buildResidentsStats } from "@/features/residents/utils/residentDashboardUtils";
 import { ResidentsDirectory } from "./ResidentsDirectory";
 import { ResidentOverviewPanel } from "./ResidentOverviewPanel";
-import { MetricCard } from "@/features/dashboard/components/shared/MetricCard";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
+import { MetricCard } from "@/shared/ui/MetricCard";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
+import "./ResidentsView.css";
 
 export function ResidentsView({
   administrations,

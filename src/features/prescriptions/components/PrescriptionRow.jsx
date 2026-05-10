@@ -1,9 +1,9 @@
 import {
   formatDateRange,
   formatDateTime,
-  formatPrescriptionDosage,
-  getMedicationName,
-} from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/shared/utils/dateFormatter";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import { formatPrescriptionDosage } from "@/features/prescriptions/utils/prescriptionFormatters";
 import { getPrescriptionStatus } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
 
 export function PrescriptionRow({

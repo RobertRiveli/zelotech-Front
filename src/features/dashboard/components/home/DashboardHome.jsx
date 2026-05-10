@@ -1,12 +1,12 @@
-import { formatDate } from "@/features/dashboard/utils/dashboardFormatters";
+import { formatDate } from "@/shared/utils/dateFormatter";
 import { AlertList } from "./AlertList";
 import { MedicationSchedule } from "./MedicationSchedule";
 import { PrescriptionList } from "./PrescriptionList";
 import { ResidentList } from "./ResidentList";
 import { StatusDistribution } from "./StatusDistribution";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
-import { MetricCard } from "@/features/dashboard/components/shared/MetricCard";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
+import { MetricCard } from "@/shared/ui/MetricCard";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
 
 export function DashboardHome({
   companyName,

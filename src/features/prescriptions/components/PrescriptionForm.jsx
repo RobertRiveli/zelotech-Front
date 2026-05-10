@@ -1,4 +1,4 @@
-import { DashboardFieldError } from "@/features/dashboard/components/shared/DashboardFieldError";
+import { FieldError } from "@/shared/ui/FieldError";
 
 const routeOptions = [
   "oral",
@@ -63,7 +63,7 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <DashboardFieldError message={errors.residentId || errors.resident} />
+          <FieldError message={errors.residentId || errors.resident} />
         </label>
 
         <label className="dashboard-field">
@@ -81,7 +81,7 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <DashboardFieldError
+          <FieldError
             message={errors.medicationId || errors.medication}
           />
         </label>
@@ -101,7 +101,7 @@ export function PrescriptionForm({
               </option>
             ))}
           </select>
-          <DashboardFieldError
+          <FieldError
             message={errors.measurementUnitId || errors.measurementUnit}
           />
         </label>
@@ -114,7 +114,7 @@ export function PrescriptionForm({
             value={form.dosage}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.dosage} />
+          <FieldError message={errors.dosage} />
         </label>
 
         <label className="dashboard-field">
@@ -131,7 +131,7 @@ export function PrescriptionForm({
               <option key={route} value={route} />
             ))}
           </datalist>
-          <DashboardFieldError message={errors.route} />
+          <FieldError message={errors.route} />
         </label>
 
         <label className="dashboard-field">
@@ -148,7 +148,7 @@ export function PrescriptionForm({
               <option key={frequency} value={frequency} />
             ))}
           </datalist>
-          <DashboardFieldError message={errors.frequency} />
+          <FieldError message={errors.frequency} />
         </label>
 
         <label className="dashboard-field">
@@ -160,7 +160,7 @@ export function PrescriptionForm({
             value={form.intervalHours}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.intervalHours} />
+          <FieldError message={errors.intervalHours} />
         </label>
 
         <label className="dashboard-field">
@@ -171,7 +171,7 @@ export function PrescriptionForm({
             value={form.firstScheduledDate}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.firstScheduledAt} />
+          <FieldError message={errors.firstScheduledAt} />
         </label>
 
         <label className="dashboard-field">
@@ -192,7 +192,7 @@ export function PrescriptionForm({
             value={form.startDate}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.startDate} />
+          <FieldError message={errors.startDate} />
         </label>
 
         <label className="dashboard-field">
@@ -203,7 +203,7 @@ export function PrescriptionForm({
             value={form.endDate}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.endDate} />
+          <FieldError message={errors.endDate} />
         </label>
 
         <label className="dashboard-field">
@@ -214,7 +214,7 @@ export function PrescriptionForm({
             value={form.prescribedBy}
             onChange={onChange}
           />
-          <DashboardFieldError message={errors.prescribedBy} />
+          <FieldError message={errors.prescribedBy} />
         </label>
       </div>
 

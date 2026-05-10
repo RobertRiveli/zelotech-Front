@@ -1,11 +1,13 @@
 import {
   formatTime,
+  toDate,
+} from "@/shared/utils/dateFormatter";
+import {
   getDosage,
   getMedicationName,
-  toDate,
-} from "@/features/dashboard/utils/dashboardFormatters";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { StatusBadge } from "@/features/dashboard/components/shared/StatusBadge";
+} from "@/features/medications/utils/medicationFormatters";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { AdministrationStatusBadge } from "@/features/medications/components/AdministrationStatusBadge";
 
 export function MedicationSchedule({ administrations, currentTime }) {
   if (administrations.length === 0) {
@@ -37,7 +39,7 @@ export function MedicationSchedule({ administrations, currentTime }) {
                 {medicationName} · {getDosage(administration)}
               </span>
             </div>
-            <StatusBadge status={isLate ? "LATE" : status} />
+            <AdministrationStatusBadge status={isLate ? "LATE" : status} />
           </article>
         );
       })}

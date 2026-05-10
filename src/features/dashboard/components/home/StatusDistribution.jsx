@@ -1,5 +1,8 @@
-import { statusLabels, statusTone } from "../../constants/dashboardStatus";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
+import {
+  administrationStatusLabels,
+  administrationStatusTone,
+} from "@/features/medications/constants/administrationStatus";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function StatusDistribution({ total, statusCounts }) {
   const statuses = ["PENDING", "ADMINISTERED", "REFUSED", "MISSED", "CANCELED"];
@@ -17,12 +20,12 @@ export function StatusDistribution({ total, statusCounts }) {
         return (
           <div className="dashboard-status-row" key={status}>
             <div>
-              <span>{statusLabels[status]}</span>
+              <span>{administrationStatusLabels[status]}</span>
               <strong>{count}</strong>
             </div>
             <div className="dashboard-status-track" aria-hidden="true">
               <span
-                className={`is-${statusTone[status]}`}
+                className={`is-${administrationStatusTone[status]}`}
                 style={{ width: `${percentage}%` }}
               />
             </div>

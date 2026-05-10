@@ -11,7 +11,7 @@ import {
   clearFieldError,
   getRequestErrorMessage,
 } from "@/shared/utils/formErrors";
-import { compareByStartDate } from "@/features/dashboard/utils/dashboardSorters";
+import { compareByStartDate } from "@/features/prescriptions/utils/prescriptionSorters";
 import {
   buildPrescriptionStats,
   filterPrescriptions,
@@ -22,13 +22,14 @@ import {
   createPrescriptionFormFromPrescription,
 } from "@/features/prescriptions/utils/prescriptionForm";
 import { validatePrescriptionForm } from "@/features/prescriptions/validations/prescriptionSchema";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
-import { MetricCard } from "@/features/dashboard/components/shared/MetricCard";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
+import { MetricCard } from "@/shared/ui/MetricCard";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { PrescriptionDetailPanel } from "./PrescriptionDetailPanel";
 import { PrescriptionForm } from "./PrescriptionForm";
 import { PrescriptionRow } from "./PrescriptionRow";
+import "./PrescriptionsView.css";
 
 const fieldErrorAliases = {
   firstScheduledDate: ["firstScheduledAt"],

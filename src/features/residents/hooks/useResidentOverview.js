@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getResidentOverview } from "@/features/residents/api/residentService";
 
 export function useResidentOverview({
-  activeItem,
+  enabled,
   filteredResidents,
   selectedResidentId,
 }) {
@@ -28,7 +28,7 @@ export function useResidentOverview({
 
   useEffect(() => {
     if (
-      activeItem !== "Residentes" ||
+      !enabled ||
       !visibleSelectedResidentId ||
       selectedResidentOverview
     ) {
@@ -78,7 +78,7 @@ export function useResidentOverview({
     return () => {
       isMounted = false;
     };
-  }, [activeItem, visibleSelectedResidentId, selectedResidentOverview]);
+  }, [enabled, visibleSelectedResidentId, selectedResidentOverview]);
 
   return {
     selectedOverviewStatus,

@@ -1,4 +1,4 @@
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function ResidentConditionList({ healthConditions }) {
   if (healthConditions.length === 0) {

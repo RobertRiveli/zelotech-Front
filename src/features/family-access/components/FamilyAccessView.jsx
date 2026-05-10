@@ -5,14 +5,15 @@ import {
   getRequestErrorMessage,
 } from "@/shared/utils/formErrors";
 import { normalizeText } from "@/shared/utils/textFormatter";
-import { formatShortDateTime } from "@/features/dashboard/utils/dashboardFormatters";
-import { matchesSearch } from "@/features/dashboard/utils/dashboardSummary";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { DashboardFieldError } from "@/features/dashboard/components/shared/DashboardFieldError";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
-import { MetricCard } from "@/features/dashboard/components/shared/MetricCard";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
-import { ResidentRow } from "@/features/residents/components/ResidentRow";
+import { formatShortDateTime } from "@/shared/utils/dateFormatter";
+import { matchesSearch } from "@/shared/utils/search";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { FieldError } from "@/shared/ui/FieldError";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
+import { MetricCard } from "@/shared/ui/MetricCard";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
+import { ResidentListItem } from "@/features/residents/components/ResidentListItem";
+import "./FamilyAccessView.css";
 
 const relationshipOptions = [
   "Filho",
@@ -246,7 +247,7 @@ export function FamilyAccessView({ currentTime, isLoading, residents, searchTerm
                     </option>
                   ))}
                 </select>
-                <DashboardFieldError
+                <FieldError
                   message={formErrors.residentId || formErrors.resident}
                 />
               </label>
@@ -260,7 +261,7 @@ export function FamilyAccessView({ currentTime, isLoading, residents, searchTerm
                   value={form.maxUses}
                   onChange={handleFormChange}
                 />
-                <DashboardFieldError message={formErrors.maxUses} />
+                <FieldError message={formErrors.maxUses} />
               </label>
             </div>
 
@@ -285,7 +286,7 @@ export function FamilyAccessView({ currentTime, isLoading, residents, searchTerm
               <LoadingRows />
             ) : visibleResidents.length > 0 ? (
               visibleResidents.map((resident) => (
-                <ResidentRow
+            <ResidentListItem
                   className="family-access-resident-row"
                   currentTime={currentTime}
                   isSelected={resident.id === selectedResidentId}

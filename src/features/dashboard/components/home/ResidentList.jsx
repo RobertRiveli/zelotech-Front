@@ -1,5 +1,5 @@
-import { formatShortDate } from "@/features/dashboard/utils/dashboardFormatters";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
+import { formatShortDate } from "@/shared/utils/dateFormatter";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function ResidentList({ residents }) {
   if (residents.length === 0) {

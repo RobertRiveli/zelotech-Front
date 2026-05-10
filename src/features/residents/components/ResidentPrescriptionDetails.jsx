@@ -1,10 +1,10 @@
 import {
   formatDateRange,
-  formatPrescriptionDosage,
-  getMedicationName,
-} from "@/features/dashboard/utils/dashboardFormatters";
-import { compareByStartDate } from "@/features/dashboard/utils/dashboardSorters";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
+} from "@/shared/utils/dateFormatter";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import { formatPrescriptionDosage } from "@/features/prescriptions/utils/prescriptionFormatters";
+import { compareByStartDate } from "@/features/prescriptions/utils/prescriptionSorters";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function ResidentPrescriptionDetails({ prescriptions }) {
   if (prescriptions.length === 0) {

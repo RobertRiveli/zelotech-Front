@@ -7,9 +7,9 @@ import { PrescriptionsView } from "@/features/prescriptions/components/Prescript
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
 import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
 import { useDashboardData } from "@/features/dashboard/hooks/useDashboardData";
-import { useResidentOverview } from "@/features/dashboard/hooks/useResidentOverview";
+import { useResidentOverview } from "@/features/residents/hooks/useResidentOverview";
 import { buildDashboardSummary } from "@/features/dashboard/utils/dashboardSummary";
-import { getInitials } from "@/features/dashboard/utils/dashboardFormatters";
+import { getInitials } from "@/shared/utils/nameFormatter";
 import { getUser, removeSession } from "@/shared/utils/storage";
 import "./DashboardPage.css";
 
@@ -46,7 +46,7 @@ function DashboardPage() {
     selectedResidentOverview,
     visibleSelectedResidentId,
   } = useResidentOverview({
-    activeItem,
+    enabled: activeItem === "Residentes",
     filteredResidents: dashboardSummary.filteredResidents,
     selectedResidentId,
   });

@@ -1,6 +1,11 @@
 import { normalizeText } from "@/shared/utils/textFormatter";
-import { getMedicationName, toDate } from "./dashboardFormatters";
-import { compareByAdmissionDate, compareByScheduledAt, compareByStartDate } from "./dashboardSorters";
+import { matchesSearch } from "@/shared/utils/search";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import { countByStatus, isLateAdministration } from "@/features/medications/utils/administrationStatus";
+import { compareByScheduledAt } from "@/features/medications/utils/administrationSorters";
+import { compareByStartDate } from "@/features/prescriptions/utils/prescriptionSorters";
+import { isPrescriptionEndingSoon } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
+import { compareByAdmissionDate } from "@/features/residents/utils/residentSorters";
 
 export function buildDashboardSummary(data, searchTerm, currentTime) {
   const normalizedSearch = normalizeText(searchTerm);
@@ -17,7 +22,7 @@ export function buildDashboardSummary(data, searchTerm, currentTime) {
   const incidentAdministrations =
     (statusCounts.REFUSED ?? 0) + (statusCounts.MISSED ?? 0);
   const endingSoonPrescriptions = prescriptions.filter((prescription) =>
-    isEndingSoon(prescription, currentTime),
+    isPrescriptionEndingSoon(prescription, currentTime),
   );
   const completionRate =
     totalAdministrations === 0
@@ -116,43 +121,3 @@ export function buildAlerts({
   return alerts;
 }
 
-export function countByStatus(administrations) {
-  return administrations.reduce((accumulator, administration) => {
-    const status = administration.status ?? "PENDING";
-    accumulator[status] = (accumulator[status] ?? 0) + 1;
-    return accumulator;
-  }, {});
-}
-
-export function matchesSearch(values, normalizedSearch) {
-  if (!normalizedSearch) {
-    return true;
-  }
-
-  return values.some((value) => normalizeText(value).includes(normalizedSearch));
-}
-
-export function isLateAdministration(administration, currentTime) {
-  const scheduledAt = toDate(administration.scheduledAt);
-
-  return (
-    administration.status === "PENDING" &&
-    scheduledAt &&
-    currentTime > 0 &&
-    scheduledAt.getTime() < currentTime
-  );
-}
-
-export function isEndingSoon(prescription, currentTime) {
-  const endDate = toDate(prescription.endDate);
-
-  if (!endDate || currentTime <= 0) {
-    return false;
-  }
-
-  const now = new Date(currentTime);
-  const sevenDaysFromNow = new Date(now);
-  sevenDaysFromNow.setDate(now.getDate() + 7);
-
-  return endDate >= now && endDate <= sevenDaysFromNow;
-}

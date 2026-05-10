@@ -1,8 +1,6 @@
 import { normalizeText } from "@/shared/utils/textFormatter";
-import {
-  getMedicationName,
-  toDate,
-} from "@/features/dashboard/utils/dashboardFormatters";
+import { toDate } from "@/shared/utils/dateFormatter";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 

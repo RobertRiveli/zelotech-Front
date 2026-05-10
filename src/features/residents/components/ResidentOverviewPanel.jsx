@@ -1,10 +1,14 @@
 import {
   formatCpf,
-  formatGender,
+} from "@/shared/utils/cpfFormatter";
+import {
   formatShortDate,
+} from "@/shared/utils/dateFormatter";
+import {
+  formatGender,
   getAgeLabel,
   getResidentStatusLabel,
-} from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/features/residents/utils/residentFormatters";
 import { buildResidentAdministrationSummary } from "@/features/residents/utils/residentDashboardUtils";
 import { ResidentAdministrationDetails } from "./ResidentAdministrationDetails";
 import { ResidentConditionList } from "./ResidentConditionList";
@@ -12,9 +16,9 @@ import { ResidentDetailSection } from "./ResidentDetailSection";
 import { ResidentInfoItem } from "./ResidentInfoItem";
 import { ResidentPrescriptionDetails } from "./ResidentPrescriptionDetails";
 import { ResidentStatItem } from "./ResidentStatItem";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
 
 export function ResidentOverviewPanel({
   currentTime,

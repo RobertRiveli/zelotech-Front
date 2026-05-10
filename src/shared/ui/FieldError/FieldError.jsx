@@ -1,4 +1,4 @@
-export function DashboardFieldError({ message }) {
+export function FieldError({ message }) {
   if (!message) {
     return null;
   }

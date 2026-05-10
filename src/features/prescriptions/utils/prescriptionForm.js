@@ -2,7 +2,7 @@ import {
   formatDateInput,
   formatLocalDateInput,
   formatTimeInput,
-} from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/shared/utils/dateFormatter";
 
 export function createEmptyPrescriptionForm() {
   const today = formatDateInput(new Date());

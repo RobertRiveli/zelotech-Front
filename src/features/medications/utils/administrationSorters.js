@@ -1,4 +1,4 @@
-import { toDate } from "./dashboardFormatters";
+import { toDate } from "@/shared/utils/dateFormatter";
 
 export function compareByScheduledAt(first, second) {
   return compareDates(first.scheduledAt, second.scheduledAt, "asc");
@@ -6,14 +6,6 @@ export function compareByScheduledAt(first, second) {
 
 export function compareByScheduledAtDesc(first, second) {
   return compareDates(first.scheduledAt, second.scheduledAt, "desc");
-}
-
-export function compareByStartDate(first, second) {
-  return compareDates(first.startDate, second.startDate, "desc");
-}
-
-export function compareByAdmissionDate(first, second) {
-  return compareDates(first.admissionDate, second.admissionDate, "desc");
 }
 
 function compareDates(firstDate, secondDate, direction = "asc") {

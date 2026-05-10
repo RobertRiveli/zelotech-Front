@@ -3,8 +3,8 @@ import {
   countRecordsByResidentId,
 } from "@/features/residents/utils/residentDashboardUtils";
 import { ResidentDirectoryRow } from "./ResidentDirectoryRow";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
 
 export function ResidentsDirectory({
   administrations,

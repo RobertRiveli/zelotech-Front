@@ -1,4 +1,4 @@
-export const statusLabels = {
+export const administrationStatusLabels = {
   PENDING: "Pendente",
   ADMINISTERED: "Administrada",
   REFUSED: "Recusada",
@@ -6,7 +6,7 @@ export const statusLabels = {
   CANCELED: "Cancelada",
 };
 
-export const statusTone = {
+export const administrationStatusTone = {
   PENDING: "pending",
   ADMINISTERED: "success",
   REFUSED: "warning",

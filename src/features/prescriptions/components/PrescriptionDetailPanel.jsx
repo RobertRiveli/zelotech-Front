@@ -1,14 +1,14 @@
 import {
   formatDateRange,
   formatDateTime,
-  formatPrescriptionDosage,
   formatShortDate,
-  getMedicationName,
-} from "@/features/dashboard/utils/dashboardFormatters";
+} from "@/shared/utils/dateFormatter";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import { formatPrescriptionDosage } from "@/features/prescriptions/utils/prescriptionFormatters";
 import { getPrescriptionStatus } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
-import { EmptyState } from "@/features/dashboard/components/shared/EmptyState";
-import { LoadingRows } from "@/features/dashboard/components/shared/LoadingRows";
-import { PanelHeader } from "@/features/dashboard/components/shared/PanelHeader";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { LoadingRows } from "@/shared/ui/LoadingRows";
+import { PanelHeader } from "@/shared/ui/PanelHeader";
 
 export function PrescriptionDetailPanel({
   currentTime,
