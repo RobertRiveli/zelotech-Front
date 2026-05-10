@@ -12,8 +12,12 @@ export function ResidentPrescriptionDetails({ prescriptions }) {
   }
 
   return (
-    <div className="resident-detail-list">
-      {[...prescriptions].sort(compareByStartDate).slice(0, 4).map((prescription) => (
+    <div
+      aria-label="Lista de prescrições do residente"
+      className="resident-detail-list"
+      tabIndex={0}
+    >
+      {[...prescriptions].sort(compareByStartDate).map((prescription) => (
         <article className="resident-detail-item" key={prescription.id}>
           <div>
             <strong>{getMedicationName(prescription.medication)}</strong>

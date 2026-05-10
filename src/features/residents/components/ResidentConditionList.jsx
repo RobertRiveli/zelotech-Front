@@ -6,8 +6,12 @@ export function ResidentConditionList({ healthConditions }) {
   }
 
   return (
-    <div className="resident-detail-list">
-      {healthConditions.slice(0, 4).map((condition) => (
+    <div
+      aria-label="Lista de condições de saúde do residente"
+      className="resident-detail-list"
+      tabIndex={0}
+    >
+      {healthConditions.map((condition) => (
         <article className="resident-detail-item" key={condition.id}>
           <div>
             <strong>{condition.healthCondition?.name ?? "Condição"}</strong>
