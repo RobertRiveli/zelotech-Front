@@ -106,9 +106,9 @@ export function DashboardHome({
         />
       </section>
 
-      <section className="dashboard-work-grid">
+      <section className="dashboard-work-grid dashboard-primary-grid">
         <section
-          className="dashboard-panel dashboard-panel-large"
+          className="dashboard-panel dashboard-panel-large dashboard-panel-primary"
           id="dashboard-today-schedule"
         >
           <PanelHeader
@@ -128,7 +128,7 @@ export function DashboardHome({
           )}
         </section>
 
-        <section className="dashboard-panel">
+        <section className="dashboard-panel dashboard-panel-priority">
           <PanelHeader
             overline="Prioridade"
             title="Alertas"
@@ -143,7 +143,7 @@ export function DashboardHome({
         </section>
       </section>
 
-      <section className="dashboard-work-grid">
+      <section className="dashboard-work-grid dashboard-secondary-grid">
         <section className="dashboard-panel">
           <PanelHeader overline="Operação" title="Status da agenda" />
           <StatusDistribution
