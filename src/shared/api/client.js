@@ -1,7 +1,11 @@
-import { getToken } from "../utils/storage";
 import { createConfigurationError, createRequestError } from "./errors";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+let getAuthorizationToken = () => "";
+
+export function configureApiClient({ getToken } = {}) {
+  getAuthorizationToken = typeof getToken === "function" ? getToken : () => "";
+}
 
 function getBaseUrl() {
   if (!API_BASE_URL) {
@@ -26,7 +30,7 @@ async function readResponseBody(response) {
 }
 
 async function request(path, options = {}) {
-  const token = getToken();
+  const token = getAuthorizationToken();
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,

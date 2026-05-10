@@ -14,8 +14,8 @@ import {
   partners,
 } from "../../data/landing";
 import useActiveSection from "@/features/landing/hooks/useActiveSection";
-import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "@/shared/utils/accessMessages";
-import { hasAdminSession, hasCaregiverSession } from "@/shared/utils/storage";
+import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "@/features/auth/constants/accessMessages";
+import { hasAdminSession, hasCaregiverSession } from "@/features/auth/utils/session";
 import "./HomePage.css";
 
 function HomePage() {

@@ -3,7 +3,7 @@ import LoginPage from "@/features/auth/pages/LoginPage";
 import CompanyRegisterPage from "@/features/company/pages/CompanyRegisterPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import HomePage from "@/features/landing/pages/HomePage";
-import { hasAdminSession } from "@/shared/utils/storage";
+import { hasAdminSession } from "@/features/auth/utils/session";
 
 export function AppRoutes() {
   return (
