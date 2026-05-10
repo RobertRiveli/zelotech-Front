@@ -369,7 +369,6 @@ export function MedicationsView({
                 errors={formErrors}
                 form={form}
                 isSubmitting={isSubmitting}
-                mode={mode}
                 submitError={submitError}
                 onCancel={handleCancelForm}
                 onChange={handleFormChange}

@@ -5,7 +5,6 @@ export const dashboardMenuItems = [
   "Administração de medicamentos",
   "Medicamentos",
   "Equipe",
-  "Condições de saúde",
   "Família / Acessos",
   "Empresa",
   "Relatórios",

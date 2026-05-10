@@ -5,14 +5,12 @@ export function MedicationForm({
   errors,
   form,
   isSubmitting,
-  mode,
+
   onCancel,
   onChange,
   onSubmit,
   submitError,
 }) {
-  const isEditing = mode === "edit";
-
   return (
     <form className="dashboard-form" onSubmit={onSubmit}>
       {submitError ? (
