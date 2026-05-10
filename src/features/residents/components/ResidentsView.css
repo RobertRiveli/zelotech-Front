@@ -81,6 +81,79 @@
   background: rgba(90, 100, 120, 0.48);
 }
 
+.resident-filter-feedback {
+  min-width: 0;
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(13, 148, 136, 0.34);
+  border-left: 4px solid var(--teal);
+  border-radius: var(--r8);
+  background: #f7fffd;
+  color: var(--navy);
+  animation: resident-filter-feedback-in 0.28s ease-out;
+}
+
+.resident-filter-feedback-label {
+  min-width: 0;
+  overflow: hidden;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resident-filter-feedback-label {
+  color: var(--body);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.resident-filter-feedback strong {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.resident-filter-feedback button {
+  grid-column: 2;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: var(--r8);
+  background: var(--navy);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.resident-filter-feedback button:hover {
+  background: var(--teal-dark);
+  box-shadow: 0 8px 18px rgba(22, 32, 64, 0.08);
+}
+
+.resident-filter-feedback button:active {
+  transform: scale(0.98);
+}
+
+.resident-filter-feedback button:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.2);
+  outline-offset: 2px;
+}
+
+@keyframes resident-filter-feedback-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .resident-row {
   width: 100%;
   min-width: 0;
@@ -475,8 +548,35 @@
 }
 
 @media (max-width: 560px) {
+  .resident-filter-feedback {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 560px) {
+  .resident-filter-feedback-label {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 560px) {
+  .resident-filter-feedback button {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 560px) {
   .resident-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resident-filter-feedback {
+    animation: none;
   }
 }
 
