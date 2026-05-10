@@ -8,8 +8,13 @@ export function PrescriptionList({ prescriptions }) {
   }
 
   return (
-    <div className="dashboard-compact-list">
-      {prescriptions.slice(0, 5).map((prescription) => (
+    <div
+      className="dashboard-compact-list is-scrollable"
+      role="region"
+      aria-label="Prescrições em acompanhamento"
+      tabIndex={0}
+    >
+      {prescriptions.map((prescription) => (
         <article className="dashboard-compact-item" key={prescription.id}>
           <div>
             <strong>{prescription.resident?.fullName ?? "Residente"}</strong>

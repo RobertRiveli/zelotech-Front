@@ -7,8 +7,13 @@ export function ResidentList({ residents }) {
   }
 
   return (
-    <div className="dashboard-compact-list">
-      {residents.slice(0, 5).map((resident) => (
+    <div
+      className="dashboard-compact-list is-scrollable"
+      role="region"
+      aria-label="Admissões recentes"
+      tabIndex={0}
+    >
+      {residents.map((resident) => (
         <article className="dashboard-compact-item" key={resident.id}>
           <div>
             <strong>{resident.fullName}</strong>
