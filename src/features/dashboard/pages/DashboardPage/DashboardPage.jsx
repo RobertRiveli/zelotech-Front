@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { DashboardShell } from "@/features/dashboard/layout/DashboardShell";
 import { FamilyAccessView } from "@/features/family-access/components/FamilyAccessView";
 import { DashboardHome } from "@/features/dashboard/components/home/DashboardHome";
+import { MedicationsView } from "@/features/medications/components/MedicationsView";
 import { PrescriptionsView } from "@/features/prescriptions/components/PrescriptionsView";
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
 import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
@@ -30,6 +31,7 @@ function DashboardPage() {
     profile?.fullName || storedUser?.fullName || storedUser?.email || "Administrador";
   const displayRole =
     (profile?.role || storedUser?.role) === "admin" ? "Administrador" : "Usuário";
+  const isAdmin = (profile?.role || storedUser?.role) === "admin";
   const companyName =
     profile?.company?.tradeName ||
     profile?.company?.legalName ||
@@ -65,6 +67,13 @@ function DashboardPage() {
     setDashboardData((currentData) => ({
       ...currentData,
       prescriptions,
+    }));
+  }
+
+  function handleMedicationsChange(medications) {
+    setDashboardData((currentData) => ({
+      ...currentData,
+      medications,
     }));
   }
 
@@ -114,6 +123,14 @@ function DashboardPage() {
           residents={dashboardData.residents}
           searchTerm={searchTerm}
           onPrescriptionsChange={handlePrescriptionsChange}
+        />
+      ) : activeItem === "Medicamentos" ? (
+        <MedicationsView
+          isAdmin={isAdmin}
+          isLoading={isLoading}
+          medications={dashboardData.medications}
+          searchTerm={searchTerm}
+          onMedicationsChange={handleMedicationsChange}
         />
       ) : activeItem === "Família / Acessos" ? (
         <FamilyAccessView
