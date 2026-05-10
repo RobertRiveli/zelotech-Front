@@ -579,6 +579,33 @@
   box-shadow: 0 12px 28px rgba(22, 32, 64, 0.05);
 }
 
+.dashboard-card-button {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.dashboard-card-button:hover {
+  border-color: rgba(13, 148, 136, 0.28);
+  box-shadow: 0 16px 34px rgba(22, 32, 64, 0.08);
+}
+
+.dashboard-card-button:active {
+  transform: scale(0.99);
+}
+
+.dashboard-card-button:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.16);
+  outline-offset: 3px;
+}
+
+.dashboard-card-button.is-active {
+  border-color: rgba(13, 148, 136, 0.38);
+  background: var(--teal-tint);
+  box-shadow: 0 16px 34px rgba(13, 148, 136, 0.12);
+}
+
 .dashboard-card span {
   color: var(--body);
   font-size: 13px;
