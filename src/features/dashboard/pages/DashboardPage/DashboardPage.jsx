@@ -11,6 +11,7 @@ import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
 import { useDashboardData } from "@/features/dashboard/hooks/useDashboardData";
 import { useResidentOverview } from "@/features/residents/hooks/useResidentOverview";
 import { buildDashboardSummary } from "@/features/dashboard/utils/dashboardSummary";
+import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
 import { getUser, removeSession } from "@/features/auth/utils/session";
 import { getInitials } from "@/shared/utils/nameFormatter";
 import "./DashboardPage.css";
@@ -83,6 +84,16 @@ function DashboardPage() {
       ...currentData,
       administrations,
     }));
+  }
+
+  function handleOpenAdministrationFromHome(administration) {
+    const searchValue =
+      administration.resident?.fullName ||
+      getMedicationName(administration.medication);
+
+    setSearchTerm(searchValue);
+    setActiveItem("Administração de medicamentos");
+    setIsMenuOpen(false);
   }
 
   return (
@@ -166,6 +177,7 @@ function DashboardPage() {
           dashboardSummary={dashboardSummary}
           isCompanyActive={isCompanyActive}
           isLoading={isLoading}
+          onOpenAdministration={handleOpenAdministrationFromHome}
         />
       )}
     </DashboardShell>

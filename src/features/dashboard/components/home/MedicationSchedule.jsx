@@ -9,7 +9,11 @@ import {
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { AdministrationStatusBadge } from "@/features/medication-administrations/components/AdministrationStatusBadge";
 
-export function MedicationSchedule({ administrations, currentTime }) {
+export function MedicationSchedule({
+  administrations,
+  currentTime,
+  onOpenAdministration,
+}) {
   if (administrations.length === 0) {
     return (
       <EmptyState title="Nenhuma administração encontrada para hoje." />
@@ -27,6 +31,7 @@ export function MedicationSchedule({ administrations, currentTime }) {
           scheduledAt &&
           currentTime > 0 &&
           scheduledAt.getTime() < currentTime;
+        const actionLabel = status === "PENDING" ? "Registrar" : "Detalhes";
 
         return (
           <article className="dashboard-schedule-item" key={administration.id}>
@@ -40,6 +45,13 @@ export function MedicationSchedule({ administrations, currentTime }) {
               </span>
             </div>
             <AdministrationStatusBadge status={isLate ? "LATE" : status} />
+            <button
+              className="dashboard-schedule-action"
+              type="button"
+              onClick={() => onOpenAdministration?.(administration)}
+            >
+              {actionLabel}
+            </button>
           </article>
         );
       })}

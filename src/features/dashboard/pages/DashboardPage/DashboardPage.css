@@ -685,7 +685,7 @@
 }
 
 .dashboard-schedule-item {
-  grid-template-columns: 64px minmax(0, 1fr) auto;
+  grid-template-columns: 64px minmax(0, 1fr) auto auto;
 }
 
 .dashboard-schedule-item time {
@@ -760,6 +760,41 @@
 .dashboard-status-badge.is-muted {
   background: var(--bg2);
   color: var(--body);
+}
+
+.dashboard-schedule-action {
+  min-height: 34px;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  border-radius: var(--r8);
+  background: var(--teal-tint);
+  color: var(--teal-dark);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s,
+    transform 0.15s;
+}
+
+.dashboard-schedule-action:hover {
+  border-color: rgba(13, 148, 136, 0.42);
+  background: #ccfbf1;
+  box-shadow: 0 8px 18px rgba(13, 148, 136, 0.1);
+}
+
+.dashboard-schedule-action:active {
+  transform: scale(0.97);
+}
+
+.dashboard-schedule-action:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.18);
+  outline-offset: 2px;
 }
 
 .dashboard-alert-card {
@@ -1340,6 +1375,10 @@
   .dashboard-status-badge {
     width: max-content;
     min-width: 0;
+  }
+
+  .dashboard-schedule-action {
+    width: 100%;
   }
 
   .dashboard-schedule-item strong,

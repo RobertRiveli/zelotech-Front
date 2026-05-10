@@ -15,6 +15,7 @@ export function DashboardHome({
   dashboardSummary,
   isCompanyActive,
   isLoading,
+  onOpenAdministration,
 }) {
   const hasLateAdministrations =
     !isLoading && dashboardSummary.lateAdministrations > 0;
@@ -122,6 +123,7 @@ export function DashboardHome({
             <MedicationSchedule
               administrations={dashboardSummary.filteredAdministrations}
               currentTime={currentTime}
+              onOpenAdministration={onOpenAdministration}
             />
           )}
         </section>
