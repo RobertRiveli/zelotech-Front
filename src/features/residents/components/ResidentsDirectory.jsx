@@ -20,11 +20,15 @@ export function ResidentsDirectory({
   }
 
   if (residents.length === 0) {
-    return <EmptyState title="Nenhum residente ativo encontrado." />;
+    return <EmptyState title="Nenhum residente encontrado." />;
   }
 
   return (
-    <div className="residents-directory">
+    <div
+      aria-label="Lista de residentes"
+      className={`residents-directory${residents.length > 5 ? " is-scrollable" : ""}`}
+      tabIndex={residents.length > 5 ? 0 : undefined}
+    >
       {residents.map((resident) => (
         <ResidentDirectoryRow
           administrationSummary={buildResidentAdministrationSummary(

@@ -11,10 +11,16 @@ export function ResidentListItem({
   isSelected,
   onSelectResident,
   resident,
+  showMeta = true,
   stats,
   statsAriaLabel,
 }) {
-  const classes = ["resident-row", className, isSelected ? "is-selected" : ""]
+  const classes = [
+    "resident-row",
+    className,
+    isSelected ? "is-selected" : "",
+    showMeta ? "" : "is-without-meta",
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -35,12 +41,14 @@ export function ResidentListItem({
         </span>
       </span>
 
-      <span className="resident-row-meta">
-        <ResidentStatusBadge status={resident.status} />
-        <small>
-          {resident.bloodType ? `Tipo ${resident.bloodType}` : "Sem tipo sanguíneo"}
-        </small>
-      </span>
+      {showMeta ? (
+        <span className="resident-row-meta">
+          <ResidentStatusBadge status={resident.status} />
+          <small>
+            {resident.bloodType ? `Tipo ${resident.bloodType}` : "Sem tipo sanguíneo"}
+          </small>
+        </span>
+      ) : null}
 
       <span className="resident-row-stats" aria-label={statsAriaLabel}>
         {stats.map((stat) => (

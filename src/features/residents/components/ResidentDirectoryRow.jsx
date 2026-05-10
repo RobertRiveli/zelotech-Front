@@ -13,6 +13,7 @@ export function ResidentDirectoryRow({
       currentTime={currentTime}
       isSelected={isSelected}
       resident={resident}
+      showMeta={false}
       stats={[
         `${prescriptionCount} prescrições`,
         `${administrationSummary.pending} pendentes`,

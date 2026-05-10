@@ -30,28 +30,9 @@ export function ResidentsView({
 
   return (
     <>
-      <section className="dashboard-hero residents-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Residentes</span>
-          <h2>Acompanhamento dos residentes ativos</h2>
-          <p>
-            Lista operacional da instituição com dados cadastrais, prescrições
-            ativas, pendências de medicação e visão geral do prontuário.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo de residentes">
-          <span className="dashboard-company-status is-active">
-            Cadastro ativo
-          </span>
-          <strong>{residentsStats.totalResidents} residentes</strong>
-          <span>{residentsStats.recentAdmissions} admissões recentes</span>
-        </div>
-      </section>
-
       <section className="dashboard-overview-grid" aria-label="Resumo de residentes">
         <MetricCard
-          label="Residentes ativos"
+          label="Residentes"
           value={residentsStats.totalResidents}
           detail={`${residents.length} visíveis na busca`}
           loading={isLoading}
@@ -81,7 +62,7 @@ export function ResidentsView({
         <section className="dashboard-panel residents-list-panel">
           <PanelHeader
             overline="Lista"
-            title="Residentes ativos"
+            title="Residentes"
             action={`${residents.length} encontrados`}
           />
           <ResidentsDirectory
