@@ -118,7 +118,7 @@
   display: grid;
   grid-template-columns: 104px 76px minmax(0, 1fr) minmax(180px, 0.72fr) minmax(132px, auto);
   gap: 12px;
-  align-items: center;
+  align-items: start;
   border: 1px solid var(--border);
   border-radius: var(--r8);
   background: var(--white);
@@ -195,26 +195,24 @@
 .administration-row-meta strong,
 .administration-action-summary strong,
 .administration-detail-summary strong {
-  overflow: hidden;
   color: var(--navy);
   font-size: 13px;
   font-weight: 800;
   line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .administration-row-main span,
 .administration-row-meta span,
 .administration-action-summary span,
 .administration-detail-summary span {
-  overflow: hidden;
   color: var(--body);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.45;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .administration-row-actions {

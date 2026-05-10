@@ -733,6 +733,7 @@
 }
 
 .dashboard-schedule-item {
+  align-items: flex-start;
   grid-template-columns: 64px minmax(0, 1fr) auto auto;
 }
 
@@ -762,23 +763,22 @@
 
 .dashboard-schedule-item strong,
 .dashboard-compact-item strong {
-  overflow: hidden;
   color: var(--navy);
   font-size: 13px;
   font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .dashboard-schedule-item span,
 .dashboard-compact-item span {
-  overflow: hidden;
   color: var(--body);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.45;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .dashboard-status-badge {
