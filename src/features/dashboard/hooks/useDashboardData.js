@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listTodayMedicationAdministrations } from "@/features/medications/api/medicationAdministrationService";
+import { listTodayMedicationAdministrations } from "@/features/medication-administrations/api/medicationAdministrationService";
 import { listMedications } from "@/features/medications/api/medicationService";
 import { listPrescriptions } from "@/features/prescriptions/api/prescriptionService";
 import { listResidents } from "@/features/residents/api/residentService";

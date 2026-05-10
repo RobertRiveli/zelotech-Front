@@ -7,7 +7,7 @@ import {
   getMedicationName,
 } from "@/features/medications/utils/medicationFormatters";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { AdministrationStatusBadge } from "@/features/medications/components/AdministrationStatusBadge";
+import { AdministrationStatusBadge } from "@/features/medication-administrations/components/AdministrationStatusBadge";
 
 export function MedicationSchedule({ administrations, currentTime }) {
   if (administrations.length === 0) {

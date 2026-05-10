@@ -6,10 +6,10 @@ import {
   getDosage,
   getMedicationName,
 } from "@/features/medications/utils/medicationFormatters";
-import { isLateAdministration } from "@/features/medications/utils/administrationStatus";
-import { compareByScheduledAtDesc } from "@/features/medications/utils/administrationSorters";
+import { isLateAdministration } from "@/features/medication-administrations/utils/administrationStatus";
+import { compareByScheduledAtDesc } from "@/features/medication-administrations/utils/administrationSorters";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { AdministrationStatusBadge } from "@/features/medications/components/AdministrationStatusBadge";
+import { AdministrationStatusBadge } from "@/features/medication-administrations/components/AdministrationStatusBadge";
 
 export function ResidentAdministrationDetails({ administrations, currentTime }) {
   if (administrations.length === 0) {

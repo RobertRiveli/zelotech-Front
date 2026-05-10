@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { DashboardShell } from "@/features/dashboard/layout/DashboardShell";
 import { FamilyAccessView } from "@/features/family-access/components/FamilyAccessView";
 import { DashboardHome } from "@/features/dashboard/components/home/DashboardHome";
+import { MedicationAdministrationsView } from "@/features/medication-administrations/components/MedicationAdministrationsView";
 import { MedicationsView } from "@/features/medications/components/MedicationsView";
 import { PrescriptionsView } from "@/features/prescriptions/components/PrescriptionsView";
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
@@ -77,6 +78,13 @@ function DashboardPage() {
     }));
   }
 
+  function handleAdministrationsChange(administrations) {
+    setDashboardData((currentData) => ({
+      ...currentData,
+      administrations,
+    }));
+  }
+
   return (
     <DashboardShell
       activeItem={activeItem}
@@ -123,6 +131,17 @@ function DashboardPage() {
           residents={dashboardData.residents}
           searchTerm={searchTerm}
           onPrescriptionsChange={handlePrescriptionsChange}
+        />
+      ) : activeItem === "Administração de medicamentos" ? (
+        <MedicationAdministrationsView
+          administrations={dashboardData.administrations}
+          currentTime={currentTime}
+          isAdmin={isAdmin}
+          isLoading={isLoading}
+          prescriptions={dashboardData.prescriptions}
+          residents={dashboardData.residents}
+          searchTerm={searchTerm}
+          onAdministrationsChange={handleAdministrationsChange}
         />
       ) : activeItem === "Medicamentos" ? (
         <MedicationsView

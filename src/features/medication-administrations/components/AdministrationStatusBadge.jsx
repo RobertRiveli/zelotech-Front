@@ -2,7 +2,7 @@ import { StatusBadge } from "@/shared/ui/StatusBadge";
 import {
   administrationStatusLabels,
   administrationStatusTone,
-} from "@/features/medications/constants/administrationStatus";
+} from "@/features/medication-administrations/constants/administrationStatus";
 
 export function AdministrationStatusBadge({ status }) {
   if (status === "LATE") {

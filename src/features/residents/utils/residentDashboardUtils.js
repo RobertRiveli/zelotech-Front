@@ -2,7 +2,7 @@ import { toDate } from "@/shared/utils/dateFormatter";
 import {
   countByStatus,
   isLateAdministration,
-} from "@/features/medications/utils/administrationStatus";
+} from "@/features/medication-administrations/utils/administrationStatus";
 
 export function buildResidentsStats({
   administrations,

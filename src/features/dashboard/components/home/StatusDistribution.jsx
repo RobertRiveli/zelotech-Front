@@ -1,7 +1,7 @@
 import {
   administrationStatusLabels,
   administrationStatusTone,
-} from "@/features/medications/constants/administrationStatus";
+} from "@/features/medication-administrations/constants/administrationStatus";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
 export function StatusDistribution({ total, statusCounts }) {

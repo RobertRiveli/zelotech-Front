@@ -1,8 +1,8 @@
 import { normalizeText } from "@/shared/utils/textFormatter";
 import { matchesSearch } from "@/shared/utils/search";
 import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
-import { countByStatus, isLateAdministration } from "@/features/medications/utils/administrationStatus";
-import { compareByScheduledAt } from "@/features/medications/utils/administrationSorters";
+import { countByStatus, isLateAdministration } from "@/features/medication-administrations/utils/administrationStatus";
+import { compareByScheduledAt } from "@/features/medication-administrations/utils/administrationSorters";
 import { compareByStartDate } from "@/features/prescriptions/utils/prescriptionSorters";
 import { isPrescriptionEndingSoon } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
 import { compareByAdmissionDate } from "@/features/residents/utils/residentSorters";
