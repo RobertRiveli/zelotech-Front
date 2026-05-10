@@ -16,8 +16,39 @@ export function DashboardHome({
   isCompanyActive,
   isLoading,
 }) {
+  const hasLateAdministrations =
+    !isLoading && dashboardSummary.lateAdministrations > 0;
+  const lateAdministrationLabel =
+    dashboardSummary.lateAdministrations === 1
+      ? "administração atrasada"
+      : "administrações atrasadas";
+
   return (
     <>
+      {hasLateAdministrations ? (
+        <section className="dashboard-critical-alert" role="alert">
+          <span className="dashboard-critical-alert-icon" aria-hidden="true">
+            !
+          </span>
+          <div className="dashboard-critical-alert-copy">
+            <span>Prioridade agora</span>
+            <strong>
+              {dashboardSummary.lateAdministrations} {lateAdministrationLabel}
+            </strong>
+            <p>
+              Revise a agenda de hoje e confirme com a equipe antes de seguir
+              para outras pendências.
+            </p>
+          </div>
+          <a
+            className="dashboard-critical-alert-action"
+            href="#dashboard-today-schedule"
+          >
+            Ver agenda
+          </a>
+        </section>
+      ) : null}
+
       <section className="dashboard-hero">
         <div className="dashboard-hero-copy">
           <span className="overline">Início</span>
@@ -75,7 +106,10 @@ export function DashboardHome({
       </section>
 
       <section className="dashboard-work-grid">
-        <section className="dashboard-panel dashboard-panel-large">
+        <section
+          className="dashboard-panel dashboard-panel-large"
+          id="dashboard-today-schedule"
+        >
           <PanelHeader
             overline="Agenda"
             title="Medicações de hoje"
