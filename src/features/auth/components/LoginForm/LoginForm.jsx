@@ -21,7 +21,7 @@ function getLoginErrorMessage(error) {
     (error?.errors?.cpf || error?.errors?.password || error?.errorType);
 
   if (hasCredentialError) {
-    return "CPF ou senha inválidos.";
+    return "CPF ou senha inválidos. Confira os dados e tente novamente.";
   }
 
   return "Não foi possível acessar sua conta. Tente novamente.";
@@ -102,10 +102,11 @@ function LoginForm() {
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <div className={styles.intro}>
+        <span className={styles.overline}>Login institucional</span>
         <h2 className={styles.title}>Entrar na sua conta</h2>
         <p className={styles.subtitle}>
-          Acesse o painel da sua instituição e acompanhe a gestão dos cuidados
-          com segurança.
+          Acesse o painel da sua instituição para acompanhar cuidados,
+          residentes e medicações.
         </p>
       </div>
 
@@ -131,17 +132,22 @@ function LoginForm() {
         value={form.cpf}
       />
 
-      <PasswordInput
-        autoComplete="current-password"
-        error={fieldErrors.password}
-        id="password"
-        label="Senha"
-        maxLength={128}
-        name="password"
-        onChange={handleChange}
-        placeholder="Digite sua senha"
-        value={form.password}
-      />
+      <div className={styles.passwordGroup}>
+        <PasswordInput
+          autoComplete="current-password"
+          error={fieldErrors.password}
+          id="password"
+          label="Senha"
+          maxLength={128}
+          name="password"
+          onChange={handleChange}
+          placeholder="Digite sua senha"
+          value={form.password}
+        />
+        <Link className={styles.forgotLink} to="/recuperar-senha">
+          Esqueci minha senha
+        </Link>
+      </div>
 
       <Button
         fullWidth
@@ -152,10 +158,10 @@ function LoginForm() {
         Entrar
       </Button>
 
-      <div className={styles.links}>
-        <Link className={styles.link} to="/recuperar-senha">
-          Esqueci minha senha
-        </Link>
+      <div className={styles.footer}>
+        <p className={styles.trustText}>
+          Ambiente seguro para instituições de cuidado.
+        </p>
         <div className={styles.secondaryLinks}>
           <Link className={styles.link} to="/cadastro-empresa">
             Cadastrar empresa
