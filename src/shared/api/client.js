@@ -2,9 +2,12 @@ import { createConfigurationError, createRequestError } from "./errors";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 let getAuthorizationToken = () => "";
+let handleAuthenticationError = () => {};
 
-export function configureApiClient({ getToken } = {}) {
+export function configureApiClient({ getToken, onAuthenticationError } = {}) {
   getAuthorizationToken = typeof getToken === "function" ? getToken : () => "";
+  handleAuthenticationError =
+    typeof onAuthenticationError === "function" ? onAuthenticationError : () => {};
 }
 
 function getBaseUrl() {
@@ -29,6 +32,10 @@ async function readResponseBody(response) {
   }
 }
 
+function isAuthenticationError(data, status) {
+  return status === 401 || status === 403 || Boolean(data?.errors?.token);
+}
+
 async function request(path, options = {}) {
   const token = getAuthorizationToken();
   const headers = {
@@ -47,7 +54,13 @@ async function request(path, options = {}) {
   const data = await readResponseBody(response);
 
   if (!response.ok) {
-    throw createRequestError(data, response.status);
+    const error = createRequestError(data, response.status);
+
+    if (isAuthenticationError(data, response.status)) {
+      handleAuthenticationError(error);
+    }
+
+    throw error;
   }
 
   return data;
