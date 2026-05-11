@@ -5,13 +5,17 @@ import { countByStatus, isLateAdministration } from "@/features/medication-admin
 import { compareByScheduledAt } from "@/features/medication-administrations/utils/administrationSorters";
 import { compareByStartDate } from "@/features/prescriptions/utils/prescriptionSorters";
 import { isPrescriptionEndingSoon } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
-import { compareByAdmissionDate } from "@/features/residents/utils/residentSorters";
+import {
+  compareByAdmissionDate,
+  compareByFullName,
+} from "@/features/residents/utils/residentSorters";
 
 export function buildDashboardSummary(data, searchTerm, currentTime) {
   const normalizedSearch = normalizeText(searchTerm);
   const administrations = [...data.administrations].sort(compareByScheduledAt);
   const prescriptions = [...data.prescriptions].sort(compareByStartDate);
-  const residents = [...data.residents].sort(compareByAdmissionDate);
+  const residents = [...data.residents].sort(compareByFullName);
+  const recentResidents = [...data.residents].sort(compareByAdmissionDate);
   const statusCounts = countByStatus(administrations);
   const pendingAdministrations = statusCounts.PENDING ?? 0;
   const administeredAdministrations = statusCounts.ADMINISTERED ?? 0;
@@ -75,7 +79,7 @@ export function buildDashboardSummary(data, searchTerm, currentTime) {
     filteredResidents,
     lateAdministrations,
     pendingAdministrations,
-    recentResidents: residents.slice(0, 5),
+    recentResidents: recentResidents.slice(0, 5),
     statusCounts,
     totalAdministrations,
   };
@@ -120,4 +124,3 @@ export function buildAlerts({
 
   return alerts;
 }
-

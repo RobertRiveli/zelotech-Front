@@ -60,7 +60,7 @@ export function useResidentOverview({
           isLoading: false,
           error: "",
         });
-      } catch {
+      } catch (error) {
         if (!isMounted) {
           return;
         }
@@ -68,7 +68,10 @@ export function useResidentOverview({
         setResidentOverviewStatus({
           residentId: visibleSelectedResidentId,
           isLoading: false,
-          error: "Não foi possível carregar a visão geral do residente.",
+          error:
+            error?.errorType === "NOT_FOUND"
+              ? "Residente não encontrado ou indisponível."
+              : "Não foi possível carregar a visão geral do residente.",
         });
       }
     }

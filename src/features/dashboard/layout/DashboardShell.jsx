@@ -8,6 +8,7 @@ export function DashboardShell({
   displayRole,
   initials,
   isMenuOpen,
+  menuItems,
   onCloseMenu,
   onLogout,
   onMenuSelect,
@@ -28,6 +29,7 @@ export function DashboardShell({
       <DashboardSidebar
         activeItem={activeItem}
         isMenuOpen={isMenuOpen}
+        menuItems={menuItems}
         onMenuSelect={onMenuSelect}
       />
 

@@ -8,7 +8,16 @@ import {
 import {
   isPrescriptionEndingSoon,
 } from "@/features/prescriptions/utils/prescriptionDashboardUtils";
+import { createResident } from "@/features/residents/api/residentService";
+import { createEmptyResidentForm } from "@/features/residents/utils/residentForm";
+import { validateResidentForm } from "@/features/residents/validations/residentSchema";
+import { formatCpf, onlyNumbers } from "@/shared/utils/cpfFormatter";
+import {
+  clearFieldError,
+  getRequestErrorMessage,
+} from "@/shared/utils/formErrors";
 import { ResidentsDirectory } from "./ResidentsDirectory";
+import { ResidentForm } from "./ResidentForm";
 import { ResidentOverviewPanel } from "./ResidentOverviewPanel";
 import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
@@ -18,7 +27,9 @@ export function ResidentsView({
   administrations,
   allResidents,
   currentTime,
+  isAdmin,
   isLoading,
+  onResidentCreated,
   onSelectResident,
   overview,
   overviewStatus,
@@ -27,6 +38,12 @@ export function ResidentsView({
   selectedResidentId,
 }) {
   const [activeMetricFilter, setActiveMetricFilter] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [form, setForm] = useState(() => createEmptyResidentForm());
+  const [formErrors, setFormErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const metricCards = useMemo(
     () =>
       buildResidentMetricCards({
@@ -69,6 +86,86 @@ export function ResidentsView({
     setActiveMetricFilter("");
   }
 
+  function handleStartCreate() {
+    if (!isAdmin) {
+      return;
+    }
+
+    setIsCreating(true);
+    setActiveMetricFilter("");
+    setForm(createEmptyResidentForm());
+    setFormErrors({});
+    setSubmitError("");
+    setFeedback("");
+  }
+
+  function handleCancelCreate() {
+    setIsCreating(false);
+    setFormErrors({});
+    setSubmitError("");
+  }
+
+  function handleResidentSelect(residentId) {
+    setIsCreating(false);
+    setFormErrors({});
+    setSubmitError("");
+    onSelectResident(residentId);
+  }
+
+  function handleFormChange(event) {
+    const { name, value } = event.target;
+    const nextValue =
+      name === "cpf" ? formatCpf(onlyNumbers(value).slice(0, 11)) : value;
+
+    setForm((currentForm) => ({
+      ...currentForm,
+      [name]: nextValue,
+    }));
+    setFormErrors((currentErrors) => clearFieldError(currentErrors, name));
+  }
+
+  async function handleCreateResident(event) {
+    event.preventDefault();
+
+    const validationErrors = validateResidentForm(form);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      setSubmitError("Revise os campos destacados antes de salvar.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError("");
+    setFeedback("");
+
+    try {
+      const createdResident = await createResident(form);
+
+      onResidentCreated?.(createdResident);
+      setIsCreating(false);
+      setForm(createEmptyResidentForm());
+      setFormErrors({});
+      setActiveMetricFilter("");
+      setFeedback("Residente cadastrado com sucesso.");
+    } catch (error) {
+      const nextErrors = { ...(error?.errors ?? {}) };
+      const roleError = nextErrors.role;
+
+      delete nextErrors.role;
+      setFormErrors(nextErrors);
+      setSubmitError(
+        roleError ||
+          getRequestErrorMessage(
+            error,
+            "Não foi possível cadastrar o residente. Tente novamente.",
+          ),
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <>
       <section className="dashboard-overview-grid" aria-label="Resumo de residentes">
@@ -88,11 +185,31 @@ export function ResidentsView({
 
       <section className="residents-layout">
         <section className="dashboard-panel residents-list-panel">
+          {isAdmin ? (
+            <div className="dashboard-toolbar residents-toolbar">
+              <button
+                className="dashboard-button dashboard-button-primary"
+                type="button"
+                onClick={handleStartCreate}
+              >
+                Novo residente
+              </button>
+            </div>
+          ) : null}
+
           <PanelHeader
             overline="Lista"
             title="Residentes"
             action={`${visibleResidents.length} encontrados`}
           />
+          {feedback ? (
+            <div
+              className="dashboard-form-alert dashboard-form-alert-success"
+              role="status"
+            >
+              {feedback}
+            </div>
+          ) : null}
           {activeMetric ? (
             <div
               aria-live="polite"
@@ -112,7 +229,7 @@ export function ResidentsView({
             administrations={administrations}
             currentTime={currentTime}
             isLoading={isLoading}
-            onSelectResident={onSelectResident}
+            onSelectResident={handleResidentSelect}
             prescriptions={prescriptions}
             residents={visibleResidents}
             selectedResidentId={selectedResidentId}
@@ -120,12 +237,27 @@ export function ResidentsView({
         </section>
 
         <section className="dashboard-panel residents-detail-panel">
-          <ResidentOverviewPanel
-            currentTime={currentTime}
-            overview={overview}
-            overviewStatus={overviewStatus}
-            resident={selectedResident}
-          />
+          {isCreating ? (
+            <>
+              <PanelHeader overline="Cadastro" title="Novo residente" />
+              <ResidentForm
+                errors={formErrors}
+                form={form}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+                onCancel={handleCancelCreate}
+                onChange={handleFormChange}
+                onSubmit={handleCreateResident}
+              />
+            </>
+          ) : (
+            <ResidentOverviewPanel
+              currentTime={currentTime}
+              overview={overview}
+              overviewStatus={overviewStatus}
+              resident={selectedResident}
+            />
+          )}
         </section>
       </section>
     </>

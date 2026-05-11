@@ -4,6 +4,7 @@ import { listMedications } from "@/features/medications/api/medicationService";
 import { listPrescriptions } from "@/features/prescriptions/api/prescriptionService";
 import { listResidents } from "@/features/residents/api/residentService";
 import { getProfile } from "@/features/auth/api/userService";
+import { getUserRole } from "@/features/auth/utils/session";
 
 const emptyDashboardData = {
   profile: null,
@@ -25,13 +26,26 @@ export function useDashboardData() {
       setIsLoading(true);
       setLoadError("");
 
+      const nextData = { ...emptyDashboardData };
+      const failedRequests = [];
+
+      try {
+        nextData.profile = await getProfile();
+      } catch {
+        failedRequests.push("profile");
+      }
+
+      const role = nextData.profile?.role ?? getUserRole();
       const requests = [
-        ["profile", getProfile()],
-        ["residents", listResidents()],
         ["prescriptions", listPrescriptions()],
         ["medications", listMedications()],
         ["administrations", listTodayMedicationAdministrations()],
       ];
+
+      if (role === "admin") {
+        requests.push(["residents", listResidents()]);
+      }
+      const totalRequestCount = requests.length + 1;
 
       const settledRequests = await Promise.allSettled(
         requests.map(([, request]) => request),
@@ -40,9 +54,6 @@ export function useDashboardData() {
       if (!isMounted) {
         return;
       }
-
-      const nextData = { ...emptyDashboardData };
-      const failedRequests = [];
 
       settledRequests.forEach((result, index) => {
         const [key] = requests[index];
@@ -58,7 +69,7 @@ export function useDashboardData() {
       setDashboardData(nextData);
       setIsLoading(false);
 
-      if (failedRequests.length === requests.length) {
+      if (failedRequests.length === totalRequestCount) {
         setLoadError("Não foi possível carregar os dados do dashboard.");
         return;
       }

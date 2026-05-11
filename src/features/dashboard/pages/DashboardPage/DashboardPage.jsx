@@ -9,6 +9,7 @@ import { PrescriptionsView } from "@/features/prescriptions/components/Prescript
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
 import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
 import { useDashboardData } from "@/features/dashboard/hooks/useDashboardData";
+import { dashboardMenuItems } from "@/features/dashboard/constants/dashboardMenuItems";
 import { useResidentOverview } from "@/features/residents/hooks/useResidentOverview";
 import { buildDashboardSummary } from "@/features/dashboard/utils/dashboardSummary";
 import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
@@ -34,6 +35,9 @@ function DashboardPage() {
   const displayRole =
     (profile?.role || storedUser?.role) === "admin" ? "Administrador" : "Usuário";
   const isAdmin = (profile?.role || storedUser?.role) === "admin";
+  const availableMenuItems = isAdmin
+    ? dashboardMenuItems
+    : dashboardMenuItems.filter((item) => item !== "Residentes");
   const companyName =
     profile?.company?.tradeName ||
     profile?.company?.legalName ||
@@ -79,6 +83,25 @@ function DashboardPage() {
     }));
   }
 
+  function handleResidentCreated(resident) {
+    if (!resident) {
+      return;
+    }
+
+    setSearchTerm("");
+    setSelectedResidentId(resident.id);
+    setDashboardData((currentData) => {
+      const residentsWithoutCreated = currentData.residents.filter(
+        (currentResident) => currentResident.id !== resident.id,
+      );
+
+      return {
+        ...currentData,
+        residents: [resident, ...residentsWithoutCreated],
+      };
+    });
+  }
+
   function handleAdministrationsChange(administrations) {
     setDashboardData((currentData) => ({
       ...currentData,
@@ -103,6 +126,7 @@ function DashboardPage() {
       displayRole={displayRole}
       initials={initials}
       isMenuOpen={isMenuOpen}
+      menuItems={availableMenuItems}
       onCloseMenu={() => setIsMenuOpen(false)}
       onLogout={handleLogout}
       onMenuSelect={handleMenuSelect}
@@ -124,7 +148,9 @@ function DashboardPage() {
         <ResidentsView
           administrations={dashboardData.administrations}
           currentTime={currentTime}
+          isAdmin={isAdmin}
           isLoading={isLoading}
+          onResidentCreated={handleResidentCreated}
           onSelectResident={setSelectedResidentId}
           overview={selectedResidentOverview}
           overviewStatus={selectedOverviewStatus}

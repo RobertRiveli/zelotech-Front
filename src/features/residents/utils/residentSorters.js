@@ -1,5 +1,9 @@
 import { toDate } from "@/shared/utils/dateFormatter";
 
+export function compareByFullName(first, second) {
+  return (first.fullName ?? "").localeCompare(second.fullName ?? "", "pt-BR");
+}
+
 export function compareByAdmissionDate(first, second) {
   return compareDates(first.admissionDate, second.admissionDate, "desc");
 }

@@ -10,6 +10,10 @@
   min-height: 520px;
 }
 
+.residents-toolbar {
+  justify-content: flex-end;
+}
+
 .residents-directory,
 .resident-overview,
 .resident-detail-list {

@@ -2,7 +2,12 @@ import { Link } from "react-router-dom";
 import { dashboardMenuItems } from "@/features/dashboard/constants/dashboardMenuItems";
 import { MenuItemIcon } from "@/features/dashboard/icons/MenuItemIcon";
 
-export function DashboardSidebar({ activeItem, isMenuOpen, onMenuSelect }) {
+export function DashboardSidebar({
+  activeItem,
+  isMenuOpen,
+  menuItems = dashboardMenuItems,
+  onMenuSelect,
+}) {
   return (
     <aside
       className={`dashboard-sidebar${isMenuOpen ? " is-open" : ""}`}
@@ -16,7 +21,7 @@ export function DashboardSidebar({ activeItem, isMenuOpen, onMenuSelect }) {
       </div>
 
       <nav className="dashboard-menu" aria-label="Seções do painel">
-        {dashboardMenuItems.map((item) => {
+        {menuItems.map((item) => {
           const isActive = activeItem === item;
 
           return (
