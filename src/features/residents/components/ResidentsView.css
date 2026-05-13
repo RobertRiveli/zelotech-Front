@@ -771,6 +771,78 @@
   gap: 10px;
 }
 
+.resident-family-member-list {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.resident-family-member-item {
+  min-width: 0;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+}
+
+.resident-family-member-avatar {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--teal-tint);
+  color: var(--teal-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.resident-family-member-item div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.resident-family-member-item div strong,
+.resident-family-member-item div span,
+.resident-family-member-item div small,
+.resident-family-member-phone {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resident-family-member-item div strong {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.resident-family-member-item div span,
+.resident-family-member-item div small {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.resident-family-member-item div small,
+.resident-family-member-phone {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.resident-family-member-phone {
+  max-width: 150px;
+  font-size: 12px;
+}
+
 .resident-access-code-actions {
   display: flex;
   justify-content: flex-end;
@@ -861,6 +933,7 @@
 @media (max-width: 560px) {
   .resident-detail-item,
   .resident-administration-item,
+  .resident-family-member-item,
   .resident-access-code-item {
     grid-template-columns: 1fr;
     align-items: stretch;
@@ -875,6 +948,10 @@
   .resident-detail-item strong,
   .resident-detail-item span,
   .resident-detail-item small,
+  .resident-family-member-item div strong,
+  .resident-family-member-item div span,
+  .resident-family-member-item div small,
+  .resident-family-member-phone,
   .resident-access-code-item span,
   .resident-access-code-item small,
   .resident-administration-item strong,

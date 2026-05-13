@@ -11,6 +11,7 @@ import {
 import {
   createResident,
   deleteResident,
+  listResidentFamilyMembers,
   updateResident,
 } from "@/features/residents/api/residentService";
 import {
@@ -76,6 +77,12 @@ export function ResidentsView({
     isLoading: false,
     error: "",
   });
+  const [familyMembersByResident, setFamilyMembersByResident] = useState({});
+  const [familyMembersStatus, setFamilyMembersStatus] = useState({
+    residentId: "",
+    isLoading: false,
+    error: "",
+  });
   const metricCards = useMemo(
     () =>
       buildResidentMetricCards({
@@ -104,6 +111,19 @@ export function ResidentsView({
       : { residentId: selectedResident?.id ?? "", isLoading: false, error: "" };
   const hasLoadedSelectedAccessCodes = selectedResident?.id
     ? Object.prototype.hasOwnProperty.call(accessCodesByResident, selectedResident.id)
+    : false;
+  const selectedResidentFamilyMembers = selectedResident?.id
+    ? (familyMembersByResident[selectedResident.id] ?? [])
+    : [];
+  const selectedFamilyMembersStatus =
+    familyMembersStatus.residentId === selectedResident?.id
+      ? familyMembersStatus
+      : { residentId: selectedResident?.id ?? "", isLoading: false, error: "" };
+  const hasLoadedSelectedFamilyMembers = selectedResident?.id
+    ? Object.prototype.hasOwnProperty.call(
+        familyMembersByResident,
+        selectedResident.id,
+      )
     : false;
 
   const loadResidentAccessCodes = useCallback(async (residentId) => {
@@ -141,6 +161,41 @@ export function ResidentsView({
     }
   }, []);
 
+  const loadResidentFamilyMembers = useCallback(async (residentId) => {
+    if (!residentId) {
+      return;
+    }
+
+    setFamilyMembersStatus({
+      residentId,
+      isLoading: true,
+      error: "",
+    });
+
+    try {
+      const familyMembers = await listResidentFamilyMembers(residentId);
+
+      setFamilyMembersByResident((currentFamilyMembers) => ({
+        ...currentFamilyMembers,
+        [residentId]: familyMembers,
+      }));
+      setFamilyMembersStatus({
+        residentId,
+        isLoading: false,
+        error: "",
+      });
+    } catch (error) {
+      setFamilyMembersStatus({
+        residentId,
+        isLoading: false,
+        error: getRequestErrorMessage(
+          error,
+          "Não foi possível carregar os familiares deste residente.",
+        ),
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (!isAdmin || !selectedResident?.id || hasLoadedSelectedAccessCodes) {
       return;
@@ -151,6 +206,19 @@ export function ResidentsView({
     hasLoadedSelectedAccessCodes,
     isAdmin,
     loadResidentAccessCodes,
+    selectedResident?.id,
+  ]);
+
+  useEffect(() => {
+    if (!isAdmin || !selectedResident?.id || hasLoadedSelectedFamilyMembers) {
+      return;
+    }
+
+    loadResidentFamilyMembers(selectedResident.id);
+  }, [
+    hasLoadedSelectedFamilyMembers,
+    isAdmin,
+    loadResidentFamilyMembers,
     selectedResident?.id,
   ]);
 
@@ -545,6 +613,8 @@ export function ResidentsView({
               accessCodes={selectedResidentAccessCodes}
               accessCodesStatus={selectedAccessCodesStatus}
               currentTime={currentTime}
+              familyMembers={selectedResidentFamilyMembers}
+              familyMembersStatus={selectedFamilyMembersStatus}
               isAdmin={isAdmin}
               isDeleting={isDeleting}
               isGeneratingAccess={isGeneratingAccess}

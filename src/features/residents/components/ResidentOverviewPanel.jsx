@@ -16,6 +16,7 @@ import { ResidentAccessCodeList } from "./ResidentAccessCodeList";
 import { ResidentAdministrationDetails } from "./ResidentAdministrationDetails";
 import { ResidentConditionList } from "./ResidentConditionList";
 import { ResidentDetailSection } from "./ResidentDetailSection";
+import { ResidentFamilyMemberList } from "./ResidentFamilyMemberList";
 import { ResidentInfoItem } from "./ResidentInfoItem";
 import { ResidentPrescriptionDetails } from "./ResidentPrescriptionDetails";
 import { ResidentStatItem } from "./ResidentStatItem";
@@ -27,6 +28,8 @@ export function ResidentOverviewPanel({
   accessCodes,
   accessCodesStatus,
   currentTime,
+  familyMembers,
+  familyMembersStatus,
   isAdmin,
   isDeleting,
   isGeneratingAccess,
@@ -58,7 +61,9 @@ export function ResidentOverviewPanel({
   const prescriptions = overview?.prescriptions ?? [];
   const administrations = overview?.administrations ?? [];
   const visibleAccessCodes = accessCodes ?? [];
+  const visibleFamilyMembers = familyMembers ?? [];
   const isAccessCodesLoading = accessCodesStatus?.isLoading ?? false;
+  const isFamilyMembersLoading = familyMembersStatus?.isLoading ?? false;
   const isOverviewLoading = overviewStatus.isLoading && !overview;
   const administrationSummary = displayResident
     ? buildResidentAdministrationSummary(
@@ -75,6 +80,11 @@ export function ResidentOverviewPanel({
   ];
 
   if (isAdmin) {
+    tabs.push({
+      id: "family-members",
+      label: "Familiares",
+      count: visibleFamilyMembers.length,
+    });
     tabs.push({
       id: "access-codes",
       label: "Códigos",
@@ -228,6 +238,25 @@ export function ResidentOverviewPanel({
               administrations={administrations}
               currentTime={currentTime}
             />
+          </ResidentDetailSection>
+        ) : null}
+
+        {activeTab === "family-members" && isAdmin ? (
+          <ResidentDetailSection
+            action={`${visibleFamilyMembers.length} ativos`}
+            title="Familiares com acesso"
+          >
+            {familyMembersStatus?.error ? (
+              <div className="resident-inline-alert" role="status">
+                {familyMembersStatus.error}
+              </div>
+            ) : null}
+
+            {isFamilyMembersLoading ? (
+              <LoadingRows compact />
+            ) : (
+              <ResidentFamilyMemberList familyMembers={visibleFamilyMembers} />
+            )}
           </ResidentDetailSection>
         ) : null}
 

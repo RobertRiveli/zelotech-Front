@@ -19,6 +19,12 @@ export async function getResidentOverview(residentId) {
   return data.residentOverview;
 }
 
+export async function listResidentFamilyMembers(residentId) {
+  const data = await api.get(`/residents/${residentId}/family-members`);
+
+  return Array.isArray(data) ? data : data.familyMembers ?? [];
+}
+
 export async function updateResident(residentId, form) {
   const data = await api.patch(
     `/residents/${residentId}`,
