@@ -5,3 +5,9 @@ export async function createResidentAccessCode(residentId, form) {
     maxUses: Number(form.maxUses),
   });
 }
+
+export async function listResidentAccessCodes(residentId) {
+  const data = await api.get(`/residents/${residentId}/access-codes`);
+
+  return data.accessCodes ?? [];
+}

@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
+import { maskCpf } from "@/shared/utils/cpfFormatter";
 import { FieldError } from "@/shared/ui/FieldError";
 
 const genderOptions = [
-  { label: "Feminino", value: "female" },
-  { label: "Masculino", value: "male" },
+  { label: "Feminino", value: "F" },
+  { label: "Masculino", value: "M" },
   { label: "Outro", value: "other" },
 ];
 
@@ -21,11 +23,19 @@ export function ResidentForm({
   errors,
   form,
   isSubmitting,
+  maskCpfField = false,
   onCancel,
   onChange,
   onSubmit,
+  submitLabel = "Salvar residente",
   submitError,
 }) {
+  const [isCpfVisible, setIsCpfVisible] = useState(!maskCpfField);
+
+  useEffect(() => {
+    setIsCpfVisible(!maskCpfField);
+  }, [maskCpfField]);
+
   return (
     <form className="dashboard-form" onSubmit={onSubmit}>
       {submitError ? (
@@ -51,13 +61,27 @@ export function ResidentForm({
 
         <label className="dashboard-field">
           <span>CPF</span>
-          <input
-            inputMode="numeric"
-            name="cpf"
-            placeholder="000.000.000-00"
-            value={form.cpf}
-            onChange={onChange}
-          />
+          <div className="resident-cpf-field-control">
+            <input
+              inputMode="numeric"
+              name="cpf"
+              placeholder="000.000.000-00"
+              readOnly={maskCpfField && !isCpfVisible}
+              value={maskCpfField && !isCpfVisible ? maskCpf(form.cpf) : form.cpf}
+              onChange={maskCpfField && !isCpfVisible ? undefined : onChange}
+            />
+            {maskCpfField ? (
+              <button
+                aria-label={isCpfVisible ? "Ocultar CPF" : "Revelar CPF"}
+                aria-pressed={isCpfVisible}
+                className="resident-sensitive-toggle resident-cpf-toggle"
+                type="button"
+                onClick={() => setIsCpfVisible((currentValue) => !currentValue)}
+              >
+                {isCpfVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            ) : null}
+          </div>
           <FieldError message={errors.cpf} />
         </label>
 
@@ -124,9 +148,77 @@ export function ResidentForm({
           disabled={isSubmitting}
           type="submit"
         >
-          {isSubmitting ? "Salvando..." : "Salvar residente"}
+          {isSubmitting ? "Salvando..." : submitLabel}
         </button>
       </div>
     </form>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="resident-sensitive-toggle-icon"
+      fill="none"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="resident-sensitive-toggle-icon"
+      fill="none"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="m3 3 18 18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M10.6 5.2A10.5 10.5 0 0 1 12 5c6 0 9.5 7 9.5 7a17.3 17.3 0 0 1-3.1 4.1"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M14.1 14.1A3 3 0 0 1 9.9 9.9"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M6.6 6.7C3.9 8.5 2.5 12 2.5 12s3.5 7 9.5 7c1.5 0 2.9-.4 4.1-1"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
   );
 }

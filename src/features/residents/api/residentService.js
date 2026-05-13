@@ -18,3 +18,18 @@ export async function getResidentOverview(residentId) {
 
   return data.residentOverview;
 }
+
+export async function updateResident(residentId, form) {
+  const data = await api.patch(
+    `/residents/${residentId}`,
+    normalizeResidentPayload(form),
+  );
+
+  return data.resident;
+}
+
+export async function deleteResident(residentId) {
+  const data = await api.delete(`/residents/${residentId}`);
+
+  return data.resident;
+}

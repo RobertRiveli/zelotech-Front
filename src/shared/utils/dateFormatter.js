@@ -8,8 +8,36 @@ export function toDate(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function toCalendarDate(value) {
+  const dateParts = getDateOnlyParts(value);
+
+  if (dateParts) {
+    const [year, month, day] = dateParts;
+
+    return new Date(year, month - 1, day);
+  }
+
+  return toDate(value);
+}
+
+function getDateOnlyParts(value) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const match = value.match(
+    /^(\d{4})-(\d{2})-(\d{2})(?:T00:00:00(?:\.000)?Z)?$/,
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
 export function calculateAge(birthDate, referenceDate = new Date()) {
-  const birth = toDate(birthDate);
+  const birth = toCalendarDate(birthDate);
   const reference = toDate(referenceDate) ?? new Date();
 
   if (!birth) {
@@ -57,7 +85,7 @@ export function formatDate(value) {
 }
 
 export function formatShortDate(value) {
-  const date = toDate(value);
+  const date = toCalendarDate(value);
 
   if (!date) {
     return "Sem data";

@@ -1,1 +1,1 @@
-export { formatCpf, isValidCpf, onlyNumbers } from "./documentFormatter";
+export { formatCpf, isValidCpf, maskCpf, onlyNumbers } from "./documentFormatter";

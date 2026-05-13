@@ -10,8 +10,10 @@ export function getAgeLabel(resident, currentTime) {
 export function formatGender(value) {
   const normalized = normalizeText(value);
   const genderLabels = {
+    f: "Feminino",
     female: "Feminino",
     feminino: "Feminino",
+    m: "Masculino",
     male: "Masculino",
     masculino: "Masculino",
     other: "Outro",
