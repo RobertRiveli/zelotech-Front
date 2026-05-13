@@ -143,32 +143,38 @@ export function DashboardHome({
         </section>
       </section>
 
-      <section className="dashboard-work-grid dashboard-secondary-grid">
-        <section className="dashboard-panel">
-          <PanelHeader overline="Operação" title="Status da agenda" />
+      <section className="dashboard-secondary-stack">
+        <section className="dashboard-status-band">
+          <PanelHeader
+            overline="Operação"
+            title="Status da agenda"
+            action={`${dashboardSummary.completionRate}% concluída`}
+          />
           <StatusDistribution
             total={dashboardSummary.totalAdministrations}
             statusCounts={dashboardSummary.statusCounts}
           />
         </section>
 
-        <section className="dashboard-panel">
-          <PanelHeader
-            overline="Prescrições"
-            title="Acompanhamento"
-            action={`${dashboardSummary.filteredPrescriptions.length} ativas`}
-          />
-          <PrescriptionList prescriptions={dashboardSummary.filteredPrescriptions} />
-        </section>
+        <div className="dashboard-support-grid">
+          <section className="dashboard-panel dashboard-panel-subtle">
+            <PanelHeader
+              overline="Prescrições"
+              title="Acompanhamento"
+              action={`${dashboardSummary.filteredPrescriptions.length} ativas`}
+            />
+            <PrescriptionList prescriptions={dashboardSummary.filteredPrescriptions} />
+          </section>
 
-        <section className="dashboard-panel">
-          <PanelHeader
-            overline="Residentes"
-            title="Admissões recentes"
-            action={`${dashboardSummary.filteredResidents.length} ativos`}
-          />
-          <ResidentList residents={dashboardSummary.filteredResidents} />
-        </section>
+          <section className="dashboard-panel dashboard-panel-subtle">
+            <PanelHeader
+              overline="Residentes"
+              title="Admissões recentes"
+              action={`${dashboardSummary.filteredResidents.length} ativos`}
+            />
+            <ResidentList residents={dashboardSummary.filteredResidents} />
+          </section>
+        </div>
       </section>
     </>
   );

@@ -22,6 +22,7 @@ export function StatusDistribution({ total, statusCounts }) {
             <div>
               <span>{administrationStatusLabels[status]}</span>
               <strong>{count}</strong>
+              <small>{percentage}%</small>
             </div>
             <div className="dashboard-status-track" aria-hidden="true">
               <span
