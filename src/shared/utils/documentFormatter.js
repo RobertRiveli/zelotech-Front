@@ -25,6 +25,13 @@ export function formatCpf(value = "") {
   return formatDocument(value, [3, 3, 3, 2], [".", ".", "-"]);
 }
 
+export function maskCpf(value = "") {
+  const numbers = onlyNumbers(value);
+  const verificationDigits = numbers.length >= 2 ? numbers.slice(-2) : "**";
+
+  return `***.***.***-${verificationDigits}`;
+}
+
 export function formatCnpj(value = "") {
   return formatDocument(value, [2, 3, 3, 4, 2], [".", ".", "/", "-"]);
 }

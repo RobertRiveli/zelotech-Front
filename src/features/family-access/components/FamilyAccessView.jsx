@@ -13,6 +13,7 @@ import { LoadingRows } from "@/shared/ui/LoadingRows";
 import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { ResidentListItem } from "@/features/residents/components/ResidentListItem";
+import { formatGender } from "@/features/residents/utils/residentFormatters";
 import "./FamilyAccessView.css";
 
 const relationshipOptions = [
@@ -471,6 +472,7 @@ function filterResidents(residents, searchTerm) {
     const searchableContent = [
       resident.fullName,
       resident.gender,
+      formatGender(resident.gender),
       resident.bloodType,
       resident.status,
     ]

@@ -9,6 +9,7 @@ import {
   compareByAdmissionDate,
   compareByFullName,
 } from "@/features/residents/utils/residentSorters";
+import { formatGender } from "@/features/residents/utils/residentFormatters";
 
 export function buildDashboardSummary(data, searchTerm, currentTime) {
   const normalizedSearch = normalizeText(searchTerm);
@@ -59,6 +60,7 @@ export function buildDashboardSummary(data, searchTerm, currentTime) {
         resident.cpf,
         resident.bloodType,
         resident.gender,
+        formatGender(resident.gender),
         resident.status,
       ],
       normalizedSearch,

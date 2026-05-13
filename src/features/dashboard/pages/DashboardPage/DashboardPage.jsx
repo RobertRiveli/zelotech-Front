@@ -52,6 +52,7 @@ function DashboardPage() {
   const {
     selectedOverviewStatus,
     selectedResidentOverview,
+    updateResidentOverview,
     visibleSelectedResidentId,
   } = useResidentOverview({
     enabled: activeItem === "Residentes",
@@ -100,6 +101,36 @@ function DashboardPage() {
         residents: [resident, ...residentsWithoutCreated],
       };
     });
+  }
+
+  function handleResidentDeleted(resident) {
+    if (!resident) {
+      return;
+    }
+
+    setSearchTerm("");
+    setSelectedResidentId("");
+    setDashboardData((currentData) => ({
+      ...currentData,
+      residents: currentData.residents.filter(
+        (currentResident) => currentResident.id !== resident.id,
+      ),
+    }));
+  }
+
+  function handleResidentUpdated(resident) {
+    if (!resident) {
+      return;
+    }
+
+    setDashboardData((currentData) => ({
+      ...currentData,
+      residents: currentData.residents.map((currentResident) =>
+        currentResident.id === resident.id ? resident : currentResident,
+      ),
+    }));
+    updateResidentOverview(resident);
+    setSelectedResidentId(resident.id);
   }
 
   function handleAdministrationsChange(administrations) {
@@ -151,6 +182,8 @@ function DashboardPage() {
           isAdmin={isAdmin}
           isLoading={isLoading}
           onResidentCreated={handleResidentCreated}
+          onResidentDeleted={handleResidentDeleted}
+          onResidentUpdated={handleResidentUpdated}
           onSelectResident={setSelectedResidentId}
           overview={selectedResidentOverview}
           overviewStatus={selectedOverviewStatus}

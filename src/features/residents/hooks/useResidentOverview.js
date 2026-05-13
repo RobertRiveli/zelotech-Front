@@ -83,9 +83,35 @@ export function useResidentOverview({
     };
   }, [enabled, visibleSelectedResidentId, selectedResidentOverview]);
 
+  function updateResidentOverview(resident) {
+    if (!resident?.id) {
+      return;
+    }
+
+    setResidentOverviews((currentOverviews) => {
+      const currentOverview = currentOverviews[resident.id];
+
+      if (!currentOverview) {
+        return currentOverviews;
+      }
+
+      return {
+        ...currentOverviews,
+        [resident.id]: {
+          ...currentOverview,
+          resident: {
+            ...currentOverview.resident,
+            ...resident,
+          },
+        },
+      };
+    });
+  }
+
   return {
     selectedOverviewStatus,
     selectedResidentOverview,
+    updateResidentOverview,
     visibleSelectedResidentId,
   };
 }
