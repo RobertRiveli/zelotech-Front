@@ -26,6 +26,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
 import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
+import { PrescriptionDeactivateModal } from "./PrescriptionDeactivateModal";
 import { PrescriptionDetailPanel } from "./PrescriptionDetailPanel";
 import { PrescriptionForm } from "./PrescriptionForm";
 import { PrescriptionRow } from "./PrescriptionRow";
@@ -60,6 +61,7 @@ export function PrescriptionsView({
   const [formErrors, setFormErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [prescriptionToDeactivate, setPrescriptionToDeactivate] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -262,11 +264,11 @@ export function PrescriptionsView({
       return;
     }
 
-    const confirmed = window.confirm(
-      `Desativar a prescrição de ${visibleSelectedPrescription.resident?.fullName ?? "residente"}?`,
-    );
+    setPrescriptionToDeactivate(visibleSelectedPrescription);
+  }
 
-    if (!confirmed) {
+  async function handleConfirmDeactivate() {
+    if (!prescriptionToDeactivate) {
       return;
     }
 
@@ -274,11 +276,13 @@ export function PrescriptionsView({
     setFeedback("");
 
     try {
-      await deactivatePrescription(visibleSelectedPrescription.id);
+      await deactivatePrescription(prescriptionToDeactivate.id);
       await refreshPrescriptions("");
       setMode("detail");
+      setPrescriptionToDeactivate(null);
       setFeedback("Prescrição desativada com sucesso.");
     } catch (error) {
+      setPrescriptionToDeactivate(null);
       setDetailStatus({
         error: getRequestErrorMessage(error),
         isLoading: false,
@@ -292,26 +296,15 @@ export function PrescriptionsView({
   const activeFilterLabel =
     prescriptionFilters.find((filter) => filter.id === activeFilter)?.label ??
     "Todas";
+  const filterCounts = {
+    all: stats.active,
+    ending: stats.endingSoon,
+    open: stats.withoutEndDate,
+    today: stats.firstScheduledToday,
+  };
 
   return (
     <>
-      <section className="dashboard-hero prescriptions-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Prescrições</span>
-          <h2>Gestão das prescrições ativas</h2>
-          <p>
-            Cadastro clínico-operacional com residente, medicamento, dose,
-            frequência e geração automática da agenda de administrações.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo de prescrições">
-          <span className="dashboard-company-status is-active">Ativas</span>
-          <strong>{stats.active} prescrições</strong>
-          <span>{stats.endingSoon} encerrando em 7 dias</span>
-        </div>
-      </section>
-
       <section
         className="dashboard-overview-grid"
         aria-label="Resumo de prescrições"
@@ -349,14 +342,18 @@ export function PrescriptionsView({
             <div className="dashboard-filter-group" aria-label="Filtros">
               {prescriptionFilters.map((filter) => (
                 <button
-                  className={`dashboard-filter-button${
+                  aria-pressed={activeFilter === filter.id}
+                  className={`dashboard-filter-button prescription-filter-button${
                     activeFilter === filter.id ? " is-active" : ""
                   }`}
                   key={filter.id}
                   type="button"
                   onClick={() => setActiveFilter(filter.id)}
                 >
-                  {filter.label}
+                  <span className="prescription-filter-label">{filter.label}</span>
+                  <span className="prescription-filter-count">
+                    {filterCounts[filter.id] ?? 0}
+                  </span>
                 </button>
               ))}
             </div>
@@ -389,6 +386,12 @@ export function PrescriptionsView({
             <LoadingRows />
           ) : filteredPrescriptions.length > 0 ? (
             <div className="prescription-directory">
+              <div className="prescription-directory-header" aria-hidden="true">
+                <span>Status</span>
+                <span>Residente e medicamento</span>
+                <span>Dose e frequência</span>
+              </div>
+
               {filteredPrescriptions.map((prescription) => (
                 <PrescriptionRow
                   currentTime={currentTime}
@@ -410,7 +413,7 @@ export function PrescriptionsView({
               <PanelHeader
                 overline={mode === "edit" ? "Edição" : "Cadastro"}
                 title={mode === "edit" ? "Editar prescrição" : "Nova prescrição"}
-                action={mode === "edit" ? "PATCH" : "POST"}
+                action={mode === "edit" ? "Editando" : "Criando"}
               />
 
               {unitsError ? (
@@ -446,7 +449,15 @@ export function PrescriptionsView({
           )}
         </section>
       </section>
+
+      {prescriptionToDeactivate ? (
+        <PrescriptionDeactivateModal
+          isMutating={isSubmitting}
+          prescription={prescriptionToDeactivate}
+          onClose={() => setPrescriptionToDeactivate(null)}
+          onConfirm={handleConfirmDeactivate}
+        />
+      ) : null}
     </>
   );
 }
-

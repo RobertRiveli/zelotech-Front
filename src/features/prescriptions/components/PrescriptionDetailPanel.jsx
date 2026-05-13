@@ -27,12 +27,14 @@ export function PrescriptionDetailPanel({
   }
 
   const status = getPrescriptionStatus(prescription, currentTime);
+  const residentName = prescription.resident?.fullName ?? "Prescrição";
+  const medicationName = getMedicationName(prescription.medication);
 
   return (
     <div className="prescription-detail">
       <PanelHeader
         overline="Detalhe"
-        title={prescription.resident?.fullName ?? "Prescrição"}
+        title={residentName}
         action={status.label}
       />
 
@@ -43,40 +45,42 @@ export function PrescriptionDetailPanel({
       ) : null}
 
       <div className="prescription-detail-summary">
-        <div>
-          <span>Medicamento</span>
-          <strong>{getMedicationName(prescription.medication)}</strong>
+        <div className="prescription-detail-summary-main">
+          <span>Plano medicamentoso</span>
+          <strong>{medicationName}</strong>
+          <small>{residentName}</small>
         </div>
         <span className={`dashboard-status-badge is-${status.tone}`}>
           {status.label}
         </span>
       </div>
 
-      <div className="dashboard-detail-grid">
-        <DetailItem label="Dose" value={formatPrescriptionDosage(prescription)} />
+      <div className="dashboard-detail-grid prescription-clinical-grid">
+        <DetailItem
+          label="Dose"
+          value={formatPrescriptionDosage(prescription)}
+        />
         <DetailItem label="Frequência" value={prescription.frequency} />
         <DetailItem
           label="Intervalo"
           value={formatInterval(prescription.intervalHours)}
         />
-        <DetailItem label="Prescritor" value={prescription.prescribedBy} />
         <DetailItem
           label="Primeiro horário"
           value={formatDateTime(prescription.firstScheduledAt)}
         />
-        <DetailItem
-          label="Período"
-          value={formatDateRange(prescription.startDate, prescription.endDate)}
-        />
-        <DetailItem
-          label="Criada em"
-          value={formatShortDate(prescription.createdAt)}
-        />
-        <DetailItem
-          label="Atualizada em"
-          value={formatShortDate(prescription.updatedAt)}
-        />
       </div>
+
+      <section className="prescription-detail-section">
+        <h3>Responsável e período</h3>
+        <div className="dashboard-detail-grid">
+          <DetailItem label="Prescritor" value={prescription.prescribedBy} />
+          <DetailItem
+            label="Período"
+            value={formatDateRange(prescription.startDate, prescription.endDate)}
+          />
+        </div>
+      </section>
 
       {!prescription.endDate ? (
         <div className="dashboard-context-note" role="note">
@@ -84,6 +88,20 @@ export function PrescriptionDetailPanel({
           administrações.
         </div>
       ) : null}
+
+      <section className="prescription-detail-section prescription-detail-section-muted">
+        <h3>Registro</h3>
+        <div className="dashboard-detail-grid">
+          <DetailItem
+            label="Criada em"
+            value={formatShortDate(prescription.createdAt)}
+          />
+          <DetailItem
+            label="Atualizada em"
+            value={formatShortDate(prescription.updatedAt)}
+          />
+        </div>
+      </section>
 
       <div className="dashboard-form-actions">
         <button
