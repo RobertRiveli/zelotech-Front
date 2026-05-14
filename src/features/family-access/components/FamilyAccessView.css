@@ -1,266 +1,219 @@
-.family-access-list-panel,
-.family-access-detail-panel {
-  min-height: 640px;
-}
-
-.family-access-form,
-.family-access-guidance,
-.family-access-relationships,
-.family-access-history {
-  display: grid;
-  gap: 14px;
-}
-
-.family-access-form {
-  margin-bottom: 18px;
-}
-
-.family-access-form-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px;
-  gap: 10px;
-}
-
-.family-access-note,
-.family-access-placeholder {
-  padding: 12px 14px;
-  border: 1px solid rgba(13, 148, 136, 0.24);
-  border-radius: var(--r8);
-  background: var(--teal-tint);
-  color: var(--teal-dark);
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.family-access-resident-list,
-.family-access-step-list,
-.family-access-history-list {
-  display: grid;
-  gap: 10px;
-}
-
-.family-access-resident-row {
-  min-height: 104px;
-}
-
-.family-access-code-card {
+.family-access-panel {
   min-width: 0;
-  padding: 18px;
-  display: grid;
-  gap: 14px;
-  border: 1px solid rgba(13, 148, 136, 0.28);
-  border-radius: var(--r8);
-  background: var(--teal-tint);
+  min-height: 520px;
+  overflow: hidden;
 }
 
-.family-access-code-card > span {
-  color: var(--teal-dark);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-.family-access-code-value {
-  color: var(--navy);
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 1;
-  word-break: break-word;
-}
-
-.family-access-code-meta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.family-access-filter-button {
   gap: 8px;
 }
 
-.family-access-code-meta span {
-  min-height: 38px;
-  padding: 9px 10px;
-  display: flex;
+.family-access-filter-button small {
+  min-width: 24px;
+  min-height: 22px;
+  padding: 0 7px;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: var(--r8);
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--body);
-  font-size: 12px;
+  background: var(--white);
+  color: inherit;
+  font-size: 11px;
   font-weight: 800;
-  line-height: 1.35;
 }
 
-.family-access-code-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.family-access-placeholder {
+.family-access-directory {
+  min-width: 0;
   display: grid;
   gap: 8px;
+  overflow-x: hidden;
+}
+
+.family-access-directory.is-scrollable {
+  max-height: 560px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.family-access-directory.is-scrollable:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.16);
+  outline-offset: 3px;
+}
+
+.family-access-directory.is-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.family-access-directory.is-scrollable::-webkit-scrollbar-track {
   background: var(--bg);
-  color: var(--body);
+  border-radius: var(--r8);
 }
 
-.family-access-placeholder strong {
-  color: var(--navy);
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.35;
+.family-access-directory.is-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(90, 100, 120, 0.34);
+  border-radius: var(--r8);
 }
 
-.family-access-placeholder p {
-  color: var(--body);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.6;
+.family-access-directory.is-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(90, 100, 120, 0.48);
 }
 
-.family-access-section-header {
-  display: grid;
-  gap: 4px;
-}
-
-.family-access-section-header .overline {
-  margin-bottom: 0;
-}
-
-.family-access-section-header h3 {
-  color: var(--navy);
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-.family-access-step {
+.family-access-directory-header,
+.family-access-row {
   min-width: 0;
-  padding: 12px;
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(0, 1fr)
+    minmax(0, 0.72fr)
+    minmax(0, 0.56fr)
+    minmax(0, 0.48fr)
+    minmax(0, 0.66fr);
+  gap: 12px;
   align-items: center;
+}
+
+.family-access-directory-header {
+  padding: 0 13px 6px;
+}
+
+.family-access-directory-header span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.family-access-row {
+  min-height: 76px;
+  padding: 13px;
   border: 1px solid var(--border);
   border-radius: var(--r8);
   background: var(--white);
+  box-shadow: 0 8px 18px rgba(22, 32, 64, 0.03);
 }
 
-.family-access-step > span {
-  width: 30px;
-  height: 30px;
+.family-access-row > span,
+.family-access-row time {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.family-access-status-cell {
+  min-width: 0;
+}
+
+.family-access-person-cell {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.family-access-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   background: var(--navy-tint);
   color: var(--navy);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
 }
 
-.family-access-step p {
-  color: var(--body);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.family-access-chip-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.family-access-chip-list span {
-  min-height: 34px;
-  padding: 0 10px;
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--r8);
-  background: var(--bg);
-  color: var(--body);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.family-access-history-item {
-  min-width: 0;
-  padding: 12px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--r8);
-  background: var(--white);
-}
-
-.family-access-history-item div {
+.family-access-person-cell div,
+.family-access-resident-cell {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  gap: 5px;
 }
 
-.family-access-history-item strong,
-.family-access-history-item span,
-.family-access-history-item small {
+.family-access-person-cell strong,
+.family-access-person-cell span,
+.family-access-resident-cell strong,
+.family-access-resident-cell span {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.family-access-history-item strong {
+.family-access-person-cell strong,
+.family-access-resident-cell strong {
   color: var(--navy);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.2;
 }
 
-.family-access-history-item span {
+.family-access-person-cell span,
+.family-access-resident-cell span {
   color: var(--body);
   font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.family-access-history-item small {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-@media (max-width: 760px) {
-  .family-access-list-panel,
-  .family-access-detail-panel {
-    min-height: auto;
+@media (max-width: 1080px) {
+  .family-access-directory-header {
+    display: none;
   }
-}
 
-@media (max-width: 760px) {
-  .family-access-form-grid,
-  .family-access-code-meta {
-    grid-template-columns: 1fr;
+  .family-access-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
-}
 
-@media (max-width: 560px) {
-  .family-access-history-item strong,
-  .family-access-history-item span,
-  .family-access-history-item small {
+  .family-access-person-cell strong,
+  .family-access-person-cell span,
+  .family-access-resident-cell strong,
+  .family-access-resident-cell span {
     white-space: normal;
   }
-}
 
-@media (max-width: 560px) {
-  .family-access-code-actions,
-  .family-access-history-item {
+  .family-access-row > span,
+  .family-access-row time {
+    min-height: 44px;
+    padding: 8px 10px;
     display: grid;
-    grid-template-columns: 1fr;
+    gap: 4px;
+    align-content: center;
+    border-radius: var(--r8);
+    background: var(--bg);
+    white-space: normal;
+  }
+
+  .family-access-row > span::before,
+  .family-access-row time::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .family-access-row .dashboard-status-badge {
+    width: max-content;
   }
 }
 
-@media (max-width: 560px) {
-  .family-access-code-actions .dashboard-button,
-  .family-access-history-item .dashboard-button {
-    width: 100%;
+@media (max-width: 760px) {
+  .family-access-row {
+    grid-template-columns: 1fr;
   }
 }

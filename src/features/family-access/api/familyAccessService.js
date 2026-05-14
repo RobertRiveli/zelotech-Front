@@ -11,3 +11,9 @@ export async function listResidentAccessCodes(residentId) {
 
   return data.accessCodes ?? [];
 }
+
+export async function listCompanyFamilyAccesses() {
+  const data = await api.get("/family-members/accesses");
+
+  return Array.isArray(data.accesses) ? data.accesses : [];
+}

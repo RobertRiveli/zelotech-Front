@@ -223,9 +223,7 @@ function DashboardPage() {
         />
       ) : activeItem === "Família / Acessos" ? (
         <FamilyAccessView
-          currentTime={currentTime}
-          isLoading={isLoading}
-          residents={dashboardData.residents}
+          isAdmin={isAdmin}
           searchTerm={searchTerm}
         />
       ) : (
