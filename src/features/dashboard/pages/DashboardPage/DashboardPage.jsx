@@ -7,6 +7,7 @@ import { MedicationAdministrationsView } from "@/features/medication-administrat
 import { MedicationsView } from "@/features/medications/components/MedicationsView";
 import { PrescriptionsView } from "@/features/prescriptions/components/PrescriptionsView";
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
+import { TeamView } from "@/features/users/components/TeamView";
 import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
 import { useDashboardData } from "@/features/dashboard/hooks/useDashboardData";
 import { dashboardMenuItems } from "@/features/dashboard/constants/dashboardMenuItems";
@@ -226,6 +227,8 @@ function DashboardPage() {
           isAdmin={isAdmin}
           searchTerm={searchTerm}
         />
+      ) : activeItem === "Equipe" ? (
+        <TeamView searchTerm={searchTerm} />
       ) : (
         <DashboardHome
           companyName={companyName}

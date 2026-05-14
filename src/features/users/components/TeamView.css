@@ -1,0 +1,193 @@
+.team-panel {
+  min-height: 520px;
+}
+
+.team-filter-button {
+  gap: 8px;
+}
+
+.team-filter-button small {
+  min-width: 24px;
+  min-height: 22px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r8);
+  background: var(--white);
+  color: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.team-directory {
+  display: grid;
+  gap: 8px;
+}
+
+.team-directory.is-scrollable {
+  max-height: 560px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.team-directory.is-scrollable:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.16);
+  outline-offset: 3px;
+}
+
+.team-directory.is-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.team-directory.is-scrollable::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-radius: var(--r8);
+}
+
+.team-directory.is-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(90, 100, 120, 0.34);
+  border-radius: var(--r8);
+}
+
+.team-directory.is-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(90, 100, 120, 0.48);
+}
+
+.team-directory-header,
+.team-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns:
+    minmax(230px, 1.35fr)
+    minmax(150px, 0.8fr)
+    minmax(140px, 0.7fr)
+    minmax(132px, 0.62fr)
+    minmax(104px, 0.5fr)
+    minmax(110px, 0.52fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.team-directory-header {
+  padding: 0 13px 6px;
+}
+
+.team-directory-header span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.team-row {
+  min-height: 76px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+  box-shadow: 0 8px 18px rgba(22, 32, 64, 0.03);
+}
+
+.team-row > span,
+.team-row time {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-user-cell {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--navy-tint);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-user-cell div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.team-user-cell strong,
+.team-user-cell span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-user-cell strong {
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.team-user-cell span {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@media (max-width: 1180px) {
+  .team-directory {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .team-directory-header,
+  .team-row {
+    min-width: 960px;
+  }
+}
+
+@media (max-width: 760px) {
+  .team-directory {
+    overflow-x: visible;
+  }
+
+  .team-directory-header {
+    display: none;
+  }
+
+  .team-row {
+    min-width: 0;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .team-row > span,
+  .team-row time {
+    white-space: normal;
+  }
+
+  .team-row .dashboard-status-badge {
+    width: max-content;
+  }
+}
