@@ -33,7 +33,7 @@ export function DashboardSidebar({
               onClick={() => onMenuSelect(item)}
             >
               <span className="dashboard-menu-icon" aria-hidden="true">
-                <MenuItemIcon />
+                <MenuItemIcon item={item} />
               </span>
               <span>{item}</span>
             </button>
