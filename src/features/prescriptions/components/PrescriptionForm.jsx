@@ -35,9 +35,14 @@ export function PrescriptionForm({
   units,
 }) {
   const isEditing = mode === "edit";
+  let submitLabel = isEditing ? "Salvar alterações" : "Salvar prescrição";
+
+  if (isSubmitting) {
+    submitLabel = "Salvando...";
+  }
 
   return (
-    <form className="dashboard-form" onSubmit={onSubmit}>
+    <form className="dashboard-form" noValidate onSubmit={onSubmit}>
       {submitError ? (
         <div
           className="dashboard-form-alert dashboard-form-alert-danger"
@@ -48,11 +53,17 @@ export function PrescriptionForm({
       ) : null}
 
       <div className="dashboard-form-grid">
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${
+            errors.residentId || errors.resident ? " has-error" : ""
+          }`}
+        >
           <span>Residente</span>
           <select
+            aria-invalid={Boolean(errors.residentId || errors.resident)}
             disabled={isSubmitting || isLoadingAuxiliaryData}
             name="residentId"
+            required
             value={form.residentId}
             onChange={onChange}
           >
@@ -66,11 +77,17 @@ export function PrescriptionForm({
           <FieldError message={errors.residentId || errors.resident} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${
+            errors.medicationId || errors.medication ? " has-error" : ""
+          }`}
+        >
           <span>Medicamento</span>
           <select
+            aria-invalid={Boolean(errors.medicationId || errors.medication)}
             disabled={isSubmitting || isLoadingAuxiliaryData}
             name="medicationId"
+            required
             value={form.medicationId}
             onChange={onChange}
           >
@@ -86,11 +103,19 @@ export function PrescriptionForm({
           />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${
+            errors.measurementUnitId || errors.measurementUnit ? " has-error" : ""
+          }`}
+        >
           <span>Unidade</span>
           <select
+            aria-invalid={Boolean(
+              errors.measurementUnitId || errors.measurementUnit,
+            )}
             disabled={isSubmitting || isLoadingAuxiliaryData}
             name="measurementUnitId"
+            required
             value={form.measurementUnitId}
             onChange={onChange}
           >
@@ -106,23 +131,27 @@ export function PrescriptionForm({
           />
         </label>
 
-        <label className="dashboard-field">
+        <label className={`dashboard-field${errors.dosage ? " has-error" : ""}`}>
           <span>Dosagem</span>
           <input
+            aria-invalid={Boolean(errors.dosage)}
             name="dosage"
             placeholder="500"
+            required
             value={form.dosage}
             onChange={onChange}
           />
           <FieldError message={errors.dosage} />
         </label>
 
-        <label className="dashboard-field">
+        <label className={`dashboard-field${errors.route ? " has-error" : ""}`}>
           <span>Via</span>
           <input
+            aria-invalid={Boolean(errors.route)}
             list="prescription-route-options"
             name="route"
             placeholder="oral"
+            required
             value={form.route}
             onChange={onChange}
           />
@@ -134,12 +163,16 @@ export function PrescriptionForm({
           <FieldError message={errors.route} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${errors.frequency ? " has-error" : ""}`}
+        >
           <span>Frequência</span>
           <input
+            aria-invalid={Boolean(errors.frequency)}
             list="prescription-frequency-options"
             name="frequency"
             placeholder="a cada 8 horas"
+            required
             value={form.frequency}
             onChange={onChange}
           />
@@ -151,11 +184,15 @@ export function PrescriptionForm({
           <FieldError message={errors.frequency} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${errors.intervalHours ? " has-error" : ""}`}
+        >
           <span>Intervalo em horas</span>
           <input
+            aria-invalid={Boolean(errors.intervalHours)}
             min="1"
             name="intervalHours"
+            required
             type="number"
             value={form.intervalHours}
             onChange={onChange}
@@ -163,10 +200,16 @@ export function PrescriptionForm({
           <FieldError message={errors.intervalHours} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${
+            errors.firstScheduledAt ? " has-error" : ""
+          }`}
+        >
           <span>Primeira data</span>
           <input
+            aria-invalid={Boolean(errors.firstScheduledAt)}
             name="firstScheduledDate"
+            required
             type="date"
             value={form.firstScheduledDate}
             onChange={onChange}
@@ -174,20 +217,30 @@ export function PrescriptionForm({
           <FieldError message={errors.firstScheduledAt} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${
+            errors.firstScheduledAt ? " has-error" : ""
+          }`}
+        >
           <span>Primeiro horário</span>
           <input
+            aria-invalid={Boolean(errors.firstScheduledAt)}
             name="firstScheduledTime"
+            required
             type="time"
             value={form.firstScheduledTime}
             onChange={onChange}
           />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${errors.startDate ? " has-error" : ""}`}
+        >
           <span>Data inicial</span>
           <input
+            aria-invalid={Boolean(errors.startDate)}
             name="startDate"
+            required
             type="date"
             value={form.startDate}
             onChange={onChange}
@@ -195,9 +248,10 @@ export function PrescriptionForm({
           <FieldError message={errors.startDate} />
         </label>
 
-        <label className="dashboard-field">
+        <label className={`dashboard-field${errors.endDate ? " has-error" : ""}`}>
           <span>Data final</span>
           <input
+            aria-invalid={Boolean(errors.endDate)}
             name="endDate"
             type="date"
             value={form.endDate}
@@ -206,11 +260,15 @@ export function PrescriptionForm({
           <FieldError message={errors.endDate} />
         </label>
 
-        <label className="dashboard-field">
+        <label
+          className={`dashboard-field${errors.prescribedBy ? " has-error" : ""}`}
+        >
           <span>Prescritor</span>
           <input
+            aria-invalid={Boolean(errors.prescribedBy)}
             name="prescribedBy"
             placeholder="Dr. Carlos Mendes"
+            required
             value={form.prescribedBy}
             onChange={onChange}
           />
@@ -238,7 +296,7 @@ export function PrescriptionForm({
           disabled={isSubmitting}
           type="submit"
         >
-          {isSubmitting ? "Salvando..." : "Salvar prescrição"}
+          {submitLabel}
         </button>
       </div>
     </form>

@@ -22,19 +22,21 @@ import {
   createPrescriptionFormFromPrescription,
 } from "@/features/prescriptions/utils/prescriptionForm";
 import { validatePrescriptionForm } from "@/features/prescriptions/validations/prescriptionSchema";
-import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
 import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { PrescriptionDeactivateModal } from "./PrescriptionDeactivateModal";
 import { PrescriptionDetailPanel } from "./PrescriptionDetailPanel";
-import { PrescriptionForm } from "./PrescriptionForm";
+import { PrescriptionFormModal } from "./PrescriptionFormModal";
 import { PrescriptionRow } from "./PrescriptionRow";
 import "./PrescriptionsView.css";
 
 const fieldErrorAliases = {
+  medicationId: ["medication"],
+  measurementUnitId: ["measurementUnit"],
   firstScheduledDate: ["firstScheduledAt"],
   firstScheduledTime: ["firstScheduledAt"],
+  residentId: ["resident"],
 };
 
 export function PrescriptionsView({
@@ -42,6 +44,7 @@ export function PrescriptionsView({
   isLoading,
   medications,
   onPrescriptionsChange,
+  onSearchChange,
   prescriptions,
   residents,
   searchTerm,
@@ -50,13 +53,14 @@ export function PrescriptionsView({
   const [isLoadingUnits, setIsLoadingUnits] = useState(true);
   const [unitsError, setUnitsError] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [localSearch, setLocalSearch] = useState("");
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState(null);
   const [detailStatus, setDetailStatus] = useState({
     error: "",
     isLoading: false,
   });
-  const [mode, setMode] = useState("detail");
+  const [formMode, setFormMode] = useState("");
   const [form, setForm] = useState(() => createEmptyPrescriptionForm());
   const [formErrors, setFormErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
@@ -64,6 +68,7 @@ export function PrescriptionsView({
   const [prescriptionToDeactivate, setPrescriptionToDeactivate] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const globalSearchTerm = searchTerm ?? "";
 
   useEffect(() => {
     let isMounted = true;
@@ -104,22 +109,32 @@ export function PrescriptionsView({
     () => buildPrescriptionStats(sortedPrescriptions, currentTime),
     [currentTime, sortedPrescriptions],
   );
-  const filteredPrescriptions = useMemo(
+  const filteredByLocalControls = useMemo(
     () =>
       filterPrescriptions(sortedPrescriptions, {
         currentTime,
         filterId: activeFilter,
-        searchTerm,
+        searchTerm: localSearch,
       }),
-    [activeFilter, currentTime, searchTerm, sortedPrescriptions],
+    [activeFilter, currentTime, localSearch, sortedPrescriptions],
+  );
+  const filteredPrescriptions = useMemo(
+    () =>
+      globalSearchTerm
+        ? filterPrescriptions(filteredByLocalControls, {
+            currentTime,
+            filterId: "all",
+            searchTerm: globalSearchTerm,
+          })
+        : filteredByLocalControls,
+    [currentTime, filteredByLocalControls, globalSearchTerm],
   );
 
-  const selectedFromList =
-    filteredPrescriptions.find(
-      (prescription) => prescription.id === selectedPrescriptionId,
-    ) ??
-    filteredPrescriptions[0] ??
-    null;
+  const selectedFromList = selectedPrescriptionId
+    ? filteredPrescriptions.find(
+        (prescription) => prescription.id === selectedPrescriptionId,
+      ) ?? null
+    : null;
   const visibleSelectedPrescription =
     selectedPrescription?.id === selectedFromList?.id
       ? selectedPrescription
@@ -132,10 +147,11 @@ export function PrescriptionsView({
     try {
       const nextPrescriptions = await listPrescriptions();
       const sortedNextPrescriptions = [...nextPrescriptions].sort(compareByStartDate);
-      const nextSelected =
-        sortedNextPrescriptions.find(
-          (prescription) => prescription.id === preferredPrescriptionId,
-        ) ?? sortedNextPrescriptions[0] ?? null;
+      const nextSelected = preferredPrescriptionId
+        ? sortedNextPrescriptions.find(
+            (prescription) => prescription.id === preferredPrescriptionId,
+          ) ?? null
+        : null;
 
       onPrescriptionsChange?.(sortedNextPrescriptions);
       setSelectedPrescriptionId(nextSelected?.id ?? "");
@@ -164,7 +180,7 @@ export function PrescriptionsView({
   }
 
   function handleStartCreate() {
-    setMode("create");
+    setFormMode("create");
     setForm(createEmptyPrescriptionForm());
     setFormErrors({});
     setSubmitError("");
@@ -172,7 +188,7 @@ export function PrescriptionsView({
   }
 
   function handleSelectPrescription(prescription) {
-    setMode("detail");
+    setFormMode("");
     setSelectedPrescriptionId(prescription.id);
     setSelectedPrescription(prescription);
     setSubmitError("");
@@ -180,22 +196,22 @@ export function PrescriptionsView({
     loadPrescriptionDetail(prescription);
   }
 
-  function handleEdit() {
-    if (!visibleSelectedPrescription) {
+  function handleEdit(prescription = visibleSelectedPrescription) {
+    if (!prescription) {
       return;
     }
 
-    setMode("edit");
-    setSelectedPrescriptionId(visibleSelectedPrescription.id);
-    setSelectedPrescription(visibleSelectedPrescription);
-    setForm(createPrescriptionFormFromPrescription(visibleSelectedPrescription));
+    setFormMode("edit");
+    setSelectedPrescriptionId(prescription.id);
+    setSelectedPrescription(prescription);
+    setForm(createPrescriptionFormFromPrescription(prescription));
     setFormErrors({});
     setSubmitError("");
     setFeedback("");
   }
 
   function handleCancelForm() {
-    setMode("detail");
+    setFormMode("");
     setFormErrors({});
     setSubmitError("");
   }
@@ -215,6 +231,10 @@ export function PrescriptionsView({
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (isSubmitting) {
+      return;
+    }
+
     const validationErrors = validatePrescriptionForm(form);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -228,7 +248,7 @@ export function PrescriptionsView({
     setFeedback("");
 
     try {
-      if (mode === "edit") {
+      if (formMode === "edit") {
         const updatedPrescription = await updatePrescription(
           selectedPrescriptionId,
           form,
@@ -249,7 +269,7 @@ export function PrescriptionsView({
         );
       }
 
-      setMode("detail");
+      setFormMode("");
       setFormErrors({});
     } catch (error) {
       setFormErrors(error?.errors ?? {});
@@ -259,12 +279,14 @@ export function PrescriptionsView({
     }
   }
 
-  async function handleDeactivate() {
-    if (!visibleSelectedPrescription) {
+  function handleDeactivate(prescription = visibleSelectedPrescription) {
+    if (!prescription) {
       return;
     }
 
-    setPrescriptionToDeactivate(visibleSelectedPrescription);
+    setFormMode("");
+    setPrescriptionToDeactivate(prescription);
+    setFeedback("");
   }
 
   async function handleConfirmDeactivate() {
@@ -278,7 +300,7 @@ export function PrescriptionsView({
     try {
       await deactivatePrescription(prescriptionToDeactivate.id);
       await refreshPrescriptions("");
-      setMode("detail");
+      setFormMode("");
       setPrescriptionToDeactivate(null);
       setFeedback("Prescrição desativada com sucesso.");
     } catch (error) {
@@ -296,12 +318,57 @@ export function PrescriptionsView({
   const activeFilterLabel =
     prescriptionFilters.find((filter) => filter.id === activeFilter)?.label ??
     "Todas";
+  const hasActiveFilters =
+    Boolean(localSearch.trim()) ||
+    Boolean(globalSearchTerm.trim()) ||
+    activeFilter !== "all";
   const filterCounts = {
     all: stats.active,
     ending: stats.endingSoon,
     open: stats.withoutEndDate,
     today: stats.firstScheduledToday,
   };
+
+  function handleClearFilters() {
+    setActiveFilter("all");
+    setLocalSearch("");
+    onSearchChange?.("");
+  }
+
+  function renderEmptyState() {
+    return (
+      <div className="prescription-empty-state">
+        <strong>
+          {hasActiveFilters
+            ? "Nenhuma prescrição encontrada."
+            : "Nenhuma prescrição cadastrada."}
+        </strong>
+        <span>
+          {hasActiveFilters
+            ? "Ajuste a busca ou os filtros para ampliar a listagem."
+            : "Cadastre uma prescrição para gerar a agenda medicamentosa."}
+        </span>
+        <div className="prescription-empty-actions">
+          {hasActiveFilters ? (
+            <button
+              className="dashboard-button dashboard-button-muted"
+              type="button"
+              onClick={handleClearFilters}
+            >
+              Limpar filtros
+            </button>
+          ) : null}
+          <button
+            className="dashboard-button dashboard-button-primary"
+            type="button"
+            onClick={handleStartCreate}
+          >
+            Nova prescrição
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -336,10 +403,44 @@ export function PrescriptionsView({
         />
       </section>
 
-      <section className="dashboard-two-column-layout">
+      <section className="dashboard-two-column-layout prescriptions-operational-layout">
         <section className="dashboard-panel prescriptions-list-panel">
-          <div className="dashboard-toolbar">
-            <div className="dashboard-filter-group" aria-label="Filtros">
+          <div className="prescriptions-list-heading">
+            <PanelHeader
+              overline="Lista"
+              title="Prescrições ativas"
+              action={`${filteredPrescriptions.length} em ${activeFilterLabel}`}
+            />
+
+            <button
+              className="dashboard-button dashboard-button-primary"
+              type="button"
+              onClick={handleStartCreate}
+            >
+              Nova prescrição
+            </button>
+          </div>
+
+          <div className="prescriptions-toolbar">
+            <label
+              className="prescriptions-search-field"
+              htmlFor="prescriptions-search"
+            >
+              <span className="sr-only">
+                Buscar por residente, medicamento, via ou prescritor
+              </span>
+              <input
+                id="prescriptions-search"
+                placeholder="Buscar por residente, medicamento, via ou prescritor"
+                value={localSearch}
+                onChange={(event) => setLocalSearch(event.target.value)}
+              />
+            </label>
+
+            <div
+              aria-label="Filtrar prescrições por status"
+              className="dashboard-filter-group prescription-filter-group"
+            >
               {prescriptionFilters.map((filter) => (
                 <button
                   aria-pressed={activeFilter === filter.id}
@@ -357,98 +458,78 @@ export function PrescriptionsView({
                 </button>
               ))}
             </div>
-
-            <button
-              className="dashboard-button dashboard-button-primary"
-              type="button"
-              onClick={handleStartCreate}
-            >
-              Nova prescrição
-            </button>
           </div>
-
-          <PanelHeader
-            overline="Lista"
-            title="Prescrições ativas"
-            action={`${filteredPrescriptions.length} em ${activeFilterLabel}`}
-          />
-
-          {feedback ? (
-            <div
-              className="dashboard-form-alert dashboard-form-alert-success"
-              role="status"
-            >
-              {feedback}
-            </div>
-          ) : null}
 
           {isBusy ? (
             <LoadingRows />
           ) : filteredPrescriptions.length > 0 ? (
-            <div className="prescription-directory">
-              <div className="prescription-directory-header" aria-hidden="true">
-                <span>Status</span>
-                <span>Residente e medicamento</span>
-                <span>Dose e frequência</span>
-              </div>
-
-              {filteredPrescriptions.map((prescription) => (
-                <PrescriptionRow
-                  currentTime={currentTime}
-                  isSelected={visibleSelectedPrescriptionId === prescription.id}
-                  key={prescription.id}
-                  prescription={prescription}
-                  onSelect={handleSelectPrescription}
-                />
-              ))}
+            <div className="prescription-table-wrap">
+              <table className="prescription-table">
+                <caption className="sr-only">
+                  Listagem operacional de prescrições
+                </caption>
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Residente</th>
+                    <th>Medicamento</th>
+                    <th>Dose e frequência</th>
+                    <th>Período</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPrescriptions.map((prescription) => (
+                    <PrescriptionRow
+                      currentTime={currentTime}
+                      isMutating={isSubmitting}
+                      isSelected={
+                        visibleSelectedPrescriptionId === prescription.id
+                      }
+                      key={prescription.id}
+                      prescription={prescription}
+                      onDeactivate={handleDeactivate}
+                      onEdit={handleEdit}
+                      onSelect={handleSelectPrescription}
+                    />
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
-            <EmptyState title="Nenhuma prescrição encontrada para o filtro atual." />
+            renderEmptyState()
           )}
         </section>
 
         <section className="dashboard-panel prescriptions-detail-panel">
-          {mode === "create" || mode === "edit" ? (
-            <>
-              <PanelHeader
-                overline={mode === "edit" ? "Edição" : "Cadastro"}
-                title={mode === "edit" ? "Editar prescrição" : "Nova prescrição"}
-                action={mode === "edit" ? "Editando" : "Criando"}
-              />
-
-              {unitsError ? (
-                <div className="resident-inline-alert" role="status">
-                  {unitsError}
-                </div>
-              ) : null}
-
-              <PrescriptionForm
-                errors={formErrors}
-                form={form}
-                isLoadingAuxiliaryData={isLoadingUnits}
-                isSubmitting={isSubmitting}
-                medications={medications}
-                mode={mode}
-                residents={residents}
-                submitError={submitError}
-                units={measurementUnits}
-                onCancel={handleCancelForm}
-                onChange={handleFormChange}
-                onSubmit={handleSubmit}
-              />
-            </>
-          ) : (
-            <PrescriptionDetailPanel
-              currentTime={currentTime}
-              detailStatus={detailStatus}
-              isMutating={isSubmitting}
-              prescription={visibleSelectedPrescription}
-              onDeactivate={handleDeactivate}
-              onEdit={handleEdit}
-            />
-          )}
+          <PrescriptionDetailPanel
+            currentTime={currentTime}
+            detailStatus={detailStatus}
+            isMutating={isSubmitting}
+            prescription={visibleSelectedPrescription}
+            onDeactivate={() => handleDeactivate(visibleSelectedPrescription)}
+            onEdit={() => handleEdit(visibleSelectedPrescription)}
+          />
         </section>
       </section>
+
+      {formMode ? (
+        <PrescriptionFormModal
+          errors={formErrors}
+          form={form}
+          isLoadingAuxiliaryData={isLoadingUnits}
+          isSubmitting={isSubmitting}
+          medications={medications}
+          mode={formMode}
+          residents={residents}
+          submitError={submitError}
+          units={measurementUnits}
+          unitsError={unitsError}
+          onChange={handleFormChange}
+          onClose={handleCancelForm}
+          onSubmit={handleSubmit}
+        />
+      ) : null}
 
       {prescriptionToDeactivate ? (
         <PrescriptionDeactivateModal
@@ -457,6 +538,19 @@ export function PrescriptionsView({
           onClose={() => setPrescriptionToDeactivate(null)}
           onConfirm={handleConfirmDeactivate}
         />
+      ) : null}
+
+      {feedback ? (
+        <div className="prescription-toast" role="status">
+          <span>{feedback}</span>
+          <button
+            aria-label="Fechar feedback"
+            type="button"
+            onClick={() => setFeedback("")}
+          >
+            x
+          </button>
+        </div>
       ) : null}
     </>
   );
