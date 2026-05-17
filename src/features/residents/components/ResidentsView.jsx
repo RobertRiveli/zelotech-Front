@@ -15,6 +15,10 @@ import {
   updateResident,
 } from "@/features/residents/api/residentService";
 import {
+  createResidentCondition,
+  listHealthConditions,
+} from "@/features/residents/api/residentConditionService";
+import {
   createResidentAccessCode,
   listResidentAccessCodes,
 } from "@/features/family-access/api/familyAccessService";
@@ -60,7 +64,14 @@ export function ResidentsView({
   const [formErrors, setFormErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [feedbackTone, setFeedbackTone] = useState("success");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [healthConditions, setHealthConditions] = useState([]);
+  const [healthConditionsStatus, setHealthConditionsStatus] = useState({
+    error: "",
+    hasLoaded: false,
+    isLoading: false,
+  });
   const [residentToDelete, setResidentToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -125,6 +136,20 @@ export function ResidentsView({
         selectedResident.id,
       )
     : false;
+
+  useEffect(() => {
+    if (!feedback) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setFeedback("");
+    }, 4200);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [feedback]);
 
   const loadResidentAccessCodes = useCallback(async (residentId) => {
     if (!residentId) {
@@ -196,12 +221,46 @@ export function ResidentsView({
     }
   }, []);
 
+  const loadHealthConditions = useCallback(async () => {
+    setHealthConditionsStatus({
+      error: "",
+      hasLoaded: false,
+      isLoading: true,
+    });
+
+    try {
+      const conditions = await listHealthConditions();
+
+      setHealthConditions(conditions);
+      setHealthConditionsStatus({
+        error: "",
+        hasLoaded: true,
+        isLoading: false,
+      });
+    } catch (error) {
+      setHealthConditionsStatus({
+        error: getRequestErrorMessage(
+          error,
+          "Não foi possível carregar as condições de saúde.",
+        ),
+        hasLoaded: true,
+        isLoading: false,
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (!isAdmin || !selectedResident?.id || hasLoadedSelectedAccessCodes) {
-      return;
+      return undefined;
     }
 
-    loadResidentAccessCodes(selectedResident.id);
+    const timeoutId = window.setTimeout(() => {
+      loadResidentAccessCodes(selectedResident.id);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [
     hasLoadedSelectedAccessCodes,
     isAdmin,
@@ -211,10 +270,16 @@ export function ResidentsView({
 
   useEffect(() => {
     if (!isAdmin || !selectedResident?.id || hasLoadedSelectedFamilyMembers) {
-      return;
+      return undefined;
     }
 
-    loadResidentFamilyMembers(selectedResident.id);
+    const timeoutId = window.setTimeout(() => {
+      loadResidentFamilyMembers(selectedResident.id);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [
     hasLoadedSelectedFamilyMembers,
     isAdmin,
@@ -256,6 +321,11 @@ export function ResidentsView({
     setFormErrors({});
     setSubmitError("");
     setFeedback("");
+    setFeedbackTone("success");
+
+    if (!healthConditionsStatus.hasLoaded && !healthConditionsStatus.isLoading) {
+      loadHealthConditions();
+    }
   }
 
   function handleCancelCreate() {
@@ -263,6 +333,7 @@ export function ResidentsView({
     setIsEditing(false);
     setFormErrors({});
     setSubmitError("");
+    setFeedbackTone("success");
   }
 
   function handleResidentSelect(residentId) {
@@ -270,6 +341,7 @@ export function ResidentsView({
     setIsEditing(false);
     setFormErrors({});
     setSubmitError("");
+    setFeedbackTone("success");
     onSelectResident(residentId);
   }
 
@@ -285,6 +357,44 @@ export function ResidentsView({
     setFormErrors((currentErrors) => clearFieldError(currentErrors, name));
   }
 
+  function handleHealthConditionToggle(conditionId, isSelected) {
+    setForm((currentForm) => {
+      const currentConditionIds = currentForm.healthConditionIds ?? [];
+      const nextConditionIds = isSelected
+        ? Array.from(new Set([...currentConditionIds, conditionId]))
+        : currentConditionIds.filter((currentId) => currentId !== conditionId);
+      const nextObservations = {
+        ...(currentForm.healthConditionObservations ?? {}),
+      };
+
+      if (!isSelected) {
+        delete nextObservations[conditionId];
+      }
+
+      return {
+        ...currentForm,
+        healthConditionIds: nextConditionIds,
+        healthConditionObservations: nextObservations,
+      };
+    });
+    setFormErrors((currentErrors) =>
+      clearHealthConditionObservationError(currentErrors, conditionId),
+    );
+  }
+
+  function handleHealthConditionObservationChange(conditionId, value) {
+    setForm((currentForm) => ({
+      ...currentForm,
+      healthConditionObservations: {
+        ...(currentForm.healthConditionObservations ?? {}),
+        [conditionId]: value,
+      },
+    }));
+    setFormErrors((currentErrors) =>
+      clearHealthConditionObservationError(currentErrors, conditionId),
+    );
+  }
+
   function handleStartEdit() {
     if (!isAdmin || !selectedResident) {
       return;
@@ -296,6 +406,7 @@ export function ResidentsView({
     setFormErrors({});
     setSubmitError("");
     setFeedback("");
+    setFeedbackTone("success");
   }
 
   async function handleSubmitResident(event) {
@@ -317,18 +428,23 @@ export function ResidentsView({
     setIsSubmitting(true);
     setSubmitError("");
     setFeedback("");
+    setFeedbackTone("success");
 
     try {
       if (isEditing) {
         const updatedResident = await updateResident(selectedResident.id, form);
 
         onResidentUpdated?.(updatedResident);
+        setFeedbackTone("success");
         setFeedback("Residente atualizado com sucesso.");
       } else {
         const createdResident = await createResident(form);
 
+        await createSelectedHealthConditionLinks(createdResident.id);
+
         onResidentCreated?.(createdResident);
         setActiveMetricFilter("");
+        setFeedbackTone("success");
         setFeedback("Residente cadastrado com sucesso.");
       }
 
@@ -356,6 +472,29 @@ export function ResidentsView({
     }
   }
 
+  async function createSelectedHealthConditionLinks(residentId) {
+    const selectedConditionIds = form.healthConditionIds ?? [];
+
+    if (selectedConditionIds.length === 0) {
+      return { failed: 0, total: 0 };
+    }
+
+    const settledLinks = await Promise.allSettled(
+      selectedConditionIds.map((healthConditionId) =>
+        createResidentCondition({
+          residentId,
+          healthConditionId,
+          observations: form.healthConditionObservations?.[healthConditionId],
+        }),
+      ),
+    );
+
+    return {
+      failed: settledLinks.filter((link) => link.status === "rejected").length,
+      total: selectedConditionIds.length,
+    };
+  }
+
   function handleRequestDeleteResident() {
     if (!isAdmin || !selectedResident) {
       return;
@@ -364,6 +503,7 @@ export function ResidentsView({
     setResidentToDelete(selectedResident);
     setDeleteError("");
     setFeedback("");
+    setFeedbackTone("success");
   }
 
   function handleCloseDeleteModal() {
@@ -390,6 +530,7 @@ export function ResidentsView({
       onResidentDeleted?.(deletedResident ?? residentToDelete);
       setResidentToDelete(null);
       setActiveMetricFilter("");
+      setFeedbackTone("success");
       setFeedback("Residente excluído com sucesso.");
     } catch (error) {
       setDeleteError(
@@ -415,6 +556,7 @@ export function ResidentsView({
     setAccessCopyFeedback("");
     setGeneratedAccess(null);
     setFeedback("");
+    setFeedbackTone("success");
   }
 
   function handleCloseAccessModal() {
@@ -468,6 +610,7 @@ export function ResidentsView({
       );
 
       setGeneratedAccess(normalizeAccessCode(accessCode));
+      setFeedbackTone("success");
       setFeedback("Código criado com sucesso.");
       await loadResidentAccessCodes(accessResident.id);
     } catch (error) {
@@ -489,14 +632,17 @@ export function ResidentsView({
     }
 
     if (!navigator.clipboard?.writeText) {
+      setFeedbackTone("success");
       setFeedback(`Código ${code} pronto para copiar manualmente.`);
       return;
     }
 
     try {
       await navigator.clipboard.writeText(code);
+      setFeedbackTone("success");
       setFeedback(`Código ${code} copiado.`);
     } catch {
+      setFeedbackTone("success");
       setFeedback(`Código ${code} pronto para copiar manualmente.`);
     }
   }
@@ -521,6 +667,15 @@ export function ResidentsView({
 
   return (
     <>
+      {feedback ? (
+        <div
+          className={`resident-global-toast is-${feedbackTone}`}
+          role="status"
+        >
+          {feedback}
+        </div>
+      ) : null}
+
       <section className="dashboard-overview-grid" aria-label="Resumo de residentes">
         {metricCards.map((metric) => (
           <MetricCard
@@ -555,14 +710,6 @@ export function ResidentsView({
             title="Residentes"
             action={`${visibleResidents.length} encontrados`}
           />
-          {feedback ? (
-            <div
-              className="dashboard-form-alert dashboard-form-alert-success"
-              role="status"
-            >
-              {feedback}
-            </div>
-          ) : null}
           {activeMetric ? (
             <div
               aria-live="polite"
@@ -599,12 +746,19 @@ export function ResidentsView({
               <ResidentForm
                 errors={formErrors}
                 form={form}
+                healthConditions={healthConditions}
+                healthConditionsStatus={healthConditionsStatus}
                 isSubmitting={isSubmitting}
                 maskCpfField={isEditing}
+                showHealthConditions={isCreating}
                 submitLabel={isEditing ? "Salvar alterações" : "Salvar residente"}
                 submitError={submitError}
                 onCancel={handleCancelCreate}
                 onChange={handleFormChange}
+                onHealthConditionObservationChange={
+                  handleHealthConditionObservationChange
+                }
+                onHealthConditionToggle={handleHealthConditionToggle}
                 onSubmit={handleSubmitResident}
               />
             </>
@@ -653,6 +807,27 @@ export function ResidentsView({
       />
     </>
   );
+}
+
+function clearHealthConditionObservationError(errors, conditionId) {
+  if (!errors.healthConditionObservations?.[conditionId]) {
+    return errors;
+  }
+
+  const nextObservationErrors = { ...errors.healthConditionObservations };
+  delete nextObservationErrors[conditionId];
+
+  if (Object.keys(nextObservationErrors).length === 0) {
+    const remainingErrors = { ...errors };
+    delete remainingErrors.healthConditionObservations;
+
+    return remainingErrors;
+  }
+
+  return {
+    ...errors,
+    healthConditionObservations: nextObservationErrors,
+  };
 }
 
 function validateAccessCodeForm(form) {

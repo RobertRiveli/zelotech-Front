@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { maskCpf } from "@/shared/utils/cpfFormatter";
 import { FieldError } from "@/shared/ui/FieldError";
 
@@ -22,19 +22,29 @@ const bloodTypeOptions = [
 export function ResidentForm({
   errors,
   form,
+  healthConditions = [],
+  healthConditionsStatus = {},
   isSubmitting,
   maskCpfField = false,
   onCancel,
   onChange,
+  onHealthConditionObservationChange,
+  onHealthConditionToggle,
   onSubmit,
+  showHealthConditions = false,
   submitLabel = "Salvar residente",
   submitError,
 }) {
-  const [isCpfVisible, setIsCpfVisible] = useState(!maskCpfField);
-
-  useEffect(() => {
-    setIsCpfVisible(!maskCpfField);
-  }, [maskCpfField]);
+  const [cpfVisibilityState, setCpfVisibilityState] = useState({
+    isVisible: !maskCpfField,
+    maskCpfField,
+  });
+  const selectedHealthConditionIds = form.healthConditionIds ?? [];
+  const healthConditionObservations = form.healthConditionObservations ?? {};
+  const isCpfVisible =
+    cpfVisibilityState.maskCpfField === maskCpfField
+      ? cpfVisibilityState.isVisible
+      : !maskCpfField;
 
   return (
     <form className="dashboard-form" onSubmit={onSubmit}>
@@ -76,7 +86,12 @@ export function ResidentForm({
                 aria-pressed={isCpfVisible}
                 className="resident-sensitive-toggle resident-cpf-toggle"
                 type="button"
-                onClick={() => setIsCpfVisible((currentValue) => !currentValue)}
+                onClick={() =>
+                  setCpfVisibilityState({
+                    isVisible: !isCpfVisible,
+                    maskCpfField,
+                  })
+                }
               >
                 {isCpfVisible ? <EyeOffIcon /> : <EyeIcon />}
               </button>
@@ -133,6 +148,89 @@ export function ResidentForm({
           <FieldError message={errors.bloodType} />
         </label>
       </div>
+
+      {showHealthConditions ? (
+        <section
+          className="resident-form-conditions"
+          aria-label="Condições de saúde"
+        >
+          <div className="resident-form-conditions-header">
+            <div>
+              <strong>Condições de saúde</strong>
+              <span>Vincule condições conhecidas ao prontuário inicial.</span>
+            </div>
+            <small>{selectedHealthConditionIds.length} selecionadas</small>
+          </div>
+
+          {healthConditionsStatus.error ? (
+            <div className="resident-inline-alert" role="status">
+              {healthConditionsStatus.error}
+            </div>
+          ) : healthConditionsStatus.isLoading ? (
+            <div className="resident-condition-picker-state">
+              Carregando condições...
+            </div>
+          ) : healthConditions.length > 0 ? (
+            <div className="resident-condition-picker">
+              {healthConditions.map((condition) => {
+                const isSelected = selectedHealthConditionIds.includes(
+                  condition.id,
+                );
+                const observationError =
+                  errors.healthConditionObservations?.[condition.id];
+
+                return (
+                  <article
+                    className={`resident-condition-option${
+                      isSelected ? " is-selected" : ""
+                    }`}
+                    key={condition.id}
+                  >
+                    <label>
+                      <input
+                        checked={isSelected}
+                        disabled={isSubmitting}
+                        type="checkbox"
+                        onChange={(event) =>
+                          onHealthConditionToggle?.(
+                            condition.id,
+                            event.target.checked,
+                          )
+                        }
+                      />
+                      <span>
+                        <strong>{condition.name}</strong>
+                        <small>{condition.category ?? "Sem categoria"}</small>
+                      </span>
+                    </label>
+
+                    {isSelected ? (
+                      <div className="resident-condition-observation">
+                        <textarea
+                          maxLength={1000}
+                          placeholder="Observações específicas desta condição"
+                          value={healthConditionObservations[condition.id] ?? ""}
+                          onChange={(event) =>
+                            onHealthConditionObservationChange?.(
+                              condition.id,
+                              event.target.value,
+                            )
+                          }
+                        />
+                        <FieldError message={observationError} />
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="resident-condition-picker-state">
+              Nenhuma condição de saúde disponível.
+            </div>
+          )}
+        </section>
+      ) : null}
 
       <div className="dashboard-form-actions">
         <button

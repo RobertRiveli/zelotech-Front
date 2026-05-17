@@ -10,6 +10,8 @@ export function createEmptyResidentForm() {
     cpf: "",
     fullName: "",
     gender: "",
+    healthConditionIds: [],
+    healthConditionObservations: {},
     status: "active",
   };
 }
@@ -34,6 +36,8 @@ export function createResidentFormFromResident(resident) {
     cpf: resident?.cpf ? formatCpf(onlyNumbers(resident.cpf)) : "",
     fullName: resident?.fullName ?? "",
     gender: normalizeGenderForForm(resident?.gender),
+    healthConditionIds: [],
+    healthConditionObservations: {},
     status: resident?.status ?? "active",
   };
 }

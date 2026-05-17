@@ -25,5 +25,26 @@ export function validateResidentForm(form) {
     errors.admissionDate = "Informe a data de admissão.";
   }
 
+  const conditionObservationErrors = validateConditionObservations(form);
+
+  if (Object.keys(conditionObservationErrors).length > 0) {
+    errors.healthConditionObservations = conditionObservationErrors;
+  }
+
   return errors;
+}
+
+function validateConditionObservations(form) {
+  const selectedConditionIds = form.healthConditionIds ?? [];
+  const observations = form.healthConditionObservations ?? {};
+
+  return selectedConditionIds.reduce((errors, conditionId) => {
+    const observation = observations[conditionId]?.trim() ?? "";
+
+    if (observation.length > 1000) {
+      errors[conditionId] = "Use no máximo 1000 caracteres.";
+    }
+
+    return errors;
+  }, {});
 }
