@@ -1,6 +1,9 @@
 import { matchesSearch } from "@/shared/utils/search";
 import { normalizeText } from "@/shared/utils/textFormatter";
-import { getMedicationName } from "@/features/medications/utils/medicationFormatters";
+import {
+  medicationFormLabels,
+  medicationFormOptions,
+} from "@/features/medications/constants/medicationForms";
 
 export function buildMedicationStats(medications) {
   return {
@@ -9,15 +12,20 @@ export function buildMedicationStats(medications) {
 }
 
 export function buildMedicationFormFilters(medications) {
-  const forms = [...new Set(medications.map((medication) => medication.form))]
-    .filter(Boolean)
+  const optionKeys = new Set(medicationFormOptions.map(normalizeText));
+  const customForms = [...new Set(medications.map((medication) => medication.form))]
+    .filter((form) => form && !optionKeys.has(normalizeText(form)))
     .sort((firstForm, secondForm) =>
       normalizeText(firstForm).localeCompare(normalizeText(secondForm), "pt-BR"),
     );
+  const forms = [...medicationFormOptions, ...customForms];
 
   return [
-    { id: "all", label: "Todas" },
+    { count: medications.length, id: "all", label: "Todas" },
     ...forms.map((form) => ({
+      count: medications.filter(
+        (medication) => normalizeText(medication.form) === normalizeText(form),
+      ).length,
       id: form,
       label: formatMedicationForm(form),
     })),
@@ -26,9 +34,11 @@ export function buildMedicationFormFilters(medications) {
 
 export function filterMedications(medications, { filterId, searchTerm }) {
   const normalizedSearch = normalizeText(searchTerm);
+  const normalizedFilter = normalizeText(filterId);
 
   return medications.filter((medication) => {
-    const matchesFilter = filterId === "all" || medication.form === filterId;
+    const matchesFilter =
+      filterId === "all" || normalizeText(medication.form) === normalizedFilter;
 
     if (!matchesFilter) {
       return false;
@@ -36,11 +46,8 @@ export function filterMedications(medications, { filterId, searchTerm }) {
 
     return matchesSearch(
       [
-        getMedicationName(medication),
         medication.genericName,
         medication.brandName,
-        medication.form,
-        medication.strength,
       ],
       normalizedSearch,
     );
@@ -70,5 +77,10 @@ export function formatMedicationForm(form) {
     return "Sem forma";
   }
 
-  return form.charAt(0).toUpperCase() + form.slice(1);
+  const normalizedForm = normalizeText(form);
+
+  return (
+    medicationFormLabels[normalizedForm] ??
+    form.charAt(0).toUpperCase() + form.slice(1)
+  );
 }

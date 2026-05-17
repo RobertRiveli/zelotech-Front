@@ -18,6 +18,7 @@ export function useDashboardData() {
   const [dashboardData, setDashboardData] = useState(emptyDashboardData);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [failedRequests, setFailedRequests] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -25,6 +26,7 @@ export function useDashboardData() {
     async function loadDashboard() {
       setIsLoading(true);
       setLoadError("");
+      setFailedRequests([]);
 
       const nextData = { ...emptyDashboardData };
       const failedRequests = [];
@@ -68,6 +70,7 @@ export function useDashboardData() {
 
       setDashboardData(nextData);
       setIsLoading(false);
+      setFailedRequests(failedRequests);
 
       if (failedRequests.length === totalRequestCount) {
         setLoadError("Não foi possível carregar os dados do dashboard.");
@@ -88,6 +91,7 @@ export function useDashboardData() {
 
   return {
     dashboardData,
+    failedRequests,
     isLoading,
     loadError,
     setDashboardData,

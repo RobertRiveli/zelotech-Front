@@ -26,7 +26,7 @@ function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedResidentId, setSelectedResidentId] = useState("");
   const currentTime = useCurrentTime();
-  const { dashboardData, isLoading, loadError, setDashboardData } =
+  const { dashboardData, failedRequests, isLoading, loadError, setDashboardData } =
     useDashboardData();
   const pageTitle = activeItem === "Início" ? "Dashboard" : activeItem;
 
@@ -201,6 +201,7 @@ function DashboardPage() {
           prescriptions={dashboardData.prescriptions}
           residents={dashboardData.residents}
           searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
           onPrescriptionsChange={handlePrescriptionsChange}
         />
       ) : activeItem === "Administração de medicamentos" ? (
@@ -216,9 +217,11 @@ function DashboardPage() {
         />
       ) : activeItem === "Medicamentos" ? (
         <MedicationsView
+          hasMedicationLoadError={failedRequests.includes("medications")}
           isAdmin={isAdmin}
           isLoading={isLoading}
           medications={dashboardData.medications}
+          onSearchChange={setSearchTerm}
           searchTerm={searchTerm}
           onMedicationsChange={handleMedicationsChange}
         />

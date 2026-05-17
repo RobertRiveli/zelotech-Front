@@ -1,4 +1,4 @@
-import { formatShortDate } from "@/shared/utils/dateFormatter";
+import { formatShortDateTime } from "@/shared/utils/dateFormatter";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
@@ -51,12 +51,17 @@ export function MedicationDetailPanel({
         />
         <DetailItem label="Dosagem" value={medication.strength} />
         <DetailItem
+          label="Status"
+          value={medication.isActive === false ? "Inativo" : "Ativo"}
+        />
+        <DetailItem label="Identificador" value={medication.id} />
+        <DetailItem
           label="Criado em"
-          value={formatShortDate(medication.createdAt)}
+          value={formatShortDateTime(medication.createdAt)}
         />
         <DetailItem
           label="Atualizado em"
-          value={formatShortDate(medication.updatedAt)}
+          value={formatShortDateTime(medication.updatedAt)}
         />
       </div>
 

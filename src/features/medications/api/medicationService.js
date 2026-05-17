@@ -30,14 +30,30 @@ export function normalizeMedicationUpdatePayload(form) {
   };
 }
 
+function buildMedicationQuery(filters = {}) {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    const normalized = typeof value === "string" ? value.trim() : value;
+
+    if (normalized) {
+      params.set(key, normalized);
+    }
+  });
+
+  const query = params.toString();
+
+  return query ? `?${query}` : "";
+}
+
 export async function createMedication(form) {
   const data = await api.post("/medications", normalizeMedicationPayload(form));
 
   return data.medication;
 }
 
-export async function listMedications() {
-  const data = await api.get("/medications");
+export async function listMedications(filters = {}) {
+  const data = await api.get(`/medications${buildMedicationQuery(filters)}`);
 
   return data.medications ?? [];
 }
