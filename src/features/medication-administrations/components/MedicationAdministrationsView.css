@@ -2,6 +2,65 @@
   min-height: 620px;
 }
 
+.administration-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.administration-tab {
+  min-height: 44px;
+  min-width: 142px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+  color: var(--body);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s,
+    transform 0.15s;
+}
+
+.administration-tab:hover,
+.administration-tab.is-active {
+  border-color: rgba(13, 148, 136, 0.34);
+  background: var(--teal-tint);
+  color: var(--teal-dark);
+  box-shadow: 0 10px 24px rgba(13, 148, 136, 0.08);
+}
+
+.administration-tab:active {
+  transform: scale(0.97);
+}
+
+.administration-tab strong {
+  min-width: 26px;
+  min-height: 24px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r8);
+  background: var(--bg);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.administration-tab.is-active strong,
+.administration-tab:hover strong {
+  background: var(--teal);
+  color: var(--white);
+}
+
 .administrations-toolbar {
   align-items: flex-start;
 }
@@ -396,6 +455,15 @@
     min-height: auto;
   }
 
+  .administration-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .administration-tab {
+    min-width: 0;
+  }
+
   .administrations-toolbar-actions {
     width: 100%;
   }
@@ -425,6 +493,10 @@
 }
 
 @media (max-width: 560px) {
+  .administration-tabs {
+    grid-template-columns: 1fr;
+  }
+
   .administrations-toolbar .dashboard-filter-group {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

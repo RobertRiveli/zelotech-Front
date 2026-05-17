@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   administerMedicationAdministration,
   cancelMedicationAdministration,
   createManualMedicationAdministration,
   getMedicationAdministrationById,
+  listResidentMedicationAdministrations,
   listTodayMedicationAdministrations,
   missMedicationAdministration,
   refuseMedicationAdministration,
@@ -21,7 +22,10 @@ import {
   createEmptyAdministrationActionForm,
   createEmptyManualAdministrationForm,
 } from "@/features/medication-administrations/utils/administrationForms";
-import { compareByAdministrationPriority } from "@/features/medication-administrations/utils/administrationSorters";
+import {
+  compareByAdministrationPriority,
+  compareByScheduledAtDesc,
+} from "@/features/medication-administrations/utils/administrationSorters";
 import {
   validateAdministrationActionForm,
   validateManualAdministrationForm,
@@ -54,6 +58,61 @@ const actionFeedback = {
   refuse: "Administração marcada como recusada.",
 };
 
+const administrationTabs = [
+  { id: "today", label: "Hoje" },
+  { id: "future", label: "Futuras" },
+  { id: "history", label: "Histórico" },
+];
+
+const administrationTabContent = {
+  today: {
+    administeredDetail: "concluídas hoje",
+    emptyTitle: "Nenhuma administração encontrada para o filtro atual.",
+    heroDescription:
+      "Acompanhe as administrações previstas para hoje, priorize atrasos e registre o desfecho operacional de cada dose.",
+    panelTitle: "Administrações de hoje",
+    periodLabel: "Agenda",
+    secondarySummary: (stats) => `${stats.late} atrasadas`,
+    totalDetail: "visíveis no filtro",
+    totalLabel: "Total do dia",
+  },
+  future: {
+    administeredDetail: "já concluídas no período",
+    emptyTitle: "Nenhuma administração futura encontrada para o filtro atual.",
+    heroDescription:
+      "Veja as doses já programadas para os próximos dias e antecipe ajustes operacionais quando necessário.",
+    panelTitle: "Próximas administrações",
+    periodLabel: "Próximos 7 dias",
+    secondarySummary: (stats) => `${stats.total} agendadas`,
+    totalDetail: "visíveis no filtro",
+    totalLabel: "Total futuro",
+  },
+  history: {
+    administeredDetail: "concluídas no período",
+    emptyTitle: "Nenhuma administração no histórico para o filtro atual.",
+    heroDescription:
+      "Consulte os registros recentes de administração e acompanhe pendências que ficaram sem desfecho.",
+    panelTitle: "Histórico de administrações",
+    periodLabel: "Últimos 7 dias",
+    secondarySummary: (stats) => `${stats.late} sem desfecho`,
+    totalDetail: "visíveis no filtro",
+    totalLabel: "Total histórico",
+  },
+};
+
+const initialPeriodAdministrations = {
+  future: [],
+  history: [],
+};
+
+const initialPeriodStatus = {
+  future: { error: "", hasLoaded: false, isLoading: false },
+  history: { error: "", hasLoaded: false, isLoading: false },
+};
+
+const periodTabIds = ["future", "history"];
+const periodWindowDays = 7;
+
 export function MedicationAdministrationsView({
   administrations,
   currentTime,
@@ -64,7 +123,12 @@ export function MedicationAdministrationsView({
   residents,
   searchTerm,
 }) {
+  const [activeTab, setActiveTab] = useState("today");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [periodAdministrations, setPeriodAdministrations] = useState(
+    initialPeriodAdministrations,
+  );
+  const [periodStatus, setPeriodStatus] = useState(initialPeriodStatus);
   const [selectedAdministrationId, setSelectedAdministrationId] = useState("");
   const [selectedAdministration, setSelectedAdministration] = useState(null);
   const [detailStatus, setDetailStatus] = useState({
@@ -88,9 +152,56 @@ export function MedicationAdministrationsView({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const residentIds = useMemo(
+    () =>
+      getUniqueResidentIds({
+        administrations,
+        prescriptions,
+        residents,
+      }),
+    [administrations, prescriptions, residents],
+  );
+  const activeTabContent =
+    administrationTabContent[activeTab] ?? administrationTabContent.today;
+  const activePeriodStatus =
+    periodStatus[activeTab] ?? { error: "", hasLoaded: true, isLoading: false };
+  const activeAdministrations = useMemo(
+    () =>
+      activeTab === "today"
+        ? administrations
+        : periodAdministrations[activeTab] ?? [],
+    [activeTab, administrations, periodAdministrations],
+  );
+  const tabs = useMemo(
+    () =>
+      administrationTabs.map((tab) => {
+        const count =
+          tab.id === "today"
+            ? administrations.length
+            : periodAdministrations[tab.id]?.length ?? 0;
+        const countLabel =
+          tab.id === "today" || periodStatus[tab.id]?.hasLoaded
+            ? String(count)
+            : "...";
+
+        return {
+          ...tab,
+          countLabel,
+        };
+      }),
+    [administrations.length, periodAdministrations, periodStatus],
+  );
   const sortedAdministrations = useMemo(
-    () => [...administrations].sort(compareByAdministrationPriority(currentTime)),
-    [administrations, currentTime],
+    () => {
+      const nextAdministrations = [...activeAdministrations];
+
+      if (activeTab === "history") {
+        return nextAdministrations.sort(compareByScheduledAtDesc);
+      }
+
+      return nextAdministrations.sort(compareByAdministrationPriority(currentTime));
+    },
+    [activeAdministrations, activeTab, currentTime],
   );
   const stats = useMemo(
     () => buildAdministrationStats(sortedAdministrations, currentTime),
@@ -110,13 +221,123 @@ export function MedicationAdministrationsView({
     [activeFilter, currentTime, searchTerm, sortedAdministrations],
   );
   const activeFilterLabel = getAdministrationFilterLabel(activeFilter);
-  const isBusy = isLoading || isRefreshing;
+  const isBusy =
+    isLoading ||
+    isRefreshing ||
+    (activeTab !== "today" && activePeriodStatus.isLoading);
+  const activeError =
+    activeTab === "today" ? refreshError : activePeriodStatus.error || refreshError;
+
+  const fetchPeriodAdministrations = useCallback(
+    async (tabId) => {
+      if (residentIds.length === 0) {
+        return [];
+      }
+
+      const filters = buildAdministrationPeriodFilters(tabId, currentTime);
+      const settledRequests = await Promise.allSettled(
+        residentIds.map((residentId) =>
+          listResidentMedicationAdministrations(residentId, filters),
+        ),
+      );
+      const fulfilledRequests = settledRequests.filter(
+        (request) => request.status === "fulfilled",
+      );
+
+      if (fulfilledRequests.length === 0) {
+        const rejectedRequest = settledRequests.find(
+          (request) => request.status === "rejected",
+        );
+
+        throw rejectedRequest?.reason ?? new Error("Não foi possível carregar.");
+      }
+
+      return getUniqueAdministrations(
+        fulfilledRequests.flatMap((request) => request.value),
+      );
+    },
+    [currentTime, residentIds],
+  );
+
+  const loadPeriodAdministrations = useCallback(
+    async (tabId) => {
+      if (!periodTabIds.includes(tabId)) {
+        return [];
+      }
+
+      setPeriodStatus((currentStatus) => ({
+        ...currentStatus,
+        [tabId]: { error: "", hasLoaded: false, isLoading: true },
+      }));
+
+      try {
+        const nextAdministrations = await fetchPeriodAdministrations(tabId);
+
+        setPeriodAdministrations((currentAdministrations) => ({
+          ...currentAdministrations,
+          [tabId]: nextAdministrations,
+        }));
+        setPeriodStatus((currentStatus) => ({
+          ...currentStatus,
+          [tabId]: { error: "", hasLoaded: true, isLoading: false },
+        }));
+
+        return nextAdministrations;
+      } catch (error) {
+        setPeriodStatus((currentStatus) => ({
+          ...currentStatus,
+          [tabId]: {
+            error: getRequestErrorMessage(error),
+            hasLoaded: true,
+            isLoading: false,
+          },
+        }));
+
+        return [];
+      }
+    },
+    [fetchPeriodAdministrations],
+  );
+
+  useEffect(() => {
+    if (
+      activeTab === "today" ||
+      isLoading ||
+      activePeriodStatus.hasLoaded ||
+      activePeriodStatus.isLoading
+    ) {
+      return;
+    }
+
+    loadPeriodAdministrations(activeTab);
+  }, [
+    activePeriodStatus.hasLoaded,
+    activePeriodStatus.isLoading,
+    activeTab,
+    isLoading,
+    loadPeriodAdministrations,
+  ]);
 
   async function refreshAdministrations(preferredAdministrationId = "") {
     setIsRefreshing(true);
     setRefreshError("");
 
     try {
+      if (activeTab !== "today") {
+        const nextAdministrations = await loadPeriodAdministrations(activeTab);
+        const nextSelected =
+          nextAdministrations.find(
+            (administration) => administration.id === preferredAdministrationId,
+          ) ?? null;
+
+        if (nextSelected) {
+          setSelectedAdministrationId(nextSelected.id);
+          setSelectedAdministration(nextSelected);
+        }
+
+        return nextAdministrations;
+      }
+
       const nextAdministrations = await listTodayMedicationAdministrations();
       const sortedNextAdministrations = [...nextAdministrations].sort(
         compareByAdministrationPriority(currentTime),
@@ -140,6 +361,16 @@ export function MedicationAdministrationsView({
     } finally {
       setIsRefreshing(false);
     }
+  }
+
+  function handleTabChange(tabId) {
+    setActiveTab(tabId);
+    setActiveFilter("all");
+    setFeedback("");
+    setRefreshError("");
+    setSelectedAdministration(null);
+    setSelectedAdministrationId("");
+    setDetailStatus({ error: "", isLoading: false });
   }
 
   async function handleOpenDetail(administration) {
@@ -342,21 +573,42 @@ export function MedicationAdministrationsView({
       <section className="dashboard-hero administrations-hero">
         <div className="dashboard-hero-copy">
           <span className="overline">Administração</span>
-          <h2>Agenda diária de medicamentos</h2>
-          <p>
-            Acompanhe as administrações previstas para hoje, priorize atrasos e
-            registre o desfecho operacional de cada dose.
-          </p>
+          <h2>Agenda de medicamentos</h2>
+          <p>{activeTabContent.heroDescription}</p>
         </div>
 
         <div
           className="dashboard-hero-status"
           aria-label="Resumo de administrações"
         >
-          <span className="dashboard-company-status is-active">Hoje</span>
+          <span className="dashboard-company-status is-active">
+            {activeTabContent.periodLabel}
+          </span>
           <strong>{stats.pending} pendentes</strong>
-          <span>{stats.late} atrasadas</span>
+          <span>{activeTabContent.secondarySummary(stats)}</span>
         </div>
+      </section>
+
+      <section
+        className="administration-tabs"
+        aria-label="Período"
+        role="tablist"
+      >
+        {tabs.map((tab) => (
+          <button
+            aria-selected={activeTab === tab.id}
+            className={`administration-tab${
+              activeTab === tab.id ? " is-active" : ""
+            }`}
+            key={tab.id}
+            role="tab"
+            type="button"
+            onClick={() => handleTabChange(tab.id)}
+          >
+            <span>{tab.label}</span>
+            <strong>{tab.countLabel}</strong>
+          </button>
+        ))}
       </section>
 
       <section
@@ -364,29 +616,29 @@ export function MedicationAdministrationsView({
         aria-label="Resumo de administrações"
       >
         <MetricCard
-          label="Total do dia"
+          label={activeTabContent.totalLabel}
           value={stats.total}
-          detail={`${filteredAdministrations.length} visíveis no filtro`}
-          loading={isLoading}
+          detail={`${filteredAdministrations.length} ${activeTabContent.totalDetail}`}
+          loading={isBusy}
         />
         <MetricCard
           label="Pendentes"
           value={stats.pending}
           detail="aguardando registro"
-          loading={isLoading}
+          loading={isBusy}
         />
         <MetricCard
           label="Atrasadas"
           value={stats.late}
           detail="pendentes com horário vencido"
-          loading={isLoading}
+          loading={isBusy}
           tone={stats.late > 0 ? "danger" : "success"}
         />
         <MetricCard
           label="Administradas"
           value={stats.administered}
-          detail="concluídas hoje"
-          loading={isLoading}
+          detail={activeTabContent.administeredDetail}
+          loading={isBusy}
           tone="success"
         />
       </section>
@@ -439,8 +691,8 @@ export function MedicationAdministrationsView({
         </div>
 
         <PanelHeader
-          overline="Agenda"
-          title="Administrações de hoje"
+          overline={activeTabContent.periodLabel}
+          title={activeTabContent.panelTitle}
           action={`${filteredAdministrations.length} em ${activeFilterLabel}`}
         />
 
@@ -453,12 +705,12 @@ export function MedicationAdministrationsView({
           </div>
         ) : null}
 
-        {refreshError ? (
+        {activeError ? (
           <div
             className="dashboard-form-alert dashboard-form-alert-danger"
             role="status"
           >
-            {refreshError}
+            {activeError}
           </div>
         ) : null}
 
@@ -479,7 +731,7 @@ export function MedicationAdministrationsView({
             ))}
           </div>
         ) : (
-          <EmptyState title="Nenhuma administração encontrada para o filtro atual." />
+          <EmptyState title={activeTabContent.emptyTitle} />
         )}
       </section>
 
@@ -525,4 +777,77 @@ export function MedicationAdministrationsView({
       ) : null}
     </>
   );
+}
+
+function buildAdministrationPeriodFilters(tabId, currentTime) {
+  const todayStart = startOfDay(new Date(currentTime || Date.now()));
+
+  if (tabId === "future") {
+    const startDate = addDays(todayStart, 1);
+    const endDate = addDays(startDate, periodWindowDays);
+    endDate.setMilliseconds(-1);
+
+    return {
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    };
+  }
+
+  const endDate = new Date(todayStart);
+  endDate.setMilliseconds(-1);
+
+  return {
+    startDate: addDays(todayStart, -periodWindowDays).toISOString(),
+    endDate: endDate.toISOString(),
+  };
+}
+
+function startOfDay(date) {
+  const nextDate = new Date(date);
+  nextDate.setHours(0, 0, 0, 0);
+
+  return nextDate;
+}
+
+function addDays(date, days) {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+
+  return nextDate;
+}
+
+function getUniqueResidentIds({ administrations, prescriptions, residents }) {
+  const residentIds = new Set();
+
+  residents.forEach((resident) => {
+    addResidentId(residentIds, resident.id);
+  });
+  prescriptions.forEach((prescription) => {
+    addResidentId(residentIds, prescription.residentId);
+    addResidentId(residentIds, prescription.resident?.id);
+  });
+  administrations.forEach((administration) => {
+    addResidentId(residentIds, administration.residentId);
+    addResidentId(residentIds, administration.resident?.id);
+  });
+
+  return Array.from(residentIds);
+}
+
+function addResidentId(residentIds, residentId) {
+  if (residentId) {
+    residentIds.add(residentId);
+  }
+}
+
+function getUniqueAdministrations(administrations) {
+  const administrationsById = new Map();
+
+  administrations.forEach((administration) => {
+    if (administration?.id) {
+      administrationsById.set(administration.id, administration);
+    }
+  });
+
+  return Array.from(administrationsById.values());
 }

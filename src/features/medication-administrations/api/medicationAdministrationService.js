@@ -1,8 +1,24 @@
 import { api } from "@/shared/api/client";
 import { parseBrazilianDateTime } from "@/features/medication-administrations/utils/administrationForms";
 
-export async function listTodayMedicationAdministrations() {
-  const data = await api.get("/medication-administrations/today");
+export async function listTodayMedicationAdministrations(filters = {}) {
+  const data = await api.get(
+    withQueryParams("/medication-administrations/today", filters),
+  );
+
+  return data.data ?? [];
+}
+
+export async function listResidentMedicationAdministrations(
+  residentId,
+  filters = {},
+) {
+  const data = await api.get(
+    withQueryParams(
+      `/residents/${residentId}/medication-administrations`,
+      filters,
+    ),
+  );
 
   return data.data ?? [];
 }
@@ -82,4 +98,20 @@ function toIsoDateTime(value) {
   const brazilianDate = parseBrazilianDateTime(value);
 
   return (brazilianDate ?? new Date(value)).toISOString();
+}
+
+function withQueryParams(path, params) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
+
+    searchParams.set(key, value);
+  });
+
+  const queryString = searchParams.toString();
+
+  return queryString ? `${path}?${queryString}` : path;
 }
