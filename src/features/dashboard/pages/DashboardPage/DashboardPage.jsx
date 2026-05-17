@@ -6,6 +6,7 @@ import { DashboardHome } from "@/features/dashboard/components/home/DashboardHom
 import { MedicationAdministrationsView } from "@/features/medication-administrations/components/MedicationAdministrationsView";
 import { MedicationsView } from "@/features/medications/components/MedicationsView";
 import { PrescriptionsView } from "@/features/prescriptions/components/PrescriptionsView";
+import { ReportsPage } from "@/features/reports/pages/ReportsPage/ReportsPage";
 import { ResidentsView } from "@/features/residents/components/ResidentsView";
 import { TeamView } from "@/features/users/components/TeamView";
 import { useCurrentTime } from "@/features/dashboard/hooks/useCurrentTime";
@@ -151,6 +152,13 @@ function DashboardPage() {
     setIsMenuOpen(false);
   }
 
+  function handleOpenResidentFromReport(residentId) {
+    setSearchTerm("");
+    setSelectedResidentId(residentId);
+    setActiveItem("Residentes");
+    setIsMenuOpen(false);
+  }
+
   return (
     <DashboardShell
       activeItem={activeItem}
@@ -228,6 +236,17 @@ function DashboardPage() {
       ) : activeItem === "Família / Acessos" ? (
         <FamilyAccessView
           isAdmin={isAdmin}
+          searchTerm={searchTerm}
+        />
+      ) : activeItem === "Relatórios" ? (
+        <ReportsPage
+          administrations={dashboardData.administrations}
+          currentTime={currentTime}
+          isLoading={isLoading}
+          medications={dashboardData.medications}
+          onOpenResident={isAdmin ? handleOpenResidentFromReport : undefined}
+          prescriptions={dashboardData.prescriptions}
+          residents={dashboardData.residents}
           searchTerm={searchTerm}
         />
       ) : activeItem === "Equipe" ? (
