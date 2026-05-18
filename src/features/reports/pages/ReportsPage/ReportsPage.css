@@ -92,6 +92,9 @@
 }
 
 .report-layout {
+  --report-list-max-height: min(360px, 45vh);
+  --report-section-max-height: min(620px, 70vh);
+
   display: grid;
   grid-template-columns: minmax(620px, 1.28fr) minmax(360px, 0.72fr);
   gap: 18px;
@@ -100,7 +103,7 @@
 
 .report-main-panel,
 .report-side-panel {
-  min-height: 620px;
+  min-height: min(620px, var(--report-section-max-height));
 }
 
 .report-panel-heading {
@@ -116,6 +119,7 @@
 }
 
 .report-table-wrap {
+  max-height: var(--report-section-max-height);
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: var(--r8);
@@ -139,6 +143,9 @@
 }
 
 .report-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background: var(--bg);
   color: var(--muted);
   font-size: 10px;
@@ -199,16 +206,23 @@
 }
 
 .report-side-panel {
+  max-height: var(--report-section-max-height);
   display: grid;
   align-content: start;
   gap: 24px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .report-status-list,
 .report-attention-list {
   min-width: 0;
+  max-height: var(--report-list-max-height);
+  overflow-y: auto;
+  padding-right: 6px;
   display: grid;
   gap: 10px;
+  scrollbar-gutter: stable;
 }
 
 .report-status-item {
@@ -309,7 +323,10 @@
 
 .resident-report-layout .report-main-panel,
 .resident-report-layout .report-side-panel {
-  min-height: 720px;
+  --report-list-max-height: min(360px, 45vh);
+  --report-section-max-height: min(720px, 72vh);
+
+  min-height: min(720px, var(--report-section-max-height));
 }
 
 .resident-report-filter-grid {
@@ -380,15 +397,19 @@
 .resident-report-timeline,
 .resident-report-context-list {
   min-width: 0;
+  overflow-y: auto;
+  padding-right: 6px;
   display: grid;
   gap: 10px;
+  scrollbar-gutter: stable;
 }
 
 .resident-report-timeline {
-  max-height: 620px;
-  overflow-y: auto;
-  padding-right: 6px;
-  scrollbar-gutter: stable;
+  max-height: var(--report-section-max-height);
+}
+
+.resident-report-context-list {
+  max-height: var(--report-list-max-height);
 }
 
 .resident-report-timeline:focus-visible {
@@ -532,8 +553,9 @@
     grid-template-columns: 1fr;
   }
 
-  .resident-report-timeline {
-    max-height: none;
+  .report-layout {
+    --report-list-max-height: min(320px, 58vh);
+    --report-section-max-height: min(520px, 72vh);
   }
 
   .report-attention-item small {
