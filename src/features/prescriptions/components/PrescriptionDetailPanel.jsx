@@ -82,13 +82,6 @@ export function PrescriptionDetailPanel({
         </div>
       </section>
 
-      {!prescription.endDate ? (
-        <div className="dashboard-context-note" role="note">
-          Sem data final: o backend gera uma janela inicial de 7 dias de
-          administrações.
-        </div>
-      ) : null}
-
       <section className="prescription-detail-section prescription-detail-section-muted">
         <h3>Registro</h3>
         <div className="dashboard-detail-grid">

@@ -8,7 +8,6 @@ import { matchesSearch } from "@/shared/utils/search";
 import { normalizeText } from "@/shared/utils/textFormatter";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import "./FamilyAccessView.css";
@@ -20,7 +19,7 @@ const accessFilters = [
 ];
 
 export function FamilyAccessView({ isAdmin, searchTerm }) {
-  const [accesses, setAccesses] = useState([]);
+  const [adminAccesses, setAdminAccesses] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [loadStatus, setLoadStatus] = useState({
     error: "",
@@ -29,11 +28,6 @@ export function FamilyAccessView({ isAdmin, searchTerm }) {
 
   useEffect(() => {
     if (!isAdmin) {
-      setAccesses([]);
-      setLoadStatus({
-        error: "Apenas administradores podem visualizar vínculos de familiares.",
-        isLoading: false,
-      });
       return undefined;
     }
 
@@ -46,7 +40,7 @@ export function FamilyAccessView({ isAdmin, searchTerm }) {
         const nextAccesses = await listCompanyFamilyAccesses();
 
         if (isMounted) {
-          setAccesses(nextAccesses);
+          setAdminAccesses(nextAccesses);
           setLoadStatus({ error: "", isLoading: false });
         }
       } catch (error) {
@@ -69,14 +63,26 @@ export function FamilyAccessView({ isAdmin, searchTerm }) {
     };
   }, [isAdmin]);
 
+  const effectiveLoadStatus = isAdmin
+    ? loadStatus
+    : {
+        error: "Apenas administradores podem visualizar vínculos de familiares.",
+        isLoading: false,
+      };
+
   const sortedAccesses = useMemo(
-    () =>
-      [...accesses].sort((firstAccess, secondAccess) => {
+    () => {
+      if (!isAdmin) {
+        return [];
+      }
+
+      return [...adminAccesses].sort((firstAccess, secondAccess) => {
         return (
           getTimestamp(secondAccess.createdAt) - getTimestamp(firstAccess.createdAt)
         );
-      }),
-    [accesses],
+      });
+    },
+    [adminAccesses, isAdmin],
   );
   const stats = useMemo(() => buildFamilyAccessStats(sortedAccesses), [sortedAccesses]);
   const visibleAccesses = useMemo(
@@ -97,51 +103,6 @@ export function FamilyAccessView({ isAdmin, searchTerm }) {
 
   return (
     <>
-      <section className="dashboard-hero family-access-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Família / Acessos</span>
-          <h2>Familiares dos residentes</h2>
-          <p>
-            Consulte os familiares vinculados aos residentes da empresa, com
-            relacionamento, contato e status do vínculo.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo dos vínculos">
-          <span className="dashboard-company-status is-active">Admin</span>
-          <strong>{stats.active} vínculos ativos</strong>
-          <span>{stats.residents} residentes com familiar</span>
-        </div>
-      </section>
-
-      <section className="dashboard-overview-grid" aria-label="Resumo de familiares">
-        <MetricCard
-          detail={`${visibleAccesses.length} visíveis na busca`}
-          label="Vínculos"
-          loading={loadStatus.isLoading}
-          value={stats.total}
-        />
-        <MetricCard
-          detail="familiares cadastrados"
-          label="Familiares"
-          loading={loadStatus.isLoading}
-          value={stats.familyMembers}
-        />
-        <MetricCard
-          detail="residentes com vínculo"
-          label="Residentes"
-          loading={loadStatus.isLoading}
-          value={stats.residents}
-        />
-        <MetricCard
-          detail={stats.inactive > 0 ? "revisar acessos" : "sem bloqueios"}
-          label="Inativos"
-          loading={loadStatus.isLoading}
-          tone={stats.inactive > 0 ? "danger" : "success"}
-          value={stats.inactive}
-        />
-      </section>
-
       <section className="dashboard-panel family-access-panel">
         <div className="dashboard-toolbar family-access-toolbar">
           <div
@@ -171,13 +132,13 @@ export function FamilyAccessView({ isAdmin, searchTerm }) {
           title="Familiares vinculados"
         />
 
-        {loadStatus.error ? (
+        {effectiveLoadStatus.error ? (
           <div className="dashboard-form-alert dashboard-form-alert-danger" role="status">
-            {loadStatus.error}
+            {effectiveLoadStatus.error}
           </div>
         ) : null}
 
-        {loadStatus.isLoading ? (
+        {effectiveLoadStatus.isLoading ? (
           <LoadingRows />
         ) : visibleAccesses.length > 0 ? (
           <FamilyAccessDirectory accesses={visibleAccesses} />
@@ -253,7 +214,7 @@ function FamilyAccessRow({ access }) {
 }
 
 function buildFamilyAccessStats(accesses) {
-  const stats = accesses.reduce(
+  return accesses.reduce(
     (acc, access) => {
       acc.total += 1;
 
@@ -263,38 +224,14 @@ function buildFamilyAccessStats(accesses) {
         acc.active += 1;
       }
 
-      const familyMemberKey =
-        access.familyMember?.id ||
-        access.familyMember?.email ||
-        access.familyMember?.fullName;
-      const residentKey = access.resident?.id || access.resident?.fullName;
-
-      if (familyMemberKey) {
-        acc.familyMemberIds.add(familyMemberKey);
-      }
-
-      if (residentKey) {
-        acc.residentIds.add(residentKey);
-      }
-
       return acc;
     },
     {
       active: 0,
-      familyMemberIds: new Set(),
       inactive: 0,
-      residentIds: new Set(),
       total: 0,
     },
   );
-
-  return {
-    active: stats.active,
-    familyMembers: stats.familyMemberIds.size,
-    inactive: stats.inactive,
-    residents: stats.residentIds.size,
-    total: stats.total,
-  };
 }
 
 function filterFamilyAccesses(accesses, { filterId, searchTerm }) {

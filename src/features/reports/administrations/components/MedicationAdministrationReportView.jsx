@@ -12,7 +12,6 @@ import { getMedicationAdministrationDisplayStatus } from "@/features/reports/uti
 import { formatDateTime } from "@/shared/utils/dateFormatter";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 
 export function MedicationAdministrationReportView({
@@ -36,55 +35,6 @@ export function MedicationAdministrationReportView({
 
   return (
     <>
-      <section className="dashboard-hero reports-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Relatórios</span>
-          <h2>Administração de medicamentos</h2>
-          <p>
-            Acompanhe adesão, atrasos, recusas e perdas em um recorte
-            auditável da rotina medicamentosa.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo do relatório">
-          <span className="dashboard-company-status is-active">
-            {getPeriodLabel(report.periodId)}
-          </span>
-          <strong>{report.stats.adherenceRate}% adesão</strong>
-          <span>{report.stats.total} doses previstas</span>
-        </div>
-      </section>
-
-      <section className="dashboard-overview-grid" aria-label="Resumo do relatório">
-        <MetricCard
-          detail={`${report.filteredAdministrations.length} registros no filtro`}
-          label="Doses previstas"
-          loading={report.isBusy}
-          value={report.stats.total}
-        />
-        <MetricCard
-          detail={`${report.stats.adherenceRate}% de adesão`}
-          label="Administradas"
-          loading={report.isBusy}
-          tone="success"
-          value={report.stats.administered}
-        />
-        <MetricCard
-          detail="pendentes com horário vencido"
-          label="Atrasadas"
-          loading={report.isBusy}
-          tone={report.stats.late > 0 ? "danger" : "success"}
-          value={report.stats.late}
-        />
-        <MetricCard
-          detail="recusas e perdas"
-          label="Ocorrências"
-          loading={report.isBusy}
-          tone={report.stats.incidents > 0 ? "warning" : "success"}
-          value={report.stats.incidents}
-        />
-      </section>
-
       <section className="dashboard-panel report-filters-panel">
         <PanelHeader
           action={`${report.filteredAdministrations.length} resultados`}
@@ -311,12 +261,5 @@ export function MedicationAdministrationReportView({
         </aside>
       </section>
     </>
-  );
-}
-
-function getPeriodLabel(periodId) {
-  return (
-    medicationAdministrationReportPeriods.find((period) => period.id === periodId)
-      ?.label ?? "Hoje"
   );
 }

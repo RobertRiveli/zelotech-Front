@@ -8,7 +8,6 @@ import {
 } from "@/features/medications/api/medicationService";
 import {
   buildMedicationFormFilters,
-  buildMedicationStats,
   filterMedications,
   findDuplicateMedication,
 } from "@/features/medications/utils/medicationDashboardUtils";
@@ -22,7 +21,6 @@ import {
   getRequestErrorMessage,
 } from "@/shared/utils/formErrors";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { MedicationDeleteModal } from "./MedicationDeleteModal";
 import { MedicationDetailPanel } from "./MedicationDetailPanel";
@@ -73,10 +71,6 @@ export function MedicationsView({
   const sortedMedications = useMemo(
     () => sortMedications(medications),
     [medications],
-  );
-  const stats = useMemo(
-    () => buildMedicationStats(sortedMedications),
-    [sortedMedications],
   );
   const formFilters = useMemo(
     () => buildMedicationFormFilters(sortedMedications),
@@ -398,18 +392,6 @@ export function MedicationsView({
 
   return (
     <>
-      <section
-        className="dashboard-overview-grid medications-overview-grid"
-        aria-label="Resumo de medicamentos"
-      >
-        <MetricCard
-          label="Medicamentos ativos"
-          value={stats.active}
-          detail={`${filteredMedications.length} visíveis na listagem`}
-          loading={isLoading}
-        />
-      </section>
-
       <section className="dashboard-two-column-layout medications-operational-layout">
         <section className="dashboard-panel medications-list-panel">
           <div className="medications-list-heading">

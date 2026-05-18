@@ -7,7 +7,6 @@ import { useResidentReport } from "@/features/reports/residents/hooks/useResiden
 import {
   formatResidentReportPrescriptionPeriod,
   getResidentName,
-  getResidentReportPeriodLabel,
   getResidentReportPrescriptionSummary,
 } from "@/features/reports/residents/utils/residentReport";
 import {
@@ -20,7 +19,6 @@ import { getMedicationName } from "@/features/medications/utils/medicationFormat
 import { formatDateTime, formatShortDate } from "@/shared/utils/dateFormatter";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 
 export function ResidentReportView({
@@ -45,61 +43,6 @@ export function ResidentReportView({
 
   return (
     <>
-      <section className="dashboard-hero reports-hero resident-report-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Relatórios</span>
-          <h2>
-            {report.selectedResident
-              ? selectedResidentName
-              : "Histórico do residente"}
-          </h2>
-          <p>
-            Consulte administrações no período, ocorrências registradas,
-            prescrições ativas e condições de saúde vinculadas ao residente.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo do residente">
-          <span className="dashboard-company-status is-active">
-            {getResidentReportPeriodLabel(report.periodId)}
-          </span>
-          <strong>{report.stats.total} administrações</strong>
-          <span>{report.stats.activePrescriptions} prescrições ativas</span>
-        </div>
-      </section>
-
-      <section
-        className="dashboard-overview-grid"
-        aria-label="Resumo do histórico do residente"
-      >
-        <MetricCard
-          detail={`${report.filteredAdministrations.length} registros no filtro`}
-          label="Administrações"
-          loading={report.isBusy}
-          value={report.stats.total}
-        />
-        <MetricCard
-          detail={`${report.stats.adherenceRate}% de adesão`}
-          label="Administradas"
-          loading={report.isBusy}
-          tone="success"
-          value={report.stats.administered}
-        />
-        <MetricCard
-          detail="pendentes com horário vencido"
-          label="Atrasadas"
-          loading={report.isBusy}
-          tone={report.stats.late > 0 ? "danger" : "success"}
-          value={report.stats.late}
-        />
-        <MetricCard
-          detail={`${report.stats.healthConditions} condições vinculadas`}
-          label="Prescrições ativas"
-          loading={report.isBusy}
-          value={report.stats.activePrescriptions}
-        />
-      </section>
-
       <section className="dashboard-panel report-filters-panel">
         <PanelHeader
           action={`${report.timelineEvents.length} eventos`}

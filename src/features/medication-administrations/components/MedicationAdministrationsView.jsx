@@ -12,7 +12,6 @@ import {
 import {
   administrationFilters,
   buildAdministrationFilterCounts,
-  buildAdministrationStats,
   filterAdministrations,
   getAdministrationFilterLabel,
   isPendingAdministration,
@@ -36,7 +35,6 @@ import {
 } from "@/shared/utils/formErrors";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { AdministrationActionModal } from "./AdministrationActionModal";
 import { AdministrationDetailModal } from "./AdministrationDetailModal";
@@ -66,37 +64,19 @@ const administrationTabs = [
 
 const administrationTabContent = {
   today: {
-    administeredDetail: "concluídas hoje",
     emptyTitle: "Nenhuma administração encontrada para o filtro atual.",
-    heroDescription:
-      "Acompanhe as administrações previstas para hoje, priorize atrasos e registre o desfecho operacional de cada dose.",
     panelTitle: "Administrações de hoje",
     periodLabel: "Agenda",
-    secondarySummary: (stats) => `${stats.late} atrasadas`,
-    totalDetail: "visíveis no filtro",
-    totalLabel: "Total do dia",
   },
   future: {
-    administeredDetail: "já concluídas no período",
     emptyTitle: "Nenhuma administração futura encontrada para o filtro atual.",
-    heroDescription:
-      "Veja as doses já programadas para os próximos dias e antecipe ajustes operacionais quando necessário.",
     panelTitle: "Próximas administrações",
     periodLabel: "Próximos 7 dias",
-    secondarySummary: (stats) => `${stats.total} agendadas`,
-    totalDetail: "visíveis no filtro",
-    totalLabel: "Total futuro",
   },
   history: {
-    administeredDetail: "concluídas no período",
     emptyTitle: "Nenhuma administração no histórico para o filtro atual.",
-    heroDescription:
-      "Consulte os registros recentes de administração e acompanhe pendências que ficaram sem desfecho.",
     panelTitle: "Histórico de administrações",
     periodLabel: "Últimos 7 dias",
-    secondarySummary: (stats) => `${stats.late} sem desfecho`,
-    totalDetail: "visíveis no filtro",
-    totalLabel: "Total histórico",
   },
 };
 
@@ -202,10 +182,6 @@ export function MedicationAdministrationsView({
       return nextAdministrations.sort(compareByAdministrationPriority(currentTime));
     },
     [activeAdministrations, activeTab, currentTime],
-  );
-  const stats = useMemo(
-    () => buildAdministrationStats(sortedAdministrations, currentTime),
-    [currentTime, sortedAdministrations],
   );
   const filterCounts = useMemo(
     () => buildAdministrationFilterCounts(sortedAdministrations, currentTime),
@@ -570,25 +546,6 @@ export function MedicationAdministrationsView({
 
   return (
     <>
-      <section className="dashboard-hero administrations-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Administração</span>
-          <h2>Agenda de medicamentos</h2>
-          <p>{activeTabContent.heroDescription}</p>
-        </div>
-
-        <div
-          className="dashboard-hero-status"
-          aria-label="Resumo de administrações"
-        >
-          <span className="dashboard-company-status is-active">
-            {activeTabContent.periodLabel}
-          </span>
-          <strong>{stats.pending} pendentes</strong>
-          <span>{activeTabContent.secondarySummary(stats)}</span>
-        </div>
-      </section>
-
       <section
         className="administration-tabs"
         aria-label="Período"
@@ -609,38 +566,6 @@ export function MedicationAdministrationsView({
             <strong>{tab.countLabel}</strong>
           </button>
         ))}
-      </section>
-
-      <section
-        className="dashboard-overview-grid"
-        aria-label="Resumo de administrações"
-      >
-        <MetricCard
-          label={activeTabContent.totalLabel}
-          value={stats.total}
-          detail={`${filteredAdministrations.length} ${activeTabContent.totalDetail}`}
-          loading={isBusy}
-        />
-        <MetricCard
-          label="Pendentes"
-          value={stats.pending}
-          detail="aguardando registro"
-          loading={isBusy}
-        />
-        <MetricCard
-          label="Atrasadas"
-          value={stats.late}
-          detail="pendentes com horário vencido"
-          loading={isBusy}
-          tone={stats.late > 0 ? "danger" : "success"}
-        />
-        <MetricCard
-          label="Administradas"
-          value={stats.administered}
-          detail={activeTabContent.administeredDetail}
-          loading={isBusy}
-          tone="success"
-        />
       </section>
 
       <section className="dashboard-panel administrations-list-panel">

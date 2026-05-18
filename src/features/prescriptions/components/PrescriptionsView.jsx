@@ -23,7 +23,6 @@ import {
 } from "@/features/prescriptions/utils/prescriptionForm";
 import { validatePrescriptionForm } from "@/features/prescriptions/validations/prescriptionSchema";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { PrescriptionDeactivateModal } from "./PrescriptionDeactivateModal";
 import { PrescriptionDetailPanel } from "./PrescriptionDetailPanel";
@@ -372,37 +371,6 @@ export function PrescriptionsView({
 
   return (
     <>
-      <section
-        className="dashboard-overview-grid"
-        aria-label="Resumo de prescrições"
-      >
-        <MetricCard
-          label="Prescrições ativas"
-          value={stats.active}
-          detail={`${filteredPrescriptions.length} visíveis na busca`}
-          loading={isLoading}
-        />
-        <MetricCard
-          label="Encerrando em breve"
-          value={stats.endingSoon}
-          detail="nos próximos 7 dias"
-          loading={isLoading}
-          tone={stats.endingSoon > 0 ? "danger" : "success"}
-        />
-        <MetricCard
-          label="Sem data final"
-          value={stats.withoutEndDate}
-          detail="geram janela inicial de 7 dias"
-          loading={isLoading}
-        />
-        <MetricCard
-          label="Primeiro horário hoje"
-          value={stats.firstScheduledToday}
-          detail="novas agendas previstas"
-          loading={isLoading}
-        />
-      </section>
-
       <section className="dashboard-two-column-layout prescriptions-operational-layout">
         <section className="dashboard-panel prescriptions-list-panel">
           <div className="prescriptions-list-heading">

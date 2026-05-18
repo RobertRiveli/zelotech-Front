@@ -8,7 +8,6 @@ import { matchesSearch } from "@/shared/utils/search";
 import { normalizeText } from "@/shared/utils/textFormatter";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingRows } from "@/shared/ui/LoadingRows";
-import { MetricCard } from "@/shared/ui/MetricCard";
 import { PanelHeader } from "@/shared/ui/PanelHeader";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import "./TeamView.css";
@@ -96,51 +95,6 @@ export function TeamView({ searchTerm }) {
 
   return (
     <>
-      <section className="dashboard-hero team-hero">
-        <div className="dashboard-hero-copy">
-          <span className="overline">Equipe</span>
-          <h2>Usuários da instituição</h2>
-          <p>
-            Consulte os usuários vinculados à empresa autenticada, seus perfis
-            de acesso e status operacional.
-          </p>
-        </div>
-
-        <div className="dashboard-hero-status" aria-label="Resumo da equipe">
-          <span className="dashboard-company-status is-active">Admin</span>
-          <strong>{stats.active} ativos</strong>
-          <span>{stats.admins} administradores</span>
-        </div>
-      </section>
-
-      <section className="dashboard-overview-grid" aria-label="Resumo de usuários">
-        <MetricCard
-          detail={`${visibleUsers.length} visíveis na busca`}
-          label="Usuários"
-          loading={loadStatus.isLoading}
-          value={stats.total}
-        />
-        <MetricCard
-          detail="com acesso administrativo"
-          label="Administradores"
-          loading={loadStatus.isLoading}
-          value={stats.admins}
-        />
-        <MetricCard
-          detail="perfil de cuidador"
-          label="Cuidadores"
-          loading={loadStatus.isLoading}
-          value={stats.caregivers}
-        />
-        <MetricCard
-          detail={stats.inactive > 0 ? "revisar permissões" : "sem bloqueios"}
-          label="Inativos"
-          loading={loadStatus.isLoading}
-          tone={stats.inactive > 0 ? "danger" : "success"}
-          value={stats.inactive}
-        />
-      </section>
-
       <section className="dashboard-panel team-panel">
         <div className="dashboard-toolbar team-toolbar">
           <div className="dashboard-filter-group" aria-label="Filtros da equipe">
@@ -243,8 +197,6 @@ function buildTeamStats(users) {
 
       if (user.isActive === false) {
         acc.inactive += 1;
-      } else {
-        acc.active += 1;
       }
 
       if (user.role === "admin") {
@@ -258,7 +210,6 @@ function buildTeamStats(users) {
       return acc;
     },
     {
-      active: 0,
       admins: 0,
       caregivers: 0,
       inactive: 0,

@@ -17,9 +17,6 @@ export function ResidentList({ residents }) {
         <article className="dashboard-compact-item" key={resident.id}>
           <div>
             <strong>{resident.fullName}</strong>
-            <span>
-              {resident.bloodType ? `Tipo ${resident.bloodType}` : "Sem tipo sanguíneo"}
-            </span>
           </div>
           <small>{formatShortDate(resident.admissionDate)}</small>
         </article>
