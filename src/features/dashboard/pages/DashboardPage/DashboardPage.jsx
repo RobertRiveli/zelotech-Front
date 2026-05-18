@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CompanyView } from "@/features/company/components/CompanyView";
 import { DashboardShell } from "@/features/dashboard/layout/DashboardShell";
 import { FamilyAccessView } from "@/features/family-access/components/FamilyAccessView";
 import { DashboardHome } from "@/features/dashboard/components/home/DashboardHome";
@@ -142,6 +143,25 @@ function DashboardPage() {
     }));
   }
 
+  function handleCompanyUpdated(company) {
+    if (!company) {
+      return;
+    }
+
+    setDashboardData((currentData) => ({
+      ...currentData,
+      profile: currentData.profile
+        ? {
+            ...currentData.profile,
+            company: {
+              ...currentData.profile.company,
+              ...company,
+            },
+          }
+        : currentData.profile,
+    }));
+  }
+
   function handleOpenAdministrationFromHome(administration) {
     const searchValue =
       administration.resident?.fullName ||
@@ -237,6 +257,11 @@ function DashboardPage() {
         <FamilyAccessView
           isAdmin={isAdmin}
           searchTerm={searchTerm}
+        />
+      ) : activeItem === "Empresa" ? (
+        <CompanyView
+          initialCompany={profile?.company}
+          onCompanyUpdated={handleCompanyUpdated}
         />
       ) : activeItem === "Relatórios" ? (
         <ReportsPage
