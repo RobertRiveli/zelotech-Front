@@ -148,7 +148,7 @@ function DashboardPage() {
       getMedicationName(administration.medication);
 
     setSearchTerm(searchValue);
-    setActiveItem("Administração de medicamentos");
+    setActiveItem("Agenda de medicamentos");
     setIsMenuOpen(false);
   }
 
@@ -212,7 +212,7 @@ function DashboardPage() {
           onSearchChange={setSearchTerm}
           onPrescriptionsChange={handlePrescriptionsChange}
         />
-      ) : activeItem === "Administração de medicamentos" ? (
+      ) : activeItem === "Agenda de medicamentos" ? (
         <MedicationAdministrationsView
           administrations={dashboardData.administrations}
           currentTime={currentTime}

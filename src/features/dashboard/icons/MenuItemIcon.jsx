@@ -1,6 +1,5 @@
 const iconsByMenuItem = {
-  "Administração de medicamentos": AdministrationIcon,
-  Configurações: SettingsIcon,
+  "Agenda de medicamentos": AdministrationIcon,
   Empresa: BuildingIcon,
   Equipe: TeamIcon,
   "Família / Acessos": FamilyAccessIcon,
@@ -121,22 +120,6 @@ function ReportsIcon() {
       <path d="M9 16v-5" />
       <path d="M13 16V8" />
       <path d="M17 16v-3" />
-    </>
-  );
-}
-
-function SettingsIcon() {
-  return (
-    <>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 3.5v2" />
-      <path d="M12 18.5v2" />
-      <path d="m5.9 5.9 1.4 1.4" />
-      <path d="m16.7 16.7 1.4 1.4" />
-      <path d="M3.5 12h2" />
-      <path d="M18.5 12h2" />
-      <path d="m5.9 18.1 1.4-1.4" />
-      <path d="m16.7 7.3 1.4-1.4" />
     </>
   );
 }
