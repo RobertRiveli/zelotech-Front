@@ -36,27 +36,50 @@ export function ReportsPage({
         aria-label="Tipos de relatório"
         className="dashboard-panel report-section-nav"
       >
-        <div className="report-section-copy">
-          <span className="overline">Central de relatórios</span>
-          <h2>Escolha o recorte operacional</h2>
+        <div className="report-section-header">
+          <div className="report-section-copy">
+            <span className="overline">Central de relatórios</span>
+            <h2>Escolha o recorte operacional</h2>
+          </div>
+
+          <div
+            aria-label="Tipos de relatório"
+            className="report-section-tabs"
+            role="tablist"
+          >
+            {reportSections.map((section) => (
+              <button
+                aria-controls={`report-section-panel-${section.id}`}
+                aria-selected={activeSection === section.id}
+                className={`report-section-tab${
+                  activeSection === section.id ? " is-active" : ""
+                }`}
+                id={`report-section-tab-${section.id}`}
+                key={section.id}
+                role="tab"
+                type="button"
+                onClick={() => setActiveSection(section.id)}
+              >
+                <span>{section.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="report-section-tabs" role="tablist">
+        <div className="report-section-active-panels">
           {reportSections.map((section) => (
-            <button
-              aria-selected={activeSection === section.id}
-              className={`report-section-tab${
-                activeSection === section.id ? " is-active" : ""
-              }`}
+            <div
+              aria-labelledby={`report-section-tab-${section.id}`}
+              className="report-section-active"
+              hidden={activeSection !== section.id}
+              id={`report-section-panel-${section.id}`}
               key={section.id}
-              role="tab"
-              type="button"
-              onClick={() => setActiveSection(section.id)}
+              role="tabpanel"
             >
               <span>{section.label}</span>
               <strong>{section.title}</strong>
               <small>{section.description}</small>
-            </button>
+            </div>
           ))}
         </div>
       </section>
