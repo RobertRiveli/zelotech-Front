@@ -6,6 +6,7 @@ import PasswordInput from "@/shared/ui/PasswordInput";
 import { login } from "@/features/auth/api/authService";
 import { saveSession } from "@/features/auth/utils/session";
 import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "@/features/auth/constants/accessMessages";
+import { FAMILY_APP_URL } from "@/shared/constants/externalLinks";
 import { formatCpf } from "@/shared/utils/cpfFormatter";
 import { validateLoginForm } from "@/features/auth/validations/loginSchema";
 import styles from "./LoginForm.module.css";
@@ -166,9 +167,9 @@ function LoginForm() {
           <Link className={styles.link} to="/cadastro-empresa">
             Cadastrar empresa
           </Link>
-          <Link className={styles.link} to="/cadastro-familia">
+          <a className={styles.link} href={FAMILY_APP_URL}>
             Cadastrar Família
-          </Link>
+          </a>
         </div>
       </div>
     </form>

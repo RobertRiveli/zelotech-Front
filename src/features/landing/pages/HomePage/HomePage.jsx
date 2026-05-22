@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AudienceCards from "@/features/landing/components/AudienceCards";
 import Benefits from "@/features/landing/components/Benefits";
 import Faq from "@/features/landing/components/Faq";
+import JourneyPhonePreview from "@/features/landing/components/JourneyPhonePreview";
 import {
   audiences,
   benefits,
@@ -19,6 +20,7 @@ import {
   hasAdminSession,
   hasCaregiverSession,
 } from "@/features/auth/utils/session";
+import { FAMILY_APP_URL } from "@/shared/constants/externalLinks";
 import "./HomePage.css";
 
 function HomePage() {
@@ -100,9 +102,9 @@ function HomePage() {
               <Link to="/cadastro-instituicao" className="btn btn-navy btn-lg">
                 Sou uma Instituição <span className="arrow">›</span>
               </Link>
-              <Link to="/cadastro-familia" className="btn btn-teal btn-lg">
+              <a href={FAMILY_APP_URL} className="btn btn-teal btn-lg">
                 Sou uma Família <span className="arrow">›</span>
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -168,48 +170,7 @@ function HomePage() {
                 </div>
               </div>
 
-              <div className="how-visual">
-                <div className="how-visual-inner">
-                  <div className="how-phone-mock">
-                    <div className="phone-screen">
-                      <div className="phone-header">ZeloTech · Dashboard</div>
-                      <div className="phone-card">
-                        <div className="phone-card-label">Pressão arterial</div>
-                        <div className="phone-card-val">120/80</div>
-                        <div className="phone-bar">
-                          <div className="phone-bar-fill pressure-fill" />
-                        </div>
-                        <div className="phone-pill">Normal</div>
-                      </div>
-                      <div className="phone-card">
-                        <div className="phone-card-label">
-                          Frequência cardíaca
-                        </div>
-                        <div className="phone-card-val">72 bpm</div>
-                        <div className="phone-bar">
-                          <div className="phone-bar-fill heart-fill" />
-                        </div>
-                        <div className="phone-pill">Regular</div>
-                      </div>
-                      <div className="phone-card">
-                        <div className="phone-card-label">Medicação 18h</div>
-                        <div className="phone-card-val phone-confirmed">
-                          ✓ Confirmada
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="app-caption">
-                    App disponível para iOS e Android
-                  </div>
-                  <div className="store-buttons">
-                    <div className="store-button">▶ App Store</div>
-                    <div className="store-button">▶ Google Play</div>
-                  </div>
-                </div>
-                <div className="blob blob-teal" />
-                <div className="blob blob-navy" />
-              </div>
+              <JourneyPhonePreview activeStep={activeStep} />
             </div>
           </div>
         </section>

@@ -1,7 +1,9 @@
+import { FAMILY_APP_URL } from "@/shared/constants/externalLinks";
+
 function AudienceCard({ audience }) {
   const isInstitution = audience.type === "institution";
   const tone = isInstitution ? "light" : "dark";
-  const href = isInstitution ? "/cadastro-instituicao" : "/cadastro-familia";
+  const href = isInstitution ? "/cadastro-instituicao" : FAMILY_APP_URL;
 
   return (
     <article className={`for-who-card ${audience.type}`}>

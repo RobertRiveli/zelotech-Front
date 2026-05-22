@@ -30,6 +30,106 @@ export const howSteps = [
   },
 ];
 
+export const familyAppPreview = {
+  greetingName: "Luiza",
+  summary: {
+    title: "3 residentes vinculados",
+    subtitle: "Toque para ver detalhes",
+  },
+  residents: [
+    {
+      name: "Helena Duarte",
+      kinship: "Mãe",
+      age: "83 anos",
+      bloodType: "A+",
+      status: "Ativo",
+    },
+    {
+      name: "Joaquim Ferreira",
+      kinship: "Responsável",
+      age: "86 anos",
+      bloodType: "O+",
+      status: "Ativo",
+    },
+    {
+      name: "Odete Rocha",
+      kinship: "Avó",
+      age: "78 anos",
+      bloodType: "B-",
+      status: "Ativo",
+    },
+  ],
+};
+
+export const careDashboardPreview = {
+  title: "ZeloTech · Dashboard",
+  metrics: [
+    {
+      label: "Pressão arterial",
+      value: "120/80",
+      status: "Normal",
+      fillClassName: "pressure-fill",
+    },
+    {
+      label: "Frequência cardíaca",
+      value: "72 bpm",
+      status: "Regular",
+      fillClassName: "heart-fill",
+    },
+  ],
+  medication: {
+    label: "Medicação 18h",
+    value: "✓ Confirmada",
+  },
+};
+
+export const residentProfilePreview = {
+  initials: "JF",
+  name: "Joaquim Ferreira",
+  relationship: "Responsável",
+  status: "Ativo",
+  stats: [
+    {
+      label: "Idade",
+      value: "86",
+      helper: "anos",
+    },
+    {
+      label: "Tipo sanguíneo",
+      value: "O+",
+      helper: "sangue",
+    },
+    {
+      label: "Gênero",
+      value: "-",
+      helper: "não informado",
+    },
+    {
+      label: "Admissão",
+      value: "30/11",
+      helper: "2024",
+    },
+  ],
+  conditions: [
+    {
+      name: "Cardiopatia",
+      tag: "Cardiovascular",
+      note: "Evitar esforço prolongado sem supervisão.",
+    },
+    {
+      name: "Diabetes",
+      tag: "Doença crônica",
+      note: "Glicemia capilar antes do jantar.",
+    },
+    {
+      name: "Hipertensão",
+      tag: "Cardiovascular",
+      note: "Registrar PA quando houver tontura.",
+    },
+  ],
+  medications: ["Cloridrato de Metformina", "Sinvastatina"],
+};
+
 export const numbers = [];
 
 export const benefits = [
