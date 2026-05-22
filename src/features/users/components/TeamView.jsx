@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { listUsers } from "@/features/auth/api/userService";
-import { formatCpf, formatPhone } from "@/shared/utils/documentFormatter";
+import { formatPhone, maskCpf } from "@/shared/utils/documentFormatter";
 import { formatShortDate } from "@/shared/utils/dateFormatter";
 import { getRequestErrorMessage } from "@/shared/utils/formErrors";
 import { getInitials } from "@/shared/utils/nameFormatter";
@@ -178,7 +178,7 @@ function TeamRow({ user }) {
       </div>
 
       <span>{user.phone ? formatPhone(user.phone) : "Telefone não informado"}</span>
-      <span>{user.cpf ? formatCpf(user.cpf) : "CPF não informado"}</span>
+      <span>{user.cpf ? maskCpf(user.cpf) : "CPF não informado"}</span>
       <StatusBadge tone={user.role === "admin" ? "pending" : "muted"}>
         {roleLabel}
       </StatusBadge>

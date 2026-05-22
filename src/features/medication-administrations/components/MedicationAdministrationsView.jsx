@@ -10,6 +10,11 @@ import {
   refuseMedicationAdministration,
 } from "@/features/medication-administrations/api/medicationAdministrationService";
 import {
+  formatDate,
+  formatShortDate,
+  toDate,
+} from "@/shared/utils/dateFormatter";
+import {
   administrationFilters,
   buildAdministrationFilterCounts,
   filterAdministrations,
@@ -62,6 +67,11 @@ const administrationTabs = [
   { id: "history", label: "Histórico" },
 ];
 
+const administrationViewModes = [
+  { id: "list", label: "Lista" },
+  { id: "resident", label: "Por residente" },
+];
+
 const administrationTabContent = {
   today: {
     emptyTitle: "Nenhuma administração encontrada para o filtro atual.",
@@ -92,6 +102,7 @@ const initialPeriodStatus = {
 
 const periodTabIds = ["future", "history"];
 const periodWindowDays = 7;
+const dayInMilliseconds = 24 * 60 * 60 * 1000;
 
 export function MedicationAdministrationsView({
   administrations,
@@ -105,6 +116,7 @@ export function MedicationAdministrationsView({
 }) {
   const [activeTab, setActiveTab] = useState("today");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("list");
   const [periodAdministrations, setPeriodAdministrations] = useState(
     initialPeriodAdministrations,
   );
@@ -195,6 +207,20 @@ export function MedicationAdministrationsView({
         searchTerm,
       }),
     [activeFilter, currentTime, searchTerm, sortedAdministrations],
+  );
+  const dateGroups = useMemo(
+    () =>
+      activeTab !== "today" && viewMode === "list"
+        ? buildAdministrationDateGroups(filteredAdministrations, currentTime)
+        : [],
+    [activeTab, currentTime, filteredAdministrations, viewMode],
+  );
+  const residentGroups = useMemo(
+    () =>
+      viewMode === "resident"
+        ? buildAdministrationResidentGroups(filteredAdministrations)
+        : [],
+    [filteredAdministrations, viewMode],
   );
   const activeFilterLabel = getAdministrationFilterLabel(activeFilter);
   const isBusy =
@@ -544,6 +570,96 @@ export function MedicationAdministrationsView({
     return actionType !== "cancel" || isAdmin;
   }
 
+  function renderAdministrationRow(administration) {
+    return (
+      <AdministrationRow
+        administration={administration}
+        currentTime={currentTime}
+        isMutating={isSubmitting}
+        isSelected={selectedAdministrationId === administration.id}
+        key={administration.id}
+        onAction={handleOpenAction}
+        onOpenDetail={handleOpenDetail}
+      />
+    );
+  }
+
+  function renderDateGroup(group, isNested = false) {
+    return (
+      <section
+        className={`administration-date-group${isNested ? " is-nested" : ""}`}
+        key={group.id}
+      >
+        <div className="administration-group-header">
+          <div>
+            <strong>{group.title}</strong>
+            <span>{group.subtitle}</span>
+          </div>
+          <small>{group.countLabel}</small>
+        </div>
+
+        <div className="administration-directory">
+          {group.administrations.map(renderAdministrationRow)}
+        </div>
+      </section>
+    );
+  }
+
+  function renderResidentGroup(group) {
+    const residentDateGroups =
+      activeTab === "today"
+        ? []
+        : buildAdministrationDateGroups(group.administrations, currentTime);
+
+    return (
+      <section className="administration-resident-group" key={group.id}>
+        <div className="administration-group-header">
+          <div>
+            <strong>{group.name}</strong>
+            <span>{group.subtitle}</span>
+          </div>
+          <small>{group.countLabel}</small>
+        </div>
+
+        {activeTab === "today" ? (
+          <div className="administration-directory">
+            {group.administrations.map(renderAdministrationRow)}
+          </div>
+        ) : (
+          <div className="administration-resident-date-directory">
+            {residentDateGroups.map((dateGroup) =>
+              renderDateGroup(dateGroup, true),
+            )}
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  function renderAdministrationContent() {
+    if (viewMode === "resident") {
+      return (
+        <div className="administration-resident-directory">
+          {residentGroups.map(renderResidentGroup)}
+        </div>
+      );
+    }
+
+    if (activeTab !== "today") {
+      return (
+        <div className="administration-grouped-directory">
+          {dateGroups.map((group) => renderDateGroup(group))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="administration-directory">
+        {filteredAdministrations.map(renderAdministrationRow)}
+      </div>
+    );
+  }
+
   return (
     <>
       <section
@@ -594,6 +710,26 @@ export function MedicationAdministrationsView({
           </div>
 
           <div className="administrations-toolbar-actions">
+            <div
+              aria-label="Modo de visualização"
+              className="administration-view-toggle"
+              role="group"
+            >
+              {administrationViewModes.map((mode) => (
+                <button
+                  aria-pressed={viewMode === mode.id}
+                  className={`dashboard-filter-button administration-view-toggle-button${
+                    viewMode === mode.id ? " is-active" : ""
+                  }`}
+                  key={mode.id}
+                  type="button"
+                  onClick={() => setViewMode(mode.id)}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+
             <button
               className="dashboard-button dashboard-button-muted"
               disabled={isBusy}
@@ -642,19 +778,7 @@ export function MedicationAdministrationsView({
         {isBusy ? (
           <LoadingRows />
         ) : filteredAdministrations.length > 0 ? (
-          <div className="administration-directory">
-            {filteredAdministrations.map((administration) => (
-              <AdministrationRow
-                administration={administration}
-                currentTime={currentTime}
-                isMutating={isSubmitting}
-                isSelected={selectedAdministrationId === administration.id}
-                key={administration.id}
-                onAction={handleOpenAction}
-                onOpenDetail={handleOpenDetail}
-              />
-            ))}
-          </div>
+          renderAdministrationContent()
         ) : (
           <EmptyState title={activeTabContent.emptyTitle} />
         )}
@@ -775,4 +899,132 @@ function getUniqueAdministrations(administrations) {
   });
 
   return Array.from(administrationsById.values());
+}
+
+function buildAdministrationDateGroups(administrations, currentTime) {
+  const groupsByDate = new Map();
+
+  administrations.forEach((administration) => {
+    const scheduledDate = toDate(administration.scheduledAt);
+    const dateKey = getAdministrationDateKey(scheduledDate);
+
+    if (!groupsByDate.has(dateKey)) {
+      groupsByDate.set(dateKey, {
+        administrations: [],
+        date: scheduledDate,
+        id: dateKey,
+        subtitle: scheduledDate ? formatShortDate(scheduledDate) : "Sem data",
+        title: getDateGroupTitle(scheduledDate, currentTime),
+      });
+    }
+
+    groupsByDate.get(dateKey).administrations.push(administration);
+  });
+
+  return Array.from(groupsByDate.values()).map((group) => ({
+    ...group,
+    countLabel: formatAdministrationCount(group.administrations.length),
+  }));
+}
+
+function buildAdministrationResidentGroups(administrations) {
+  const groupsByResident = new Map();
+
+  administrations.forEach((administration) => {
+    const residentKey = getAdministrationResidentKey(administration);
+
+    if (!groupsByResident.has(residentKey)) {
+      groupsByResident.set(residentKey, {
+        administrations: [],
+        id: residentKey,
+        name: getAdministrationResidentName(administration),
+        subtitle: getAdministrationResidentSubtitle(administration),
+      });
+    }
+
+    groupsByResident.get(residentKey).administrations.push(administration);
+  });
+
+  return Array.from(groupsByResident.values()).map((group) => ({
+    ...group,
+    countLabel: formatAdministrationCount(group.administrations.length),
+  }));
+}
+
+function getAdministrationDateKey(date) {
+  if (!date) {
+    return "no-date";
+  }
+
+  return [
+    date.getFullYear(),
+    padDatePart(date.getMonth() + 1),
+    padDatePart(date.getDate()),
+  ].join("-");
+}
+
+function getDateGroupTitle(date, currentTime) {
+  if (!date) {
+    return "Sem data definida";
+  }
+
+  const referenceDate = toDate(currentTime) ?? new Date();
+  const dateStart = startOfDay(date);
+  const referenceStart = startOfDay(referenceDate);
+  const dayDifference = Math.round(
+    (dateStart.getTime() - referenceStart.getTime()) / dayInMilliseconds,
+  );
+
+  if (dayDifference === 0) {
+    return "Hoje";
+  }
+
+  if (dayDifference === 1) {
+    return "Amanhã";
+  }
+
+  if (dayDifference === -1) {
+    return "Ontem";
+  }
+
+  return capitalizeFirstLetter(formatDate(date));
+}
+
+function getAdministrationResidentKey(administration) {
+  return (
+    administration.resident?.id ||
+    administration.residentId ||
+    administration.resident?.fullName ||
+    "resident-without-id"
+  );
+}
+
+function getAdministrationResidentName(administration) {
+  return administration.resident?.fullName || "Residente sem nome";
+}
+
+function getAdministrationResidentSubtitle(administration) {
+  const residentIdentifier =
+    administration.resident?.document ||
+    administration.resident?.cpf ||
+    administration.resident?.room ||
+    "";
+
+  return residentIdentifier || "Administrações do residente";
+}
+
+function formatAdministrationCount(count) {
+  return count === 1 ? "1 administração" : `${count} administrações`;
+}
+
+function capitalizeFirstLetter(value) {
+  if (!value) {
+    return "";
+  }
+
+  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+}
+
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
 }

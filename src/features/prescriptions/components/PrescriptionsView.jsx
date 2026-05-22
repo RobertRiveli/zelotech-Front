@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { listTodayMedicationAdministrations } from "@/features/medication-administrations/api/medicationAdministrationService";
+import { compareByAdministrationPriority } from "@/features/medication-administrations/utils/administrationSorters";
 import { listMeasurementUnits } from "@/features/measurement-units/api/measurementUnitService";
 import {
   createPrescription,
@@ -42,6 +44,7 @@ export function PrescriptionsView({
   currentTime,
   isLoading,
   medications,
+  onAdministrationsChange,
   onPrescriptionsChange,
   onSearchChange,
   prescriptions,
@@ -162,6 +165,17 @@ export function PrescriptionsView({
     }
   }
 
+  async function refreshTodayAdministrations() {
+    const nextAdministrations = await listTodayMedicationAdministrations();
+    const sortedNextAdministrations = [...nextAdministrations].sort(
+      compareByAdministrationPriority(currentTime),
+    );
+
+    onAdministrationsChange?.(sortedNextAdministrations);
+
+    return sortedNextAdministrations;
+  }
+
   async function loadPrescriptionDetail(prescription) {
     setDetailStatus({ error: "", isLoading: true });
 
@@ -254,6 +268,7 @@ export function PrescriptionsView({
         );
 
         await refreshPrescriptions(updatedPrescription?.id ?? selectedPrescriptionId);
+        await refreshTodayAdministrations();
         setFeedback("Prescrição atualizada com sucesso.");
       } else {
         const result = await createPrescription(form);
@@ -261,6 +276,7 @@ export function PrescriptionsView({
         const generatedCount = result?.generatedAdministrations?.count;
 
         await refreshPrescriptions(createdPrescription?.id);
+        await refreshTodayAdministrations();
         setFeedback(
           generatedCount
             ? `Prescrição criada com sucesso. ${generatedCount} administrações geradas.`
@@ -299,6 +315,7 @@ export function PrescriptionsView({
     try {
       await deactivatePrescription(prescriptionToDeactivate.id);
       await refreshPrescriptions("");
+      await refreshTodayAdministrations();
       setFormMode("");
       setPrescriptionToDeactivate(null);
       setFeedback("Prescrição desativada com sucesso.");

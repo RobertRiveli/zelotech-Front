@@ -230,6 +230,7 @@ function DashboardPage() {
           residents={dashboardData.residents}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
+          onAdministrationsChange={handleAdministrationsChange}
           onPrescriptionsChange={handlePrescriptionsChange}
         />
       ) : activeItem === "Agenda de medicamentos" ? (
