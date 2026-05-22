@@ -15,7 +15,10 @@ import {
 } from "../../data/landing";
 import useActiveSection from "@/features/landing/hooks/useActiveSection";
 import { CAREGIVER_FEATURE_PENDING_MESSAGE } from "@/features/auth/constants/accessMessages";
-import { hasAdminSession, hasCaregiverSession } from "@/features/auth/utils/session";
+import {
+  hasAdminSession,
+  hasCaregiverSession,
+} from "@/features/auth/utils/session";
 import "./HomePage.css";
 
 function HomePage() {
@@ -101,20 +104,6 @@ function HomePage() {
                 Sou uma Família <span className="arrow">›</span>
               </Link>
             </div>
-            <div className="hero-trust anim-4">
-              <div className="trust-item">
-                <div className="trust-dot">✓</div>
-                30 dias grátis
-              </div>
-              <div className="trust-item">
-                <div className="trust-dot">🔒</div>
-                LGPD compliant
-              </div>
-              <div className="trust-item">
-                <div className="trust-dot">⚡</div>
-                Setup em 5 min
-              </div>
-            </div>
           </div>
 
           <div className="hero-right">
@@ -124,21 +113,13 @@ function HomePage() {
               <div className="hero-stat-num">+3.200</div>
               <div className="hero-stat-label">idosos monitorados hoje</div>
             </div>
-            <div className="hero-card-float card-1">
-              <div className="card-float-label text-teal">🟢 Saúde geral</div>
-              <div className="card-float-value">98%</div>
-              <div className="card-float-sub">Dona Maria Silva · Quarto 12</div>
-              <div className="card-float-bar">
-                <div className="card-float-bar-fill teal-fill almost-full" />
-              </div>
-            </div>
+
             <div className="hero-card-float card-2">
               <div className="card-float-label text-navy">📋 Medicação 14h</div>
               <div className="card-float-value card-status">✓ Administrada</div>
               <div className="card-float-sub">
                 Registrado pelo cuidador • há 3 min
               </div>
-              <span className="queue-pill">5 idosos na fila</span>
             </div>
           </div>
         </section>
@@ -294,12 +275,6 @@ function HomePage() {
             <div className="footer-copy">
               © 2025 ZeloTech Tecnologia Ltda. · CNPJ 00.000.000/0001-00 · Todos
               os direitos reservados
-            </div>
-            <div className="footer-badges">
-              <span className="footer-badge">LGPD</span>
-              <span className="footer-badge">ISO 27001</span>
-              <span className="footer-badge">CFM</span>
-              <span className="footer-badge">ANVISA</span>
             </div>
           </div>
         </div>

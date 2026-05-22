@@ -5,23 +5,23 @@ export const navLinks = [
   { href: "#faq", label: "Dúvidas" },
 ];
 
-export const partners = ["CFM", "ANVISA", "CFF", "SBGG", "ISO 27001", "LGPD"];
+export const partners = [];
 
 export const howSteps = [
   {
     title: "Crie sua conta",
     description:
-      "Escolha se você representa uma instituição de cuidado ou uma família. O cadastro leva menos de 5 minutos e é totalmente gratuito por 30 dias.",
+      "Escolha se você representa uma instituição de cuidado ou uma família. O cadastro leva menos de 5 minutos e é totalmente gratuito.",
   },
   {
     title: "Cadastre os idosos e equipe",
     description:
-      "Adicione o perfil dos residentes ou do seu familiar, histórico de saúde e defina os cuidadores e familiares com acesso.",
+      "Adicione o perfil dos residentes ou do seu familiar, histórico de saúde e acompanhe de perto.",
   },
   {
-    title: "Conecte os dispositivos",
+    title: "Informações compartilhadas",
     description:
-      "Integre o app mobile dos cuidadores para dados em tempo real.",
+      "Integre o app mobile dos familiares para acompanhar os cuidados da instituição.",
   },
   {
     title: "Acompanhe com tranquilidade",
@@ -30,24 +30,14 @@ export const howSteps = [
   },
 ];
 
-export const numbers = [
-  { value: "3.2", suffix: "k+", label: "Idosos", labelBreak: "monitorados" },
-  { value: "240", suffix: "+", label: "Instituições", labelBreak: "parceiras" },
-  { value: "98", suffix: "%", label: "Satisfação", labelBreak: "de famílias" },
-  {
-    value: "24",
-    suffix: "/7",
-    label: "Suporte ativo",
-    labelBreak: "e monitoramento",
-  },
-];
+export const numbers = [];
 
 export const benefits = [
   {
     icon: "📡",
     title: "Monitoramento em Tempo Real",
     description:
-      "Dados de saúde, localização e atividade dos idosos atualizados continuamente. Alertas inteligentes para sinais de risco.",
+      "Dados de saúde, cuidados e atividade dos idosos atualizados continuamente. Alertas inteligentes para sinais de risco.",
     theme: "navy",
   },
   {
@@ -58,13 +48,6 @@ export const benefits = [
     theme: "teal",
   },
 
-  {
-    icon: "💬",
-    title: "Comunicação Integrada",
-    description:
-      "Canal direto entre família, cuidadores e equipe de saúde. Mensagens e notificações em um só lugar.",
-    theme: "teal",
-  },
   {
     icon: "🏥",
     title: "Gestão Institucional",
@@ -86,7 +69,7 @@ export const audiences = [
       "Escala e gestão de cuidadores",
       "Prontuário eletrônico integrado",
       "Relatórios para famílias automatizados",
-      "Controle de medicações em lote",
+      "Controle de medicações",
       "Indicadores de qualidade e compliance",
     ],
     button: "Cadastrar minha instituição",
@@ -101,7 +84,7 @@ export const audiences = [
       "Alertas de saúde e bem-estar",
       "Acompanhamento de medicações",
 
-      "Histórico de atividades e humor",
+      "Histórico de atividades",
       "Compartilhe com a família toda",
       "App intuitivo, fácil de usar",
     ],
