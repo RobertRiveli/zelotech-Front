@@ -94,14 +94,34 @@ export const audiences = [
 
 export const faqItems = [
   {
-    question: "O sistema funciona para idosos em casa?",
+    question: "A ZeloTech é para clínicas, casas de repouso ou famílias?",
     answer:
-      "Sim! O plano Família é especialmente desenhado para idosos que vivem em casa (com ou sem cuidador) e cujas famílias querem acompanhar o bem-estar à distância.",
+      "Hoje a ZeloTech ajuda principalmente instituições de cuidado, como casas de repouso e clínicas. A instituição organiza os residentes, a equipe e a rotina de medicamentos em um só lugar, e também pode liberar acesso para familiares acompanharem informações importantes.",
   },
   {
-    question: "E se eu quiser cancelar?",
+    question: "O que eu consigo ver no painel?",
     answer:
-      "Cancele a qualquer momento, sem multa e sem burocracia. Seus dados ficam disponíveis para exportação por 90 dias após o cancelamento. Não acreditamos em clientes presos.",
+      "Você consegue ver quem são os residentes ativos, quais medicamentos estão cadastrados, quais prescrições estão em andamento e quais medicações precisam de atenção no dia. O painel também destaca atrasos e pendências para a equipe agir mais rápido.",
+  },
+  {
+    question: "Como o sistema ajuda na rotina dos medicamentos?",
+    answer:
+      "Depois que uma prescrição é cadastrada, a ZeloTech monta a agenda de horários automaticamente. A equipe acompanha a lista do dia e registra o que aconteceu com cada medicação, como administrada, recusada, perdida ou cancelada.",
+  },
+  {
+    question: "Preciso cadastrar tudo manualmente todos os dias?",
+    answer:
+      "Não. As informações principais ficam salvas no sistema. Residentes, medicamentos e prescrições podem ser reutilizados, e a agenda de medicação é criada a partir das prescrições cadastradas.",
+  },
+  {
+    question: "Os familiares podem acompanhar o cuidado?",
+    answer:
+      "Sim. A instituição pode liberar acessos para familiares vinculados a um residente. Assim, a família acompanha as informações permitidas com mais tranquilidade e proximidade.",
+  },
+  {
+    question: "O sistema mostra relatórios?",
+    answer:
+      "Sim. A ZeloTech reúne relatórios sobre medicações, administrações realizadas, ocorrências como atrasos ou recusas, e também o histórico do residente.",
   },
 ];
 
