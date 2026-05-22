@@ -22,3 +22,18 @@ export const medicationAdministrationReportDistributionItems = [
   { id: "MISSED", label: "Perdidas" },
   { id: "CANCELED", label: "Canceladas" },
 ];
+
+export const medicationAdministrationOccurrenceStatusOptions = [
+  { id: "all", label: "Todas as ocorrências" },
+  { id: "LATE", label: "Atrasadas" },
+  { id: "REFUSED", label: "Recusadas" },
+  { id: "MISSED", label: "Perdidas" },
+  { id: "CANCELED", label: "Canceladas" },
+];
+
+export const medicationAdministrationOccurrenceDistributionItems = [
+  { id: "LATE", label: "Atrasadas" },
+  { id: "REFUSED", label: "Recusadas" },
+  { id: "MISSED", label: "Perdidas" },
+  { id: "CANCELED", label: "Canceladas" },
+];

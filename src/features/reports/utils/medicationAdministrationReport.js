@@ -15,6 +15,7 @@ import { matchesSearch } from "@/shared/utils/search";
 import { normalizeText } from "@/shared/utils/textFormatter";
 import { formatDateTime, toDate } from "@/shared/utils/dateFormatter";
 import {
+  medicationAdministrationOccurrenceDistributionItems,
   medicationAdministrationReportDistributionItems,
   medicationAdministrationReportPeriods,
 } from "@/features/reports/constants/medicationAdministrationReport";
@@ -164,6 +165,140 @@ export function buildMedicationAdministrationStatusDistribution(
   });
 }
 
+export function filterMedicationAdministrationOccurrences(
+  administrations,
+  currentTime,
+) {
+  return administrations.filter((administration) =>
+    isMedicationAdministrationOccurrence(administration, currentTime),
+  );
+}
+
+export function buildMedicationAdministrationOccurrenceStats(
+  administrations,
+  currentTime,
+) {
+  const occurrences = filterMedicationAdministrationOccurrences(
+    administrations,
+    currentTime,
+  );
+  const distribution = buildMedicationAdministrationOccurrenceDistribution(
+    occurrences,
+    currentTime,
+  );
+  const counts = distribution.reduce((accumulator, item) => {
+    accumulator[item.id] = item.count;
+    return accumulator;
+  }, {});
+  const residentIds = new Set();
+
+  occurrences.forEach((administration) => {
+    const residentId =
+      getRecordResidentId(administration) || administration.resident?.fullName;
+
+    if (residentId) {
+      residentIds.add(residentId);
+    }
+  });
+
+  return {
+    canceled: counts.CANCELED ?? 0,
+    late: counts.LATE ?? 0,
+    missed: counts.MISSED ?? 0,
+    refused: counts.REFUSED ?? 0,
+    residents: residentIds.size,
+    total: occurrences.length,
+  };
+}
+
+export function buildMedicationAdministrationOccurrenceDistribution(
+  administrations,
+  currentTime,
+) {
+  const occurrences = filterMedicationAdministrationOccurrences(
+    administrations,
+    currentTime,
+  );
+  const counts = occurrences.reduce((accumulator, administration) => {
+    const status = getMedicationAdministrationDisplayStatus(
+      administration,
+      currentTime,
+    );
+
+    accumulator[status] = (accumulator[status] ?? 0) + 1;
+    return accumulator;
+  }, {});
+  const total = Math.max(occurrences.length, 1);
+
+  return medicationAdministrationOccurrenceDistributionItems.map((item) => ({
+    ...item,
+    count: counts[item.id] ?? 0,
+    percent: Math.round(((counts[item.id] ?? 0) / total) * 100),
+    tone:
+      item.id === "LATE"
+        ? "danger"
+        : administrationStatusTone[item.id] ?? "muted",
+  }));
+}
+
+export function buildMedicationAdministrationOccurrenceResidentHighlights(
+  administrations,
+  currentTime,
+) {
+  const residentsByKey = new Map();
+
+  administrations
+    .filter((administration) =>
+      isMedicationAdministrationOccurrence(administration, currentTime),
+    )
+    .forEach((administration) => {
+      const key =
+        getRecordResidentId(administration) ||
+        administration.resident?.fullName ||
+        administration.id;
+      const scheduledAt = toDate(administration.scheduledAt);
+      const status = getMedicationAdministrationDisplayStatus(
+        administration,
+        currentTime,
+      );
+      const current = residentsByKey.get(key) ?? {
+        key,
+        lastDate: null,
+        lastStatus: "",
+        name: administration.resident?.fullName ?? "Residente",
+        residentId: getRecordResidentId(administration),
+        total: 0,
+      };
+      const lastTime = current.lastDate?.getTime() ?? 0;
+      const scheduledTime = scheduledAt?.getTime() ?? 0;
+      const isLatest = scheduledTime >= lastTime;
+
+      residentsByKey.set(key, {
+        ...current,
+        lastDate: isLatest ? scheduledAt : current.lastDate,
+        lastStatus: isLatest ? status : current.lastStatus,
+        total: current.total + 1,
+      });
+    });
+
+  return Array.from(residentsByKey.values())
+    .sort((first, second) => {
+      const occurrenceDiff = second.total - first.total;
+
+      if (occurrenceDiff !== 0) {
+        return occurrenceDiff;
+      }
+
+      return (second.lastDate?.getTime() ?? 0) - (first.lastDate?.getTime() ?? 0);
+    })
+    .slice(0, 5)
+    .map((resident) => ({
+      ...resident,
+      lastOccurrence: formatDateTime(resident.lastDate, ""),
+      lastStatusLabel: getStatusLabel(resident.lastStatus),
+    }));
+}
+
 export function buildMedicationAdministrationAttentionMedications(
   administrations,
   currentTime,
@@ -184,7 +319,8 @@ export function buildMedicationAdministrationAttentionMedications(
     const hasOccurrence =
       isLateAdministration(administration, currentTime) ||
       status === "REFUSED" ||
-      status === "MISSED";
+      status === "MISSED" ||
+      status === "CANCELED";
 
     medicationsByKey.set(key, {
       ...current,
@@ -257,6 +393,20 @@ export function getMedicationAdministrationDisplayStatus(
     : administration.status ?? "PENDING";
 }
 
+export function isMedicationAdministrationOccurrence(administration, currentTime) {
+  const status = getMedicationAdministrationDisplayStatus(
+    administration,
+    currentTime,
+  );
+
+  return (
+    status === "LATE" ||
+    status === "REFUSED" ||
+    status === "MISSED" ||
+    status === "CANCELED"
+  );
+}
+
 export function getRecordMedicationId(administration) {
   return administration.medicationId ?? administration.medication?.id ?? "";
 }
@@ -320,6 +470,51 @@ export function exportMedicationAdministrationsCsv(
 
   link.href = url;
   link.download = "relatorio-administracoes.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+export function exportMedicationAdministrationOccurrencesCsv(
+  administrations,
+  currentTime,
+) {
+  const rows = administrations
+    .filter((administration) =>
+      isMedicationAdministrationOccurrence(administration, currentTime),
+    )
+    .map((administration) => [
+      formatDateTime(administration.scheduledAt),
+      administration.resident?.fullName ?? "Residente",
+      getMedicationName(administration.medication),
+      getDosage(administration),
+      getStatusLabel(
+        getMedicationAdministrationDisplayStatus(administration, currentTime),
+      ),
+      administration.caregiver?.fullName ?? "Não registrado",
+      administration.reason ?? "",
+      administration.notes ?? "",
+    ]);
+  const csv = [
+    [
+      "Data e horário",
+      "Residente",
+      "Medicamento",
+      "Dose",
+      "Ocorrência",
+      "Cuidador",
+      "Justificativa",
+      "Observação",
+    ],
+    ...rows,
+  ]
+    .map((row) => row.map(escapeCsvValue).join(";"))
+    .join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "relatorio-ocorrencias.csv";
   link.click();
   URL.revokeObjectURL(url);
 }

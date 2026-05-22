@@ -357,6 +357,472 @@
   font-weight: 800;
 }
 
+.occurrence-report-filter-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.occurrence-report-side-panel {
+  gap: 22px;
+}
+
+.occurrence-report-side-section {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.occurrence-report-side-section + .occurrence-report-side-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.occurrence-report-list,
+.occurrence-highlight-list {
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  display: grid;
+  gap: 10px;
+  scrollbar-gutter: stable;
+}
+
+.occurrence-report-list {
+  max-height: var(--report-section-max-height);
+}
+
+.occurrence-report-list:focus-visible {
+  outline: 3px solid rgba(26, 188, 175, 0.16);
+  outline-offset: 3px;
+}
+
+.occurrence-highlight-list {
+  max-height: var(--report-list-max-height);
+}
+
+.occurrence-report-item,
+.occurrence-highlight-item {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--white);
+}
+
+.occurrence-report-item {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.occurrence-report-item.is-late,
+.occurrence-report-item.is-missed {
+  border-color: rgba(220, 38, 38, 0.24);
+  background: #fffafa;
+}
+
+.occurrence-report-item.is-refused {
+  border-color: rgba(217, 119, 6, 0.24);
+  background: #fffdf7;
+}
+
+.occurrence-report-item.is-canceled {
+  border-color: rgba(100, 116, 139, 0.24);
+  background: var(--bg);
+}
+
+.occurrence-report-item time {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.occurrence-report-item-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.occurrence-report-item-copy > span,
+.occurrence-report-item-copy small,
+.occurrence-report-item-copy li,
+.occurrence-highlight-item span {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.occurrence-report-item-copy strong,
+.occurrence-highlight-item strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.occurrence-report-item-copy ul {
+  margin-top: 4px;
+  padding-left: 16px;
+  display: grid;
+  gap: 3px;
+}
+
+.occurrence-report-item-copy li span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.occurrence-report-item-copy li span::after {
+  content: ": ";
+}
+
+.occurrence-report-item-actions {
+  min-width: 120px;
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.occurrence-report-item-actions .dashboard-button {
+  min-height: 34px;
+}
+
+.occurrence-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.occurrence-summary-item {
+  min-width: 0;
+  min-height: 72px;
+  padding: 12px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--bg);
+}
+
+.occurrence-summary-item span {
+  color: var(--body);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.occurrence-summary-item strong {
+  color: var(--navy);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.occurrence-highlight-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg);
+}
+
+.occurrence-highlight-item div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.occurrence-highlight-item small {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r8);
+  background: var(--white);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.medication-report-filter-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.medication-report-side-panel {
+  gap: 22px;
+}
+
+.medication-report-side-section {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.medication-report-side-section + .medication-report-side-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.medication-report-table-wrap {
+  max-height: var(--report-section-max-height);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  scrollbar-gutter: stable;
+}
+
+.medication-report-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.medication-report-table th,
+.medication-report-table td {
+  min-width: 0;
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.medication-report-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.medication-report-table th:nth-child(1) {
+  width: 34%;
+}
+
+.medication-report-table th:nth-child(2) {
+  width: 18%;
+}
+
+.medication-report-table th:nth-child(3),
+.medication-report-table th:nth-child(4),
+.medication-report-table th:nth-child(5),
+.medication-report-table th:nth-child(6) {
+  width: 12%;
+}
+
+.medication-report-table td {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.medication-report-table tbody tr:not(.medication-report-detail-row):hover td {
+  background: var(--teal-tint);
+}
+
+.medication-report-table tbody tr.has-occurrences td {
+  background: #fffafa;
+}
+
+.medication-report-table tbody tr.has-occurrences:hover td {
+  background: #fff4f4;
+}
+
+.medication-report-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.medication-report-expand {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.medication-report-expand span,
+.medication-report-details span,
+.medication-report-details li,
+.medication-highlight-item span {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.medication-report-expand > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.medication-report-expand strong,
+.medication-report-details strong,
+.medication-highlight-item strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.medication-report-expand::after {
+  content: attr(data-detail-label);
+  width: max-content;
+  max-width: 100%;
+  margin-top: 3px;
+  padding: 5px 8px;
+  border-radius: var(--r8);
+  background: var(--bg);
+  color: var(--teal-dark);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.medication-report-detail-row td {
+  background: var(--bg);
+}
+
+.medication-report-details {
+  min-width: 0;
+  padding: 2px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.medication-report-details ul {
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 5px;
+}
+
+.medication-highlight-list {
+  min-width: 0;
+  max-height: var(--report-list-max-height);
+  overflow-y: auto;
+  padding-right: 6px;
+  display: grid;
+  gap: 10px;
+  scrollbar-gutter: stable;
+}
+
+.medication-highlight-item {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--bg);
+}
+
+.medication-summary-item {
+  min-width: 0;
+  padding: 11px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--r8);
+  background: var(--bg);
+}
+
+.medication-summary-item span {
+  color: var(--body);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.medication-summary-item strong {
+  color: var(--navy);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.medication-summary-groups {
+  display: grid;
+  gap: 12px;
+}
+
+.medication-summary-group {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.medication-summary-group > strong {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.medication-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.medication-summary-item {
+  min-height: 72px;
+  align-content: center;
+}
+
+.medication-highlight-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.medication-highlight-item div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.medication-highlight-item small {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r8);
+  background: var(--white);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
 .resident-report-layout .report-main-panel,
 .resident-report-layout .report-side-panel {
   --report-list-max-height: min(360px, 45vh);
@@ -556,6 +1022,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .occurrence-report-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .medication-report-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .report-layout {
     grid-template-columns: 1fr;
   }
@@ -576,7 +1050,10 @@
 
   .resident-report-event-copy strong,
   .resident-report-context-item strong,
-  .resident-report-profile-item strong {
+  .resident-report-profile-item strong,
+  .medication-report-expand strong,
+  .medication-report-details strong,
+  .medication-highlight-item strong {
     white-space: normal;
   }
 
@@ -588,7 +1065,9 @@
 
   .report-panel-heading,
   .report-status-item > div:first-child,
-  .report-attention-item {
+  .report-attention-item,
+  .occurrence-highlight-item,
+  .medication-highlight-item {
     align-items: stretch;
     flex-direction: column;
   }
@@ -598,8 +1077,16 @@
   }
 
   .resident-report-profile-grid,
-  .resident-report-event {
+  .resident-report-event,
+  .occurrence-report-item,
+  .occurrence-summary-grid,
+  .medication-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .occurrence-report-item-actions {
+    min-width: 0;
+    justify-items: stretch;
   }
 
   .report-layout {
@@ -607,7 +1094,9 @@
     --report-section-max-height: min(520px, 72vh);
   }
 
-  .report-attention-item small {
+  .report-attention-item small,
+  .occurrence-highlight-item small,
+  .medication-highlight-item small {
     justify-content: center;
   }
 }

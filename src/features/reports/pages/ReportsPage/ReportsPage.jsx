@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { MedicationAdministrationReportView } from "@/features/reports/administrations/components/MedicationAdministrationReportView";
+import { MedicationReportView } from "@/features/reports/medications/components/MedicationReportView";
+import { MedicationOccurrenceReportView } from "@/features/reports/occurrences/components/MedicationOccurrenceReportView";
 import { ResidentReportView } from "@/features/reports/residents/components/ResidentReportView";
 import "./ReportsPage.css";
 
@@ -9,6 +11,18 @@ const reportSections = [
     label: "Administrações",
     title: "Administração de medicamentos",
     description: "Adesão, atrasos e ocorrências da rotina medicamentosa.",
+  },
+  {
+    id: "medications",
+    label: "Medicamentos",
+    title: "Uso por medicamento",
+    description: "Doses, prescrições e ocorrências por medicamento.",
+  },
+  {
+    id: "occurrences",
+    label: "Ocorrências",
+    title: "Pontos de atenção",
+    description: "Atrasos, recusas, perdas e cancelamentos no período.",
   },
   {
     id: "residents",
@@ -90,6 +104,27 @@ export function ReportsPage({
           currentTime={currentTime}
           isLoading={isLoading}
           onOpenResident={onOpenResident}
+          prescriptions={prescriptions}
+          residents={residents}
+          searchTerm={searchTerm}
+        />
+      ) : activeSection === "occurrences" ? (
+        <MedicationOccurrenceReportView
+          administrations={administrations}
+          currentTime={currentTime}
+          isLoading={isLoading}
+          medications={medications}
+          onOpenResident={onOpenResident}
+          prescriptions={prescriptions}
+          residents={residents}
+          searchTerm={searchTerm}
+        />
+      ) : activeSection === "medications" ? (
+        <MedicationReportView
+          administrations={administrations}
+          currentTime={currentTime}
+          isLoading={isLoading}
+          medications={medications}
           prescriptions={prescriptions}
           residents={residents}
           searchTerm={searchTerm}
