@@ -55,6 +55,11 @@ function LoginPage() {
         <Link className="nav-logo" to="/" aria-label="ZeloTech">
           Zelo<span>Tech</span>
         </Link>
+        <div className="nav-ctas">
+          <Link className="btn btn-outline-navy btn-sm" to="/">
+            Voltar ao site
+          </Link>
+        </div>
       </nav>
 
       <main className={styles.page}>
